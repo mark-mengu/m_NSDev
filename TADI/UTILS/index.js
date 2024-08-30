@@ -206,10 +206,10 @@ document.getElementById('print-pdf').addEventListener('click', (event) => {
     table.toggleColumn("so_text");
     table.toggleColumn("item_value");
     table.toggleColumn("units");
-    event.preventDefault();
-    // setTimeout(() => {
-    //   window.location.reload();
-    // }, 1000);
+    //event.preventDefault();
+    setTimeout(() => {
+        window.location.reload();
+    }, 1000);
 }, false);
 
 //-----------------------------------------------------------------PRINT XLS-------------------------------------------------------------------------------
@@ -279,4 +279,3 @@ document.getElementById("").addEventListener("click", (event) => {
     document.head.appendChild(scriptFix);
   });
 }, false);*/
-
