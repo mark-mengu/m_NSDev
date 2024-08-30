@@ -200,16 +200,16 @@ document.getElementById('print-pdf').addEventListener('click', (event) => {
   table.hideColumn("item_value");
   table.hideColumn("units");
 
-  const downloadOptions = { title: "Report Controllo Merce in Conto Deposito" }
-  table.download("pdf", "report_deposito.pdf", downloadOptions);
+  table.download("pdf", "report_deposito.pdf", { title: "Report Controllo Merce in Conto Deposito" });
 
   table.toggleColumn("to");
   table.toggleColumn("so_text");
   table.toggleColumn("item_value");
   table.toggleColumn("units");
-  setTimeout(() => {
-    window.location.reload();
-  }, 1000);
+  event.preventDefault();
+  //setTimeout(() => {
+   // window.location.reload();
+ // }, 1000);
 }, false);
 
 //-----------------------------------------------------------------PRINT XLS-------------------------------------------------------------------------------
