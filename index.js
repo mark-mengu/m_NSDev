@@ -200,10 +200,7 @@ document.getElementById('print-pdf').addEventListener('click', (event) => {
   table.hideColumn("item_value");
   table.hideColumn("units");
 
-  const downloadOptions = {
-    sheetName: "Report Deposito",
-  };
-
+  const downloadOptions = { title: "Report Controllo Merce in Conto Deposito" }
   table.download("pdf", "report_deposito.pdf", downloadOptions);
 
   table.toggleColumn("to");
@@ -227,7 +224,7 @@ document.getElementById('print-xls').addEventListener('click', (event) => {
 
   const downloadOptions = {
     sheetName: "Report Deposito",
-    bom:true
+    bom: true
   };
 
   table.download("xlsx", "report_deposito.xlsx", downloadOptions);
