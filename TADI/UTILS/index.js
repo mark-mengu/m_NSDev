@@ -193,23 +193,23 @@ table.on("cellEdited", (cell) => {
 
 document.getElementById('print-pdf').addEventListener('click', (event) => {
     event.preventDefault();
-    document.getElementById('report-deposito').style.display = 'none';
-    document.getElementById('table-title').style.display = 'none';
-    table.hideColumn("to");
-    table.hideColumn("so_text");
-    table.hideColumn("item_value");
-    table.hideColumn("units");
+    //document.getElementById('report-deposito').style.display = 'none';
+    //document.getElementById('table-title').style.display = 'none';
+    //table.hideColumn("to");
+    //table.hideColumn("so_text");
+    //table.hideColumn("item_value");
+    //table.hideColumn("units");
 
     table.download("pdf", "report_deposito.pdf", { title: "Report Controllo Merce in Conto Deposito" });
 
-    table.toggleColumn("to");
-    table.toggleColumn("so_text");
-    table.toggleColumn("item_value");
-    table.toggleColumn("units");
+    //table.toggleColumn("to");
+    //table.toggleColumn("so_text");
+    //table.toggleColumn("item_value");
+    //table.toggleColumn("units");
     //event.preventDefault();
-    setTimeout(() => {
-        window.location.reload();
-    }, 1000);
+    //setTimeout(() => {
+    //    window.location.reload();
+    //}, 1000);
 }, false);
 
 //-----------------------------------------------------------------PRINT XLS-------------------------------------------------------------------------------
