@@ -216,16 +216,16 @@ document.getElementById('print-pdf').addEventListener('click', (event) => {
 
 document.getElementById('print-xls').addEventListener('click', (event) => {
     //event.preventDefault();
-    document.getElementById('report-deposito').style.display = 'none';
-    document.getElementById('table-title').style.display = 'none';
+    //document.getElementById('report-deposito').style.display = 'none';
+    //document.getElementById('table-title').style.display = 'none';
     const columnsToHide = ["to"];
     columnsToHide.forEach(column => table.hideColumn(column));
 
     table.download("xlsx", "report_deposito.xlsx", { sheetName: "Report Deposito", bom: true });
     
     columnsToHide.forEach(column => table.showColumn(column));
-    document.getElementById('report-deposito').style.display = '';
-    document.getElementById('table-title').style.display = '';
+    //document.getElementById('report-deposito').style.display = '';
+    //document.getElementById('table-title').style.display = '';
     // setTimeout(() => {
     //     window.location.reload();
     // }, 1000);
