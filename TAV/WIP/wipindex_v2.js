@@ -138,7 +138,7 @@ document.getElementById('table-title').style.display = 'none';
 require(['N/https', 'N/url', 'N/currentRecord'], (https, url, cr) => {
     let resourcesUrl = url.resolveScript({
         scriptId: 'customscript_gn_reportwip_data_sl',
-        deploymentId: 'custodeploy_gn_reportwip_data_sl',
+        deploymentId: 'customdeploy_gn_reportwip_data_sl',
         params: {
             date: cr.get().getValue('custpage_date'),
             customer: cr.get().getValue('custpage_customer'),
