@@ -62,7 +62,6 @@ var dataFilter = (headerValue, rowValue, rowData, filterParams) => {
     //rowValue - the value of the column in this row
     //rowData - the data for the row being filtered
     //filterParams - params object passed to the headerFilterFuncParams property
-
     return rowData.name == filterParams.name && rowValue < headerValue;
 }
 var createLoadingIcon = () => {
@@ -79,24 +78,24 @@ var createLoadingIcon = () => {
     const spinner = document.createElement('div');
     spinner.style.cssText = `
     border: 7px solid #f3f3f3;
-    border-top: 7px solid #eb9534;
-    border-radius: 55%;
+    border-top: 7px solid #39ff14; /* Verde nucleare */
+    border-radius: 50%;
     width: 75px;
     height: 75px;
     animation: spin 1s linear infinite;
   `;
     loadingIcon.appendChild(spinner);
     document.body.appendChild(loadingIcon);
+
     const style = document.createElement('style');
     style.textContent = `
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
-    }
-  `;
-    document.head.appendChild(style);
+    }`;
+    document.head.appendChild(style);    
     return loadingIcon;
-}
+};
 //----------------------------------------------------------------TABULATOR-----------------------------------------------------
 
 const table = new Tabulator("#report-deposito", {
@@ -119,9 +118,6 @@ const table = new Tabulator("#report-deposito", {
     placeholder: "No DATA Found...",
     pagination: "local",
     paginationSize: 50,
-    //frozenRows:1,
-    //groupBy: "customer",
-    //groupByHeader: true,
     ajaxProgressiveLoad: "scroll",
     printFooter: "",
     printHeader: "<center><h1>Conto Deposito Overview</h1></center>",
@@ -141,8 +137,8 @@ document.getElementById('report-deposito').style.display = 'none';
 document.getElementById('table-title').style.display = 'none';
 require(['N/https', 'N/url', 'N/currentRecord'], (https, url, cr) => {
     let resourcesUrl = url.resolveScript({
-        scriptId: 'customscript_gn_ta_conto_deposito_data',
-        deploymentId: 'customdeploy_gn_ta_conto_deposito_data',
+        scriptId: 'customscript_gn_reportwip_data_sl',
+        deploymentId: 'custodeploy_gn_reportwip_data_sl',
         params: {
             date: cr.get().getValue('custpage_date'),
             customer: cr.get().getValue('custpage_customer'),
