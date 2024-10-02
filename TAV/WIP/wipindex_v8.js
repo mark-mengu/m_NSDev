@@ -166,7 +166,7 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url, cr) => {
     table.addColumn(binColumns);
 
     let accountColumns = {
-        title: "Conto di <br> Magazzino", field: "account", editor: "textarea", validator: '', width: 200, minWidth: 150, maxWidth: 300, editable: false, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
+        title: "Conto di <br> Magazzino", field: "account", editor: "textarea", validator: '', width: 200, minWidth: 150, maxWidth: 300, editable: false, headerFilter: "", formatter: stdFormatter, tooltip: 'Magazzino/Location'
     };
     table.addColumn(accountColumns);
 
