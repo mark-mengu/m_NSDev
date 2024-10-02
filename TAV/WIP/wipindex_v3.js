@@ -98,10 +98,10 @@ var createLoadingIcon = () => {
 };
 //----------------------------------------------------------------TABULATOR-----------------------------------------------------
 
-const table = new Tabulator("#report-deposito", {
+const table = new Tabulator("#report-wip", {
     movableRows: false,
     groupToggleElement: true,
-    tabulatorId: "report-deposito-table",
+    tabulatorId: "report-wip-table",
     rowHeader: {
         resizable: true,
         frozen: true,
@@ -133,12 +133,12 @@ const table = new Tabulator("#report-deposito", {
     }
 });
 
-document.getElementById('report-deposito').style.display = 'none';
+document.getElementById('report-wip').style.display = 'none';
 document.getElementById('table-title').style.display = 'none';
 require(['N/https', 'N/url', 'N/currentRecord'], (https, url, cr) => {
     let resourcesUrl = url.resolveScript({
         scriptId: 'customscript_gn_reportwip_data_sl',
-        deploymentId: 'customdeploy_gn_reportwip_data_sl',
+        deploymentId: 'custodeploy_gn_reportwip_data_sl',
         params: {
             date: cr.get().getValue('custpage_date'),
             customer: cr.get().getValue('custpage_customer'),
@@ -200,7 +200,7 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url, cr) => {
     };
     table.addColumn(inventoryValueColumns);
     const loadingIcon = createLoadingIcon();
-    const reportDeposito = document.getElementById('report-deposito');
+    const reportDeposito = document.getElementById('report-wip');
     const tableTitle = document.getElementById('table-title');
     loadingIcon.style.display = 'block';
     reportDeposito.style.display = 'none';
@@ -227,9 +227,6 @@ table.on("cellEdited", (cell) => {
 //-----------------------------------------------------------------PRINT PDF-------------------------------------------------------------------------------
 
 document.getElementById('print-pdf').addEventListener('click', (event) => {
-    //event.preventDefault();
-    //document.getElementById('report-deposito').style.display = 'none';
-    //document.getElementById('table-title').style.display = 'none';
     table.hideColumn("to");
     table.hideColumn("so_text");
     table.hideColumn("item_value");
@@ -242,29 +239,18 @@ document.getElementById('print-pdf').addEventListener('click', (event) => {
     table.toggleColumn("item_value");
     table.toggleColumn("units");
     event.preventDefault();
-    //setTimeout(() => {
-    //    window.location.reload();
-    //}, 1000);
 }, false);
 
 //-----------------------------------------------------------------PRINT XLS-------------------------------------------------------------------------------
 
 document.getElementById('print-xls').addEventListener('click', (event) => {
-    //document.getElementById('report-deposito').style.display = 'none';
-    //document.getElementById('table-title').style.display = 'none';
     const columnsToHide = ["to"];
     columnsToHide.forEach(column => table.hideColumn(column));
 
-    table.download("xlsx", "report_deposito.xlsx", { sheetName: "Report Deposito", bom: true });
+    table.download("xlsx", "report_WIP.xlsx", { sheetName: "Report WIP", bom: true });
 
     columnsToHide.forEach(column => table.showColumn(column));
     event.preventDefault();
-    //document.getElementById('report-deposito').style.display = '';
-    //document.getElementById('table-title').style.display = '';
-    // setTimeout(() => {
-    //     window.location.reload();
-    // }, 1000);
-
 }, false);
 
 //--------------------------------------------------------------EDITING NOT USED----------------------------------------------------------------------
