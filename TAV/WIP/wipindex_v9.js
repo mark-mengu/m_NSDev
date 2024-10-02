@@ -127,16 +127,11 @@ const table = new Tabulator("#report-wip", {
 
 document.getElementById('report-wip').style.display = 'none';
 document.getElementById('table-title').style.display = 'none';
-require(['N/https', 'N/url', 'N/currentRecord'], (https, url, cr) => {
+require(['N/https', 'N/url', 'N/currentRecord'], (https, url) => {
     let resourcesUrl = url.resolveScript({
         scriptId: 'customscript_gn_reportwip_data_sl',
         deploymentId: 'customdeploy_gn_reportwip_data_sl',
-        params: {
-            date: cr.get().getValue('custpage_date'),
-            customer: cr.get().getValue('custpage_customer'),
-            item: cr.get().getValue('custpage_item'),
-            serial: cr.get().getValue('custpage_serial'),
-        }
+        params: {}
     });
     let docValueColumns = {
         title: " ", field: "seeitem", editor: "textarea", validator: '', editable: false, headerFilter: "", width: 150, minWidth: 100, maxWidth: 200, formatter: transferorderFormatter, tooltip: 'Vedi Dettaglio Articolo'
