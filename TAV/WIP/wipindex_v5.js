@@ -9,14 +9,6 @@ var editCheck = (cell) => {
     return !cell.getRow().getData().hold;
 }
 
-var printInventoryNumber = (cell, formatterParams, onRendered) => {
-    return cell.getColumn().getDefinition().editorParams.values[cell.getValue()];
-};
-
-var printBin = (cell, formatterParams, onRendered) => {
-    return cell.getColumn().getDefinition().editorParams.values[cell.getValue()];
-};
-
 var printIcon = (cell, formatterParams) => {
     return "<i class='fa fa-print'></i>";
 };
@@ -93,7 +85,7 @@ var createLoadingIcon = () => {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }`;
-    document.head.appendChild(style);    
+    document.head.appendChild(style);
     return loadingIcon;
 };
 //----------------------------------------------------------------TABULATOR-----------------------------------------------------
@@ -147,31 +139,10 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url, cr) => {
         }
     });
     let docValueColumns = {
-        title: " ", field: "to", editor: "textarea", validator: '', editable: false, headerFilter: "", formatter: transferorderFormatter, tooltip: 'Vedi Documento'
+        title: " ", field: "seeitem", editor: "textarea", validator: '', editable: false, headerFilter: "", formatter: transferorderFormatter, tooltip: 'Vedi Dettaglio Articolo'
     };
     table.addColumn(docValueColumns);
-    let toDateColumns = {
-        title: "Data Transfer Order", field: "to_date", editor: "textarea", editable: false, sorter: "date", formatter: stdFormatter, headerFilter: "input", headerFilterFunc: "like", tooltip: 'Data Transfer Order', sorterParams: { format: "yyyy-MM-dd", alignEmptyValues: "top", }
-    };
-    table.addColumn(toDateColumns);
-    let toValueColumns = {
-        title: "Transfer Order", field: "to_text", editor: "textarea", validator: '', width: 280, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "input", formatter: stdFormatter, tooltip: 'Transfer Order di riferimento'
-    };
-    table.addColumn(toValueColumns);
-    let soValueColumns = {
-        title: "Sales Order", field: "so_text", editor: "textarea", validator: '', width: 280, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "input", formatter: stdFormatter, tooltip: 'Sales Order Collegato'
-    };
-    table.addColumn(soValueColumns);
-    let invValueColumns = {
-        title: "Invoice", field: "inv_text", editor: "textarea", validator: '', editable: false, headerFilter: "input", formatter: stdFormatter, tooltip: 'Invoice Collegata'
-    };
-    table.addColumn(invValueColumns);
-    let customerColumn = {
-        title: "Cliente", field: "customer", editor: "textarea", validator: '', width: 280, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "input",
-        formatter: customerFormatter,
-        tooltip: 'Cliente',
-    };
-    table.addColumn(customerColumn);
+
     let machineColumns = {
         title: "Articolo", field: "item", editor: "textarea", validator: '', editable: false, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
     };
@@ -182,23 +153,27 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url, cr) => {
         tooltip: 'Descrizione Articolo'
     };
     table.addColumn(displaynameColumns);
-    let serialColumns = {
-        title: "Seriale", field: "seriale", editor: "textarea", validator: '', editable: false, headerFilter: "input", formatter: stdFormatter, tooltip: 'Seriale'
+    let locationColumns = {
+        title: "Location", field: "location", editor: "textarea", validator: '', editable: false, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
     };
-    table.addColumn(serialColumns);
-    let quantityColumn = {
-        title: "Quantità", field: "quantity", editor: "number", validator: '', editable: false, formatter: stdFormatter, tooltip: 'Quantità', bottomCalc: ''
+    table.addColumn(locationColumns);
+
+    let binColumns = {
+        title: "Bin", field: "bin", editor: "textarea", validator: '', editable: false, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
     };
-    table.addColumn(quantityColumn);
-    let unitsColumn = {
-        title: "U.tà", field: "units", editor: "textarea", validator: '', editable: false, formatter: stdFormatter, tooltip: 'U.tà'
+    table.addColumn(binColumns);
+
+    let accountColumns = {
+        title: "Conto di Magazzino", field: "account", editor: "textarea", validator: '', editable: false, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
     };
-    table.addColumn(unitsColumn);
+    table.addColumn(accountColumns);
+
     let inventoryValueColumns = {
         title: "Valore Totale <br>al Costo Medio", field: "item_value", editor: "textarea", validator: '', editable: false, formatter: inventoryValueFormatter,
         bottomCalc: 'sum', tooltip: 'Valore Totale <br>al Costo Medio', bottomCalcParams: { precision: 2 },
     };
     table.addColumn(inventoryValueColumns);
+
     const loadingIcon = createLoadingIcon();
     const reportDeposito = document.getElementById('report-wip');
     const tableTitle = document.getElementById('table-title');
@@ -220,9 +195,7 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url, cr) => {
         });
 });
 //------------------------------------------------------------------EDIT------------------------------------------------------
-table.on("cellEdited", (cell) => {
-    //cell.getData()['edit'] = true;
-});
+table.on("cellEdited", (cell) => { });
 
 //-----------------------------------------------------------------PRINT PDF-------------------------------------------------------------------------------
 
@@ -232,7 +205,7 @@ document.getElementById('print-pdf').addEventListener('click', (event) => {
     table.hideColumn("item_value");
     table.hideColumn("units");
 
-    table.download("pdf", "report_deposito.pdf", { title: "Report Controllo Merce in Conto Deposito" });
+    table.download("pdf", "report_wip.pdf", { title: "Report WIP" });
 
     table.toggleColumn("to");
     table.toggleColumn("so_text");
