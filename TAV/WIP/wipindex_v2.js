@@ -112,7 +112,7 @@ const table = new Tabulator("#report-wip", {
     paginationSize: 50,
     ajaxProgressiveLoad: "scroll",
     printFooter: "",
-    printHeader: "<center><h1>Conto Deposito Overview</h1></center>",
+    printHeader: "<center><h1>WIP Overview</h1></center>",
     rowFormatter: (row) => {
         let data = row.getData();
         if (data.inv_text == ' ') {
@@ -142,7 +142,7 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url) => {
         title: "Tipo Transazione", field: "recordtype", editor: "textarea", validator: '', editable: false, width: 150, minWidth: 100, maxWidth: 200, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
     };
     table.addColumn(itemColumns);
-    
+
     let itemColumns = {
         title: "Articolo", field: "item", editor: "textarea", validator: '', editable: false, width: 150, minWidth: 100, maxWidth: 200, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
     };
@@ -177,10 +177,10 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url) => {
     table.addColumn(inventoryValueColumns);
 
     const loadingIcon = createLoadingIcon();
-    const reportDeposito = document.getElementById('report-wip');
+    const reportWIP = document.getElementById('report-wip');
     const tableTitle = document.getElementById('table-title');
     loadingIcon.style.display = 'block';
-    reportDeposito.style.display = 'none';
+    reportWIP.style.display = 'none';
     tableTitle.style.display = 'none';
     https.get.promise({ url: resourcesUrl })
         .then((response) => {
@@ -192,7 +192,7 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url) => {
         })
         .finally(() => {
             loadingIcon.style.display = 'none';
-            reportDeposito.style.display = 'block';
+            reportWIP.style.display = 'block';
             tableTitle.style.display = 'block';
         });
 });
