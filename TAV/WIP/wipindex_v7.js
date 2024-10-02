@@ -139,12 +139,12 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url, cr) => {
         }
     });
     let docValueColumns = {
-        title: " ", field: "seeitem", editor: "textarea", validator: '', editable: false, headerFilter: "",width: 150, minWidth: 100, maxWidth: 200, formatter: transferorderFormatter, tooltip: 'Vedi Dettaglio Articolo'
+        title: " ", field: "seeitem", editor: "textarea", validator: '', editable: false, headerFilter: "", width: 150, minWidth: 100, maxWidth: 200, formatter: transferorderFormatter, tooltip: 'Vedi Dettaglio Articolo'
     };
     table.addColumn(docValueColumns);
 
     let itemColumns = {
-        title: "Articolo", field: "item", editor: "textarea", validator: '', editable: false,width: 150, minWidth: 100, maxWidth: 200, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
+        title: "Articolo", field: "item", editor: "textarea", validator: '', editable: false, width: 150, minWidth: 100, maxWidth: 200, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
     };
     table.addColumn(itemColumns);
 
@@ -154,24 +154,24 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url, cr) => {
         tooltip: 'Descrizione Articolo'
     };
     table.addColumn(displaynameColumns);
-    
+
     let locationColumns = {
-        title: "Location", field: "location", editor: "textarea", validator: '', editable: false,width: 150, minWidth: 100, maxWidth: 200, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
+        title: "Location", field: "location", editor: "textarea", validator: '', editable: false, width: 150, minWidth: 100, maxWidth: 200, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
     };
     table.addColumn(locationColumns);
 
     let binColumns = {
-        title: "Bin", field: "bin", editor: "textarea", validator: '', editable: false,width: 150, minWidth: 100, maxWidth: 200, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
+        title: "Bin", field: "bin", editor: "textarea", validator: '', editable: false, width: 150, minWidth: 100, maxWidth: 200, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
     };
     table.addColumn(binColumns);
 
     let accountColumns = {
-        title: "Conto di Magazzino", field: "account", editor: "textarea", validator: '',width: 150, minWidth: 100, maxWidth: 200, editable: false, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
+        title: "Conto di <br> Magazzino", field: "account", editor: "textarea", validator: '', width: 200, minWidth: 150, maxWidth: 300, editable: false, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
     };
     table.addColumn(accountColumns);
 
     let inventoryValueColumns = {
-        title: "Valore Totale <br>al Costo Medio", field: "item_value", editor: "textarea", validator: '',width: 150, minWidth: 100, maxWidth: 200, editable: false, formatter: inventoryValueFormatter,
+        title: "Valore Totale <br>al Costo Medio", field: "item_value", editor: "textarea", validator: '', width: 200, minWidth: 150, maxWidth: 300, editable: false, formatter: inventoryValueFormatter,
         bottomCalc: 'sum', tooltip: 'Valore Totale <br>al Costo Medio', bottomCalcParams: { precision: 2 },
     };
     table.addColumn(inventoryValueColumns);
