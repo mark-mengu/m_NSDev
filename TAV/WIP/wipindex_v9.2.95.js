@@ -183,7 +183,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url) => {
     reportWIP.style.display = 'none';
     tableTitle.style.display = 'none';
 
-    https.get.promise({ url: resourcesUrl })
+    https.post.promise({ url: resourcesUrl })
         .then((response) => {
             let data = JSON.parse(response.body);
             table.setData(data.data);
