@@ -214,10 +214,14 @@ document.getElementById('apply-filters').addEventListener('click', (event) => {
             deploymentId: 'customdeploy_gn_rl_reportwip_data',
             params: {}
         });
-        startDate = moment().format('YYYY-MM-DD');
-        document.getElementById('start-date').value = startDate;
-        endDate = moment().format('YYYY-MM-DD');
-        document.getElementById('end-date').value = endDate;
+        if (!startDate) {
+            startDate = moment().format('DD/MM/YYYY');
+            document.getElementById('start-date').value = startDate;
+        }
+        if (!endDate) {
+            endDate = moment().format('DD/MM/YYYY');
+            document.getElementById('end-date').value = endDate;
+        }
         https.post.promise({
             url: resourcesUrl,
             body: JSON.stringify(params),
