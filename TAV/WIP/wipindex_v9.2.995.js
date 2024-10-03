@@ -197,6 +197,8 @@ document.getElementById('apply-filters').addEventListener('click', (event) => {
     if (startDate) params.startDate = startDate;
     if (endDate) params.endDate = endDate;
 
+    const loadingIcon = createLoadingIcon();
+
     loadingIcon.style.display = 'block';
     document.getElementById('report-wip').style.display = 'none';
     document.getElementById('table-title').style.display = 'none';
