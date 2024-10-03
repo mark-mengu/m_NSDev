@@ -29,7 +29,7 @@ var stdFormatter = (cell, formatterParams) => {
 var transferorderFormatter = (cell, formatterParams) => {
     let value = cell.getValue();
     cell.getElement().style.backgroundColor = "#d0afae";
-    let button = '<button id="opensss" class="sexy-button" onclick="openWind(event, \'' + value + '\')">Apri Dettaglio</button>';
+    let button = '<button id="opensss" class="sexy-button" onclick="openWind(event, \'' + value + '\')">Apri Transazione</button>';
     return button;
 };
 
@@ -90,41 +90,6 @@ var createLoadingIcon = () => {
 };
 //----------------------------------------------------------------TABULATOR-----------------------------------------------------
 
-const table = new Tabulator("#report-wip", {
-    movableRows: false,
-    groupToggleElement: true,
-    tabulatorId: "report-wip-table",
-    rowHeader: {
-        resizable: true,
-        frozen: true,
-        width: 70,
-        formatter: (cell) => {
-            let rowNumber = cell.getRow().getPosition();
-            return '<div class="row-index">' + rowNumber + '</div>';
-        },
-        hozAlign: "center"
-    },
-    selectableRangeRows: false,
-    columnDefaults: { headerSort: true, resizable: "header" },
-    dataLoaderLoading: "Loading data...",
-    placeholder: "No DATA Found...",
-    pagination: "local",
-    paginationSize: 50,
-    ajaxProgressiveLoad: "scroll",
-    printFooter: "",
-    printHeader: "<center><h1>WIP Overview</h1></center>",
-    rowFormatter: (row) => {
-        let data = row.getData();
-        if (data.inv_text == ' ') {
-            let cells = row.getCells();
-            cells.forEach(cell => {
-                cell.getElement().style.color = "red";
-                cell.getElement().style.fontWeight = "bold";
-            });
-        }
-    }
-});
-
 document.getElementById('report-wip').style.display = 'none';
 document.getElementById('table-title').style.display = 'none';
 require(['N/https', 'N/url', 'N/search'], (https, url) => {
@@ -133,36 +98,67 @@ require(['N/https', 'N/url', 'N/search'], (https, url) => {
         deploymentId: 'customdeploy_gn_rl_reportwip_data',
         params: {}
     });
+    const table = new Tabulator("#report-wip", {
+        movableRows: false,
+        groupToggleElement: true,
+        tabulatorId: "report-wip-table",
+        ajaxURL: "your-server-endpoint",
+        ajaxParams: {},
+        ajaxFiltering: true,
+        rowHeader: {
+            resizable: true,
+            frozen: true,
+            width: 70,
+            formatter: (cell) => {
+                let rowNumber = cell.getRow().getPosition();
+                return '<div class="row-index">' + rowNumber + '</div>';
+            },
+            hozAlign: "center"
+        },
+        selectableRangeRows: false,
+        columnDefaults: { headerSort: true, resizable: "header" },
+        dataLoaderLoading: "Loading data...",
+        placeholder: "No DATA Found...",
+        pagination: "local",
+        paginationSize: 100,
+        ajaxProgressiveLoad: "scroll",
+        printFooter: "",
+        printHeader: "<center><h1>WIP Overview</h1></center>",
+        rowFormatter: (row) => {
+            let data = row.getData();
+            if (data.inv_text == ' ') {
+                let cells = row.getCells();
+                cells.forEach(cell => {
+                    cell.getElement().style.color = "red";
+                    cell.getElement().style.fontWeight = "bold";
+                });
+            }
+        }
+    });
     let docValueColumns = {
         title: " ", field: "seeitem", editor: "textarea", validator: '', editable: false, headerFilter: "", width: 200, minWidth: 150, maxWidth: 300, formatter: transferorderFormatter, tooltip: 'Vedi Dettaglio Articolo'
     };
     table.addColumn(docValueColumns);
-
     let trxColumns = {
         title: "Tipo Transazione", field: "recordtype", editor: "textarea", validator: '', editable: false, width: 200, minWidth: 150, maxWidth: 300, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
     };
     table.addColumn(trxColumns);
-
     let itemColumns = {
         title: "Articolo", field: "item", editor: "textarea", validator: '', editable: false, width: 3000, minWidth: 350, maxWidth: 400, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
     };
     table.addColumn(itemColumns);
-
     let locationColumns = {
         title: "Location", field: "location", editor: "textarea", validator: '', editable: false, width: 150, minWidth: 100, maxWidth: 200, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
     };
     table.addColumn(locationColumns);
-
     let binColumns = {
         title: "Bin", field: "bin", editor: "textarea", validator: '', editable: false, width: 150, minWidth: 100, maxWidth: 200, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
     };
     table.addColumn(binColumns);
-
     let accountColumns = {
         title: "Conto di <br> Magazzino", field: "account", editor: "textarea", validator: '', width: 200, minWidth: 150, maxWidth: 300, editable: false, headerFilter: "", formatter: stdFormatter, tooltip: 'Magazzino/Location'
     };
     table.addColumn(accountColumns);
-
     let inventoryValueColumns = {
         title: "Valore Totale <br>al Costo Medio", field: "item_value", editor: "textarea", validator: '', width: 200, minWidth: 150, maxWidth: 300, editable: false, formatter: inventoryValueFormatter,
         bottomCalc: 'sum', tooltip: 'Valore Totale <br>al Costo Medio', bottomCalcParams: { precision: 2 },
@@ -191,7 +187,53 @@ require(['N/https', 'N/url', 'N/search'], (https, url) => {
         });
 });
 //------------------------------------------------------------------EDIT------------------------------------------------------
-table.on("cellEdited", (cell) => { });
+table.on("cellEdited", (cell) => {
+
+});
+//---------------------------------------------------EVENTO PER FILTRO CAMBIATO---------------------------------------------------
+
+table.on("headerFilterChanged", function (column, value) {
+    const filters = table.getFilters(); // Recupera i filtri attivi
+    let startDate = null;
+    let endDate = null;
+
+    // Cerca i filtri relativi alle date, supponendo che i campi si chiamino "startDate" e "endDate"
+    filters.forEach((filter) => {
+        if (filter.field === "startDate") {
+            startDate = filter.value;
+        } else if (filter.field === "endDate") {
+            endDate = filter.value;
+        }
+    });
+    // Parametri di filtro per l'API (se le date sono state inserite nei filtri)
+    let params = {};
+    if (startDate) params.startDate = startDate;
+    if (endDate) params.endDate = endDate;
+
+    loadingIcon.style.display = 'block';
+    document.getElementById('report-wip').style.display = 'none';
+    document.getElementById('table-title').style.display = 'none';
+
+    https.post.promise({
+        url: resourcesUrl,
+        body: JSON.stringify(params),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then((response) => {
+            let data = JSON.parse(response.body);
+            table.setData(data.data);
+        })
+        .catch((error) => {
+            console.error(error);
+        })
+        .finally(() => {
+            loadingIcon.style.display = 'none';
+            document.getElementById('report-wip').style.display = 'block';
+            document.getElementById('table-title').style.display = 'block';
+        });
+});
 
 //-----------------------------------------------------------------PRINT PDF-------------------------------------------------------------------------------
 
