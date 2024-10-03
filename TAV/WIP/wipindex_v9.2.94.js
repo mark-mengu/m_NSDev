@@ -193,7 +193,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url) => {
         })
         .finally(() => {
             loadingIcon.style.display = 'none';
-            reportDeposito.style.display = 'block';
+            reportWIP.style.display = 'block';
             tableTitle.style.display = 'block';
         });
 });
