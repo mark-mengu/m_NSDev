@@ -170,7 +170,14 @@ require(['N/https', 'N/url', 'N/search'], (https, url) => {
         topCalc: 'sum', tooltip: 'Valore Totale <br>al Costo Medio', topCalcParams: { precision: 2 },
     };
     table.addColumn(inventoryValueColumns);
-
+    if (!startDate) {
+        startDate = moment().format('DD/MM/YYYY');
+        document.getElementById('start-date').value = startDate;
+    }
+    if (!endDate) {
+        endDate = moment().format('DD/MM/YYYY');
+        document.getElementById('end-date').value = endDate;
+    }
     const loadingIcon = createLoadingIcon();
     const reportWIP = document.getElementById('report-wip');
     const tableTitle = document.getElementById('table-title');
