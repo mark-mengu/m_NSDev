@@ -179,12 +179,59 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     const loadingIcon = createLoadingIcon();
     const reportWIP = document.getElementById('report-wip');
     const tableTitle = document.getElementById('table-title');
+
     loadingIcon.style.display = 'block';
     reportWIP.style.display = 'none';
     tableTitle.style.display = 'none';
 
-    let data = getData(search);;
-    table.setData(data);
+    // Funzione per caricare i dati con un ritardo (debounce) per evitare sovraccarichi
+    const debounce = (func, wait) => {
+        let timeout;
+        return function (...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    };
+
+    // Funzione per impostare i dati sulla tabella
+    const setDataToTable = async (search) => {
+        let data = await getData(search); // Assicurati che getData sia async
+        if (data && data.length > 0) {
+            // Usa il caricamento progressivo
+            table.setData(data, {}, "scroll");
+        }
+    };
+
+    // Applica un debounce per evitare troppi caricamenti
+    const debouncedSetData = debounce(setDataToTable, 300);
+    // Imposta i dati iniziali
+
+    // Funzione per caricare i dati progressivamente (simulata con timeout per questo esempio)
+    const getData = async (search) => {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve(getAssemblyBuildsMovements(search)); // Recupera i dati in asincrono
+            }, 1000);
+        });
+    };
+
+    // Carica dati e aggiorna la tabella in modo progressivo
+    const loadAndSetData = async () => {
+        let data = await getData(search);
+        let batchSize = 500;  // Carica 500 righe alla volta
+        for (let i = 0; i < data.length; i += batchSize) {
+            table.addData(data.slice(i, i + batchSize));  // Aggiungi dati alla tabella in blocchi
+        }
+        loadingIcon.style.display = 'none';
+        reportWIP.style.display = 'block';
+        tableTitle.style.display = 'block';
+    };
+    loadAndSetData();
+    //table.setData(debouncedSetData);
 
     loadingIcon.style.display = 'none';
     reportWIP.style.display = 'block';
@@ -223,47 +270,22 @@ document.getElementById('print-xls').addEventListener('click', (event) => {
     event.preventDefault();
 }, false);
 //------------------------------------------------------GET DATA-------------------------------------------------
-const getData = (search) => {
-    // const assemblies = [{
-    //     itemid: 11, item: 1111, displayname: 1111, recordtype: 111, bin: 1111, binid: 1111, location: 1111, locationid: 11111,
-    //     account: 1111, accountid: 1111, item_value: 111
-    // }];
-    // const itemreceipts = [];
 
-    const assemblies = getAssemblyBuildsMovements(search);
+const getData = async (search) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(getAssemblyBuildsMovements(search)); // Recupera i dati in asincrono
+        }, 1000);
+    });
     // const itemreceipts = getItemReceiptsMovements();
     //const itemfulfillments = getItemFulfillsMovements();
     //const inventorytransfers = getInventoryTransfersMovements();
     //const bintransfers = getBinTransfersMovements();
     //const adjustments = getInventoryAdjustmentMovements();
-
-    let warData = assemblies;
-    log.debug('warData', warData.length);
-    log.debug('warData', warData);
-    return warData;
 }
 //--------------------------------------------------ELABORATE DATA FUNCTION--------------------------------------
 const elaborateDatas = (transferReceipts, depositoFulfills) => {
-    const fulfillGroups = _.groupBy(depositoFulfills, (item) => `${item.itemid}-${item.to}`);
-    return _.filter(transferReceipts, (tf) => {
-        const k = `${tf.itemid}-${tf.to_id}`;
-        const matchingFfs = fulfillGroups[k];
-        if (matchingFfs && matchingFfs.length > 0) {
-            let remainingTfQuantity = _.parseInt(tf.quantity);
-            matchingFfs.forEach(ff => {
-                const fulfillQty = _.parseInt(ff.quantity);
-                if (remainingTfQuantity > 0) {
-                    const quantityMinus = Math.min(remainingTfQuantity, fulfillQty);
-                    // UPDATE TF
-                    remainingTfQuantity -= quantityMinus;
-                    // UPDATE FF
-                    ff.quantity = (fulfillQty - quantityMinus).toString();
-                }
-            });
-            tf.quantity = remainingTfQuantity.toString();
-        }
-        return _.parseInt(tf.quantity) > 0;
-    });
+
 }
 //---------------------------------------------------GET ASSEMBLY BUILD MOVEMENTS----------------------------------------
 const getAssemblyBuildsMovements = (search) => {
@@ -390,45 +412,3 @@ let Overcome4000Limit = (search) => {
     while (resultslice.length >= 1000);
     return searchResults;
 }
-//--------------------------------------------------------------EDITING NOT USED----------------------------------------------------------------------
-/*
-document.getElementById("").addEventListener("click", (event) => {
-  event.preventDefault();
-  require(['N/https', 'N/url', 'N/currentRecord', 'N/ui/dialog'], (https, url, cr, dialog) => {
-    const scriptFix = document.createElement('script');
-    scriptFix.src = "https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js";
-    scriptFix.onload = () => {
-      const _ = window._;
-      let binDatas = _.some(table.getData(), obj => _.has(obj, 'bin') && (obj.bin == null || obj.bin === '' || obj.bin === undefined));
-      if (binDatas) {
-        dialog.alert({
-          title: 'ATTENZIONE',
-          message: `<center><img src="https://9094479.app.netsuite.com/core/media/media.nl?id=3105&c=9094479&h=lZQSbeBwUYC4IQL-ZVNFLj9yHvee0pyclIO65T5hPbXxV0EY&fcts=20240401080554&whence=" width="150" height="150"> <div style="color:yellow; background-color:gray; padding:10px; border-radius:10px;"><b>Non è possibile procedere con il controllo, non è stato inserito il BIN in tutte le righe.</b></div></center>`,
-        });
-        return false;
-      }
-      let resourcesUrl = url.resolveScript({
-        scriptId: 'customscript_gn_tav_quality_control_data',
-        deploymentId: 'customdeploy_gn_tav_quality_control_data',
-      });
-      let body = {
-        data: table.getData(),
-        qualitycontrol: cr.get().getValue('custpage_quality_control'),
-        item: cr.get().getValue('custpage_item'),
-        transaction: cr.get().getValue('custpage_transaction'),
-        line: cr.get().getValue('custpage_line')
-      };
-      let response = https.post({ url: resourcesUrl, body: JSON.stringify(body) });
-      table.setData(JSON.parse(response.body).data);
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "Quality Control has been saved",
-        showConfirmButton: false,
-        timer: 2400
-      });
-      table.clearAlert();
-    };
-    document.head.appendChild(scriptFix);
-  });
-}, false);*/
