@@ -212,7 +212,12 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     };
     table.addColumn(locationColumns);
 
-    let binColumns = { title: "Bin", field: "bin", width: 100, minWidth: 80, maxWidth: 150, headerFilter: multiSelectHeaderFilter, headerFilterLiveFilter: false, formatter: stdFormatter, tooltip: 'Magazzino/Location' };
+    let binColumns = { title: "Bin", field: "bin", width: 100, minWidth: 80, maxWidth: 150, headerFilter: multiSelectHeaderFilter,    headerFilterParams: {
+        values: binTypes,
+        elementAttributes: {
+            class: "tabulator-select-list"
+        }
+    }, headerFilterLiveFilter: false, formatter: stdFormatter, tooltip: 'Magazzino/Location' };
     table.addColumn(binColumns);
 
     let accountColumns = {
