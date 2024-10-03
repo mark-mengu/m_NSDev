@@ -384,6 +384,21 @@ const getItemReceiptsMovements = () => {
     });
     return itemsInfos;
 }
+//--------------------------------------------------------OVERCOME SEARCH LIMIT---------------------------------------
+let Overcome4000Limit = (search) => {
+    var results = search.run();
+    var searchResults = [];
+    var searchid = 0;
+    do {
+        var resultslice = results.getRange({ start: searchid, end: searchid + 1000 });
+        resultslice.forEach((slice) => {
+            searchResults.push(slice);
+            searchid++;
+        });
+    }
+    while (resultslice.length >= 1000);
+    return searchResults;
+}
 //--------------------------------------------------------------EDITING NOT USED----------------------------------------------------------------------
 /*
 document.getElementById("").addEventListener("click", (event) => {
