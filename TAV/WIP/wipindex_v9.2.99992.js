@@ -134,7 +134,7 @@ const table = new Tabulator("#report-wip", {
 });
 document.getElementById('report-wip').style.display = 'none';
 document.getElementById('table-title').style.display = 'none';
-require(['N/https', 'N/url', 'N/search'], (https, url) => {
+require(['N/https', 'N/url', 'N/search', './moment.js'], (https, url, search, moment) => {
     let resourcesUrl = url.resolveScript({
         scriptId: 'customscript_gn_rl_reportwip_data',
         deploymentId: 'customdeploy_gn_rl_reportwip_data',
@@ -170,6 +170,13 @@ require(['N/https', 'N/url', 'N/search'], (https, url) => {
         topCalc: 'sum', tooltip: 'Valore Totale <br>al Costo Medio', topCalcParams: { precision: 2 },
     };
     table.addColumn(inventoryValueColumns);
+
+    let startDate = document.getElementById('start-date').value;
+    let endDate = document.getElementById('end-date').value;
+
+    let params = {};
+    if (startDate) params.startDate = startDate;
+    if (endDate) params.endDate = endDate;
     if (!startDate) {
         startDate = moment().format('DD/MM/YYYY');
         document.getElementById('start-date').value = startDate;
@@ -178,6 +185,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url) => {
         endDate = moment().format('DD/MM/YYYY');
         document.getElementById('end-date').value = endDate;
     }
+    
     const loadingIcon = createLoadingIcon();
     const reportWIP = document.getElementById('report-wip');
     const tableTitle = document.getElementById('table-title');
