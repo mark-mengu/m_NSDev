@@ -182,13 +182,13 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     loadingIcon.style.display = 'block';
     reportWIP.style.display = 'none';
     tableTitle.style.display = 'none';
-    
-            let data = getData(search);;
-            table.setData(data.data);
 
-            loadingIcon.style.display = 'none';
-            reportWIP.style.display = 'block';
-            tableTitle.style.display = 'block';
+    let data = getData(search);;
+    table.setData(data);
+
+    loadingIcon.style.display = 'none';
+    reportWIP.style.display = 'block';
+    tableTitle.style.display = 'block';
 
 });
 //------------------------------------------------------------------EDIT------------------------------------------------------
