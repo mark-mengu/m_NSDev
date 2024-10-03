@@ -226,8 +226,17 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         //     }
         // },
         //editor: "textarea", validator: '', editable: false,headerFilter: "input"
-        headerFilter:"select", headerFilterParams:{values:["red", "green", "blue"]}, headerFilterFunction:"keywords",
-        headerFilterLiveFilter: false,
+        headerFilter: "multiSelect",
+        headerFilterParams: {
+            values: binTypes,
+            verticalNavigation: "editor"
+        },
+        headerFilterFunc: function(headerValue, rowValue, rowData, filterParams){
+            if(headerValue.length === 0){
+                return true;
+            }
+            return headerValue.includes(rowValue);
+        },
         formatter: stdFormatter,
         tooltip: 'Magazzino/Location'
     };
