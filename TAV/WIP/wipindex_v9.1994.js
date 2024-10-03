@@ -139,7 +139,7 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url) => {
     table.addColumn(docValueColumns);
 
     let trxColumns = {
-        title: "Tipo Transazione", field: "recordtype", editor: "textarea", validator: '', editable: false, width: 150, minWidth: 100, maxWidth: 200, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
+        title: "Tipo Transazione", field: "recordtype", editor: "textarea", validator: '', editable: false, width: 200, minWidth: 150, maxWidth: 300, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
     };
     table.addColumn(trxColumns);
 
