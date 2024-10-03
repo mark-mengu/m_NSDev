@@ -183,9 +183,8 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     reportWIP.style.display = 'none';
     tableTitle.style.display = 'none';
 
-    let data = getData(search); // Assicurati che getData sia async
+    let data = getData(search); 
     if (data && data.length > 0) {
-        // Usa il caricamento progressivo
         table.setData(data, {}, "scroll");
     }
 
@@ -226,7 +225,7 @@ document.getElementById('print-xls').addEventListener('click', (event) => {
     event.preventDefault();
 }, false);
 //------------------------------------------------------GET DATA-------------------------------------------------
-const getData = async (search) => {
+const getData = (search) => {
     // const assemblies = [{
     //     itemid: 11, item: 1111, displayname: 1111, recordtype: 111, bin: 1111, binid: 1111, location: 1111, locationid: 11111,
     //     account: 1111, accountid: 1111, item_value: 111
