@@ -218,25 +218,12 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         width: 100,
         minWidth: 80,
         maxWidth: 150,
+        headerFilterPlaceholder: "Seleziona un bin",
         //headerFilter: multiSelectHeaderFilter,
         // headerFilterParams: {
         //     values: binTypes,
-        //     elementAttributes: {
-        //         class: "tabulator-select-list"
-        //     }
         // },
-        //editor: "textarea", validator: '', editable: false,headerFilter: "input"
-        headerFilter: "multiSelect",
-        headerFilterParams: {
-            values: binTypes,
-            verticalNavigation: "editor"
-        },
-        headerFilterFunc: function(headerValue, rowValue, rowData, filterParams){
-            if(headerValue.length === 0){
-                return true;
-            }
-            return headerValue.includes(rowValue);
-        },
+        editor: "textarea", validator: '', editable: false, headerFilter: "input",
         formatter: stdFormatter,
         tooltip: 'Magazzino/Location'
     };
