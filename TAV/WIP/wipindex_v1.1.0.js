@@ -154,7 +154,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     };
     table.addColumn(itemColumns);
     let locationColumns = {
-        title: "Location", field: "location", editor: "textarea", validator: '', editable: false, width: 100, minWidth: 80, maxWidth: 150, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
+        title: "Location", field: "location", editor: "textarea", validator: '', editable: false, width: 120, minWidth: 80, maxWidth: 150, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
     };
     table.addColumn(locationColumns);
     let binColumns = {
