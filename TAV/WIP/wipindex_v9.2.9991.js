@@ -23,6 +23,12 @@ var linkFormatter = (cell, formatterParams) => {
 var stdFormatter = (cell, formatterParams) => {
     let value = cell.getValue();
     cell.getElement().style.backgroundColor = "#d0afae";
+    return value;
+};
+
+var stdBoldFormatter = (cell, formatterParams) => {
+    let value = cell.getValue();
+    cell.getElement().style.backgroundColor = "#d0afae";
     return `<strong>${value}</strong>`;
 };
 
