@@ -202,26 +202,33 @@ document.getElementById('apply-filters').addEventListener('click', (event) => {
     loadingIcon.style.display = 'block';
     document.getElementById('report-wip').style.display = 'none';
     document.getElementById('table-title').style.display = 'none';
-    https.post.promise({
-        url: resourcesUrl,
-        body: JSON.stringify(params),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-        .then((response) => {
-            let data = JSON.parse(response.body);
-            table.setData(data.data);
-        })
-        .catch((error) => {
-            console.error(error);
-        })
-        .finally(() => {
-            loadingIcon.style.display = 'none';
-            document.getElementById('report-wip').style.display = 'block';
-            document.getElementById('table-title').style.display = 'block';
+    require(['N/https', 'N/url', 'N/search'], (https, url) => {
+        let resourcesUrl = url.resolveScript({
+            scriptId: 'customscript_gn_rl_reportwip_data',
+            deploymentId: 'customdeploy_gn_rl_reportwip_data',
+            params: {}
         });
+        https.post.promise({
+            url: resourcesUrl,
+            body: JSON.stringify(params),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then((response) => {
+                let data = JSON.parse(response.body);
+                table.setData(data.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            })
+            .finally(() => {
+                loadingIcon.style.display = 'none';
+                document.getElementById('report-wip').style.display = 'block';
+                document.getElementById('table-title').style.display = 'block';
+            });
         event.preventDefault();
+    });
 });
 
 
