@@ -188,9 +188,8 @@ require(['N/https', 'N/url', 'N/search'], (https, url) => {
 });
 
 //---------------------------------------------------EVENTO PER FILTRO CAMBIATO---------------------------------------------------
-document.getElementById('apply-filters').addEventListener('click', function () {
-    const filters = table.getFilters(); // Recupera i filtri attivi
-
+document.getElementById('apply-filters').addEventListener('click', (event) => {
+    event.preventDefault();
     let startDate = document.getElementById('start-date').value;
     let endDate = document.getElementById('end-date').value;
 
@@ -220,6 +219,7 @@ document.getElementById('apply-filters').addEventListener('click', function () {
             document.getElementById('report-wip').style.display = 'block';
             document.getElementById('table-title').style.display = 'block';
         });
+        event.preventDefault();
 });
 
 
