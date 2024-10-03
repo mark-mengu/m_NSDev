@@ -150,7 +150,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     };
     table.addColumn(trxColumns);
     let itemColumns = {
-        title: "Articolo", field: "item", editor: "textarea", validator: '', editable: false, width: 3000, minWidth: 1000, maxWidth: 3100, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
+        title: "Articolo", field: "item", editor: "textarea", validator: '', editable: false, width: 400, minWidth: 200, maxWidth: 420, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
     };
     table.addColumn(itemColumns);
     let locationColumns = {
@@ -162,7 +162,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     };
     table.addColumn(binColumns);
     let accountColumns = {
-        title: "Conto di <br> Magazzino", field: "account", editor: "textarea", validator: '', width: 1500, minWidth: 1000, maxWidth: 1700, editable: false, headerFilter: "", formatter: stdFormatter, tooltip: 'Magazzino/Location'
+        title: "Conto di <br> Magazzino", field: "account", editor: "textarea", validator: '', width: 300, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "", formatter: stdFormatter, tooltip: 'Magazzino/Location'
     };
     table.addColumn(accountColumns);
     let inventoryValueColumns = {
