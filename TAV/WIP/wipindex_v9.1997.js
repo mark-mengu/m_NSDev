@@ -41,7 +41,7 @@ var customerFormatter = (cell, formatterParams) => {
 
 var inventoryValueFormatter = (cell, formatterParams) => {
     let value = cell.getValue();
-    cell.getElement().style.backgroundColor = "#CACAEE";
+    cell.getElement().style.backgroundColor = "#d0afae";
     return parseFloat(value).toFixed(2);
 };
 
