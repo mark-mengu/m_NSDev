@@ -182,7 +182,7 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url) => {
     loadingIcon.style.display = 'block';
     reportWIP.style.display = 'none';
     tableTitle.style.display = 'none';
-    postRequest({ url: resourcesUrl })
+    postRequest({ url: resourcesUrl , https})
         .promise(function (response) {
             try {
                 var data = JSON.parse(response.body);
@@ -238,8 +238,9 @@ document.getElementById('print-xls').addEventListener('click', (event) => {
     columnsToHide.forEach(column => table.showColumn(column));
     event.preventDefault();
 }, false);
+
 //--------------------------------------------------------------FECTH---------------------------------------
-const postRequest = (options) => {
+const postRequest = (options,https) => {
     return {
         promise: function (callback) {
             try {
