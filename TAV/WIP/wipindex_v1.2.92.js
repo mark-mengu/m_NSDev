@@ -230,7 +230,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     table.addColumn(binColumns);
 
     let accountColumns = {
-        title: "Conto di <br> Magazzino", field: "account", editor: "textarea", validator: '', width: 300, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "", formatter: stdFormatter, tooltip: 'Magazzino/Location'
+        title: "Conto Magazzino", field: "account", editor: "textarea", validator: '', width: 300, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
     };
     table.addColumn(accountColumns);
     let inventoryValueColumns = {
