@@ -39,6 +39,12 @@ var recordtypeFormatter = (cell, formatterParams) => {
     return '<u>' + value + '</u>';
 };
 
+var inventoryValueFormatter = (cell, formatterParams) => {
+    let value = cell.getValue();
+    cell.getElement().style.backgroundColor = "#d0afae";
+    return parseFloat(value).toFixed(2);
+};
+
 var openWind = (event, url) => {
     event.preventDefault();
     window.open(url, '_blank');
