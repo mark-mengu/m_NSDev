@@ -135,10 +135,10 @@ require(['N/https', 'N/url', 'N/search'], (https, url) => {
         params: {}
     });
 
-    let docValueColumns = {
-        title: " ", field: "seeitem", editor: "textarea", validator: '', editable: false, headerFilter: "", width: 200, minWidth: 150, maxWidth: 300, formatter: transferorderFormatter, tooltip: 'Vedi Dettaglio Articolo'
-    };
-    table.addColumn(docValueColumns);
+    // let docValueColumns = {
+    //     title: " ", field: "seeitem", editor: "textarea", validator: '', editable: false, headerFilter: "", width: 200, minWidth: 150, maxWidth: 300, formatter: transferorderFormatter, tooltip: 'Vedi Dettaglio Articolo'
+    // };
+    // table.addColumn(docValueColumns);
     let trxColumns = {
         title: "Tipo Transazione", field: "recordtype", editor: "textarea", validator: '', editable: false, width: 200, minWidth: 150, maxWidth: 300, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
     };
@@ -161,7 +161,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url) => {
     table.addColumn(accountColumns);
     let inventoryValueColumns = {
         title: "Valore Totale <br>al Costo Medio", field: "item_value", editor: "textarea", validator: '', width: 200, minWidth: 150, maxWidth: 300, editable: false, formatter: inventoryValueFormatter,
-        bottomCalc: 'sum', tooltip: 'Valore Totale <br>al Costo Medio', bottomCalcParams: { precision: 2 },
+        topCalc: 'sum', tooltip: 'Valore Totale <br>al Costo Medio', bottomCalcParams: { precision: 2 },
     };
     table.addColumn(inventoryValueColumns);
 
@@ -211,9 +211,7 @@ document.getElementById('apply-filters').addEventListener('click', (event) => {
         https.post.promise({
             url: resourcesUrl,
             body: JSON.stringify(params),
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            headers: { 'Content-Type': 'application/json' }
         })
             .then((response) => {
                 let data = JSON.parse(response.body);
@@ -230,7 +228,6 @@ document.getElementById('apply-filters').addEventListener('click', (event) => {
         event.preventDefault();
     });
 });
-
 
 //-----------------------------------------------------------------PRINT PDF-------------------------------------------------------------------------------
 
