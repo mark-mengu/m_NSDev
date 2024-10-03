@@ -89,7 +89,43 @@ var createLoadingIcon = () => {
     return loadingIcon;
 };
 //----------------------------------------------------------------TABULATOR-----------------------------------------------------
-
+const table = new Tabulator("#report-wip", {
+    movableRows: false,
+    groupToggleElement: true,
+    tabulatorId: "report-wip-table",
+    ajaxURL: '',
+    ajaxParams: {},
+    ajaxFiltering: true,
+    rowHeader: {
+        resizable: true,
+        frozen: true,
+        width: 70,
+        formatter: (cell) => {
+            let rowNumber = cell.getRow().getPosition();
+            return '<div class="row-index">' + rowNumber + '</div>';
+        },
+        hozAlign: "center"
+    },
+    selectableRangeRows: false,
+    columnDefaults: { headerSort: true, resizable: "header" },
+    dataLoaderLoading: "Loading data...",
+    placeholder: "No DATA Found...",
+    pagination: "local",
+    paginationSize: 100,
+    ajaxProgressiveLoad: "scroll",
+    printFooter: "",
+    printHeader: "<center><h1>WIP Overview</h1></center>",
+    rowFormatter: (row) => {
+        let data = row.getData();
+        if (data.inv_text == ' ') {
+            let cells = row.getCells();
+            cells.forEach(cell => {
+                cell.getElement().style.color = "red";
+                cell.getElement().style.fontWeight = "bold";
+            });
+        }
+    }
+});
 document.getElementById('report-wip').style.display = 'none';
 document.getElementById('table-title').style.display = 'none';
 require(['N/https', 'N/url', 'N/search'], (https, url) => {
@@ -98,43 +134,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url) => {
         deploymentId: 'customdeploy_gn_rl_reportwip_data',
         params: {}
     });
-    const table = new Tabulator("#report-wip", {
-        movableRows: false,
-        groupToggleElement: true,
-        tabulatorId: "report-wip-table",
-        ajaxURL: resourcesUrl,
-        ajaxParams: {},
-        ajaxFiltering: true,
-        rowHeader: {
-            resizable: true,
-            frozen: true,
-            width: 70,
-            formatter: (cell) => {
-                let rowNumber = cell.getRow().getPosition();
-                return '<div class="row-index">' + rowNumber + '</div>';
-            },
-            hozAlign: "center"
-        },
-        selectableRangeRows: false,
-        columnDefaults: { headerSort: true, resizable: "header" },
-        dataLoaderLoading: "Loading data...",
-        placeholder: "No DATA Found...",
-        pagination: "local",
-        paginationSize: 100,
-        ajaxProgressiveLoad: "scroll",
-        printFooter: "",
-        printHeader: "<center><h1>WIP Overview</h1></center>",
-        rowFormatter: (row) => {
-            let data = row.getData();
-            if (data.inv_text == ' ') {
-                let cells = row.getCells();
-                cells.forEach(cell => {
-                    cell.getElement().style.color = "red";
-                    cell.getElement().style.fontWeight = "bold";
-                });
-            }
-        }
-    });
+
     let docValueColumns = {
         title: " ", field: "seeitem", editor: "textarea", validator: '', editable: false, headerFilter: "", width: 200, minWidth: 150, maxWidth: 300, formatter: transferorderFormatter, tooltip: 'Vedi Dettaglio Articolo'
     };
