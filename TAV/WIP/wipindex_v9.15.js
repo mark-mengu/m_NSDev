@@ -182,73 +182,19 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url) => {
     loadingIcon.style.display = 'block';
     reportWIP.style.display = 'none';
     tableTitle.style.display = 'none';
-// First, let's define our fixAndParseJSON function
-function fixAndParseJSON(jsonString) {
-    jsonString = jsonString.trim();
-    if (!jsonString.startsWith('{') && !jsonString.startsWith('[')) {
-        jsonString = '{' + jsonString;
-    }
-    if (!jsonString.endsWith('}') && !jsonString.endsWith(']')) {
-        jsonString = jsonString + '}';
-    }
-    jsonString = jsonString.replace(/'/g, '"')
-                           .replace(/(\w+)(?=\s*:)/g, '"$1"')
-                           .replace(/,(\s*[\}\]])/g, '$1');
-
-    try {
-        return JSON.parse(jsonString);
-    } catch (error) {
-        console.error("Initial parsing failed:", error.message);
-        const errorPosition = parseInt(error.message.match(/position (\d+)/)[1]);
-        const problemArea = jsonString.substring(Math.max(0, errorPosition - 50), Math.min(jsonString.length, errorPosition + 50));
-        console.log("Problem area:", problemArea);
-
-        let fixedArea = problemArea
-            .replace(/\\/g, '\\\\')
-            .replace(/"\s+"/g, '" "')
-            .replace(/\s+/g, ' ')
-            .replace(/"\s*:\s*"/g, '":"')
-            .replace(/"\s*,\s*"/g, '","')
-            .replace(/"\s*\}\s*"/g, '"},"')
-            .replace(/"\s*\]\s*"/g, '"],"');
-
-        jsonString = jsonString.substring(0, Math.max(0, errorPosition - 50)) + fixedArea + jsonString.substring(Math.min(jsonString.length, errorPosition + 50));
-
-        try {
-            return JSON.parse(jsonString);
-        } catch (finalError) {
-            console.error("Failed to fix JSON:", finalError.message);
-            throw new Error("Unable to parse JSON after attempted fixes");
-        }
-    }
-}
-
-// Now, let's modify your existing code
-https.get.promise({ url: resourcesUrl })
-    .then((response) => {
-        try {
-            let data = fixAndParseJSON(response.body);
-            if (Array.isArray(data.data)) {
-                table.setData(data.data);
-            } else {
-                console.error("Unexpected data structure:", data);
-                throw new Error("Data is not in the expected format");
-            }
-        } catch (parseError) {
-            console.error("Error parsing JSON:", parseError);
-            throw parseError; // Rethrow to be caught by the .catch() block
-        }
-    })
-    .catch((error) => {
-        console.error("Error fetching or processing data:", error);
-        // Here you might want to display an error message to the user
-        document.getElementById('errorMessage').textContent = "Failed to load data. Please try again later.";
-    })
-    .finally(() => {
-        loadingIcon.style.display = 'none';
-        reportWIP.style.display = 'block';
-        tableTitle.style.display = 'block';
-    });
+    https.get.promise({ url: resourcesUrl })
+        .then((response) => {
+            let data = JSON.parse(response.body);
+            table.setData(data.data);
+        })
+        .catch((error) => {
+            console.error(error);
+        })
+        .finally(() => {
+            loadingIcon.style.display = 'none';
+            reportWIP.style.display = 'block';
+            tableTitle.style.display = 'block';
+        });
 });
 //------------------------------------------------------------------EDIT------------------------------------------------------
 table.on("cellEdited", (cell) => { });
