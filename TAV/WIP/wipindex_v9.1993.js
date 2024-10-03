@@ -29,7 +29,7 @@ var stdFormatter = (cell, formatterParams) => {
 var transferorderFormatter = (cell, formatterParams) => {
     let value = cell.getValue();
     cell.getElement().style.backgroundColor = "#CACAEE";
-    let button = '<button id="opensss" class="sexy-button" onclick="openWind(event, \'' + value + '\')">Apri Transfer</button>';
+    let button = '<button id="opensss" class="sexy-button" onclick="openWind(event, \'' + value + '\')">Apri Transazione</button>';
     return button;
 };
 
@@ -134,7 +134,7 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url) => {
         params: {}
     });
     let docValueColumns = {
-        title: " ", field: "seeitem", editor: "textarea", validator: '', editable: false, headerFilter: "", width: 150, minWidth: 100, maxWidth: 200, formatter: transferorderFormatter, tooltip: 'Vedi Dettaglio Articolo'
+        title: " ", field: "seeitem", editor: "textarea", validator: '', editable: false, headerFilter: "", width: 200, minWidth: 150, maxWidth: 300, formatter: transferorderFormatter, tooltip: 'Vedi Dettaglio Articolo'
     };
     table.addColumn(docValueColumns);
 
