@@ -16,13 +16,13 @@ var printIcon = (cell, formatterParams) => {
 var linkFormatter = (cell, formatterParams) => {
     let value = cell.getValue();
     let url = 'https://example.com/' + encodeURIComponent(value);
-    cell.getElement().style.backgroundColor = "#CACAEE";
+    cell.getElement().style.backgroundColor = "#d0afae";
     return `<a href="${url}" target="_blank">${value}</a>`;
 };
 
 var stdFormatter = (cell, formatterParams) => {
     let value = cell.getValue();
-    cell.getElement().style.backgroundColor = "#CACAEE";
+    cell.getElement().style.backgroundColor = "#d0afae";
     return value;
 };
 
