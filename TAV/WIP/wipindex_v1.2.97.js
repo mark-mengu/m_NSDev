@@ -265,8 +265,8 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         });
 });
 
-//---------------------------------------------------FILTER EVENT---------------------------------------------------
-document.getElementById('apply-filters').addEventListener('click', (event) => {
+//---------------------------------------------------APPLY FILTER EVENT DATA---------------------------------------------------
+document.getElementById('apply-filters-data').addEventListener('click', (event) => {
     event.preventDefault();
 
     let startDateInput = document.getElementById('start-date');
@@ -284,6 +284,47 @@ document.getElementById('apply-filters').addEventListener('click', (event) => {
         endDate = formatDate(new Date());
         endDateInput.value = endDate;
     }
+
+    const loadingIcon = createLoadingIcon();
+    loadingIcon.style.display = 'block';
+    document.getElementById('report-wip').style.display = 'none';
+    document.getElementById('table-title').style.display = 'none';
+
+    require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
+        let resourcesUrl = url.resolveScript({
+            scriptId: 'customscript_gn_rl_reportwip_data',
+            deploymentId: 'customdeploy_gn_rl_reportwip_data',
+            params: {}
+        });
+
+        params.startDate = startDate;
+        params.endDate = endDate;
+
+        https.post.promise({
+            url: resourcesUrl,
+            body: JSON.stringify(params),
+            headers: { 'Content-Type': 'application/json' }
+        })
+            .then((response) => {
+                let data = JSON.parse(response.body);
+                table.setData(data.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            })
+            .finally(() => {
+                loadingIcon.style.display = 'none';
+                document.getElementById('report-wip').style.display = 'block';
+                document.getElementById('table-title').style.display = 'block';
+            });
+    });
+});
+
+//---------------------------------------------------EMPTY FILTER EVENT DATA---------------------------------------------------
+document.getElementById('apply-filters-data-empty').addEventListener('click', (event) => {
+    event.preventDefault();
+    document.getElementById('start-date').value = '';
+    document.getElementById('end-date').value = '';
 
     const loadingIcon = createLoadingIcon();
     loadingIcon.style.display = 'block';
