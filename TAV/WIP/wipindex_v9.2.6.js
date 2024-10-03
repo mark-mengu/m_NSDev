@@ -182,23 +182,14 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     loadingIcon.style.display = 'block';
     reportWIP.style.display = 'none';
     tableTitle.style.display = 'none';
-    let headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    };
-    https.post.promise({ url: resourcesUrl, headers: headers })
-        .then((response) => {
+    
             let data = getData(search);;
             table.setData(data.data);
-        })
-        .catch((error) => {
-            console.error(error);
-        })
-        .finally(() => {
+
             loadingIcon.style.display = 'none';
             reportWIP.style.display = 'block';
             tableTitle.style.display = 'block';
-        });
+
 });
 //------------------------------------------------------------------EDIT------------------------------------------------------
 table.on("cellEdited", (cell) => { });
