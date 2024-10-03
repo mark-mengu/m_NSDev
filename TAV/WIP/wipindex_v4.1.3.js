@@ -245,13 +245,11 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     loadingIcon.style.display = 'block';
     reportWIP.style.display = 'none';
     tableTitle.style.display = 'none';
-    
+
     document.addEventListener("DOMContentLoaded", () => { setDefaultDates(); });
     let params = {};
-    startDate = formatDate(new Date());
-    startDateInput.value = startDate;
-    endDate = formatDate(new Date());
-    endDateInput.value = endDate;
+    params.startDate = formatDate(new Date());
+    params.endDate = formatDate(new Date());
 
     https.post.promise({ url: resourcesUrl, body: JSON.stringify(params) })
         .then((response) => {
