@@ -218,13 +218,15 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         width: 100,
         minWidth: 80,
         maxWidth: 150,
-        headerFilter: multiSelectHeaderFilter,
-        headerFilterParams: {
-            values: binTypes,
-            elementAttributes: {
-                class: "tabulator-select-list"
-            }
-        },
+        //headerFilter: multiSelectHeaderFilter,
+        // headerFilterParams: {
+        //     values: binTypes,
+        //     elementAttributes: {
+        //         class: "tabulator-select-list"
+        //     }
+        // },
+        //editor: "textarea", validator: '', editable: false,headerFilter: "input"
+        headerFilter:"select", headerFilterParams:{values:["red", "green", "blue"]}, headerFilterFunction:"keywords",
         headerFilterLiveFilter: false,
         formatter: stdFormatter,
         tooltip: 'Magazzino/Location'
@@ -234,7 +236,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     let accountColumns = {
         title: "Conto di <br> Magazzino", field: "account", editor: "textarea", validator: '', width: 300, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "", formatter: stdFormatter, tooltip: 'Magazzino/Location'
     };
-    table.addColumn(accountColumns);    
+    table.addColumn(accountColumns);
     let inventoryValueColumns = {
         title: "Valore <br>al Costo Medio", field: "item_value", editor: "textarea", validator: '', width: 200, minWidth: 150, maxWidth: 300, editable: false, formatter: inventoryValueFormatter,
         topCalc: 'sum', tooltip: 'Valore al Costo Medio', topCalcParams: { precision: 2 },
