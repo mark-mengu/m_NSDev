@@ -158,9 +158,24 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     };
     table.addColumn(locationColumns);
     let binColumns = {
-        title: "Bin", field: "bin", editor: "textarea", validator: '', editable: false, width: 100, minWidth: 80, maxWidth: 150, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
+        title: "Bin",
+        field: "bin",
+        editor: "textarea",
+        validator: '',
+        editable: false,
+        width: 100,
+        minWidth: 80,
+        maxWidth: 150,
+        headerFilter: "select",
+        headerFilterParams: {
+            values: true,
+            multiselect: true
+        },
+        formatter: stdFormatter,
+        tooltip: 'Magazzino/Location'
     };
     table.addColumn(binColumns);
+
     let accountColumns = {
         title: "Conto di <br> Magazzino", field: "account", editor: "textarea", validator: '', width: 300, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "", formatter: stdFormatter, tooltip: 'Magazzino/Location'
     };
