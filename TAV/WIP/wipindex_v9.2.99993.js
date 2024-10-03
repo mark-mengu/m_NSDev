@@ -134,7 +134,7 @@ const table = new Tabulator("#report-wip", {
 });
 document.getElementById('report-wip').style.display = 'none';
 document.getElementById('table-title').style.display = 'none';
-require(['N/https', 'N/url', 'N/search', './moment.js'], (https, url, search, moment) => {
+require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     let resourcesUrl = url.resolveScript({
         scriptId: 'customscript_gn_rl_reportwip_data',
         deploymentId: 'customdeploy_gn_rl_reportwip_data',
@@ -175,17 +175,16 @@ require(['N/https', 'N/url', 'N/search', './moment.js'], (https, url, search, mo
     let endDate = document.getElementById('end-date').value;
 
     let params = {};
-    if (startDate) params.startDate = startDate;
-    if (endDate) params.endDate = endDate;
-    if (!startDate) {
-        startDate = moment().format('DD/MM/YYYY');
-        document.getElementById('start-date').value = startDate;
-    }
-    if (!endDate) {
-        endDate = moment().format('DD/MM/YYYY');
-        document.getElementById('end-date').value = endDate;
-    }
-    
+
+    let today = new Date();
+    let day = String(today.getDate()).padStart(2, '0');
+    let month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    let year = today.getFullYear();
+    let formattedToday = `${day}/${month}/${year}`;
+
+    if (!startDate.value) { startDate.value = formattedToday; }
+    if (!endDate.value) { endDate.value = formattedToday; }
+
     const loadingIcon = createLoadingIcon();
     const reportWIP = document.getElementById('report-wip');
     const tableTitle = document.getElementById('table-title');
@@ -223,7 +222,7 @@ document.getElementById('apply-filters').addEventListener('click', (event) => {
     loadingIcon.style.display = 'block';
     document.getElementById('report-wip').style.display = 'none';
     document.getElementById('table-title').style.display = 'none';
-    require(['N/https', 'N/url', 'N/search', './moment.js'], (https, url, moment) => {
+    require(['N/https', 'N/url', 'N/search', './moment.js'], (https, url, search, moment) => {
         let resourcesUrl = url.resolveScript({
             scriptId: 'customscript_gn_rl_reportwip_data',
             deploymentId: 'customdeploy_gn_rl_reportwip_data',
