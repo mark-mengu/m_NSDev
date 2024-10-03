@@ -200,7 +200,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     // };
     // table.addColumn(docValueColumns);
     let trxColumns = {
-        title: "Tipo Transazione", field: "recordtype", editor: "textarea", validator: '',headerFilterPlaceholder: "Filtra una tipo...", editable: false, width: 200, minWidth: 150, maxWidth: 300, headerFilter: "input", formatter: stdBoldFormatter, tooltip: 'Articolo'
+        title: "Tipo Transazione", field: "recordtype", editor: "textarea", validator: '',headerFilterPlaceholder: "Filtra una tipologia...", editable: false, width: 200, minWidth: 150, maxWidth: 300, headerFilter: "input", formatter: stdBoldFormatter, tooltip: 'Articolo'
     };
     table.addColumn(trxColumns);
     let itemColumns = {
