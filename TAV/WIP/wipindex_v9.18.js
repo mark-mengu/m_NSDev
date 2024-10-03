@@ -182,7 +182,7 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url) => {
     loadingIcon.style.display = 'block';
     reportWIP.style.display = 'none';
     tableTitle.style.display = 'none';
-    postRequest({ url: resourcesUrl , https})
+    postRequest({ url: resourcesUrl, https: https })
         .promise(function (response) {
             try {
                 var data = JSON.parse(response.body);
@@ -240,7 +240,8 @@ document.getElementById('print-xls').addEventListener('click', (event) => {
 }, false);
 
 //--------------------------------------------------------------FECTH---------------------------------------
-const postRequest = (options,https) => {
+const postRequest = (options, https) => {
+    let https = https.https;
     return {
         promise: function (callback) {
             try {
