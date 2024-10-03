@@ -275,7 +275,6 @@ document.getElementById('apply-filters-data').addEventListener('click', (event) 
     let endDate = endDateInput.value;
 
     let params = {};
-
     if (!startDate) {
         startDate = formatDate(new Date());
         startDateInput.value = startDate;
@@ -337,7 +336,7 @@ document.getElementById('apply-filters-data-empty').addEventListener('click', (e
             deploymentId: 'customdeploy_gn_rl_reportwip_data',
             params: {}
         });
-
+        let params = {};
         params.startDate = startDate;
         params.endDate = endDate;
 
