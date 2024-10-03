@@ -5,6 +5,60 @@ var validate = (cell) => {
     return true;
 }
 
+//------------------------------------------------LOAD DEFAULT DATES CALCULATED--------------------------------------------------------
+
+const formatDate = (date) => {
+    let day = String(date.getDate()).padStart(2, '0');
+    let month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    let year = date.getFullYear();
+    return `${year}-${month}-${day}`;
+}
+//----------------------------------------------DEFAULT DATES------------------------------------------------
+const setDefaultDates = () => {
+    let today = new Date();
+    let startDateInput = document.getElementById('start-date');
+    let endDateInput = document.getElementById('end-date');
+
+    if (!startDateInput.value) { startDateInput.value = formatDate(today); }
+    if (!endDateInput.value) { endDateInput.value = formatDate(today); }
+}
+
+const binTypes = ['PROD', 'MAG', 'SPED', 'KARDEX'];
+var multiSelectHeaderFilter = (cell) => {
+    var values = binTypes;
+    const filterFunc = (rowData) => {
+        return values.includes(rowData['species']);
+    }
+    const getSelectedValues = (multiSelect) => {
+        var result = [];
+        var options = multiSelect && multiSelect.options;
+        var opt;
+        for (var i = 0, iLen = options.length; i < iLen; i++) {
+            opt = options[i];
+            if (opt.selected) { result.push(opt.value || opt.text); }
+        }
+        return result;
+    }
+    const onChange = () => {
+        var editor = document.getElementById('binSelector');
+        values = getSelectedValues(editor);
+        console.log("values: " + values);
+        cell.getColumn().getTable().removeFilter(filterFunc);
+        cell.getColumn().getTable().addFilter(filterFunc);
+    }
+    var select = document.createElement("select");
+    select.multiple = "multiple";
+    select.id = 'binSelector';
+    select.class = "chosen-select";
+    select.style = 'width: 100%';
+    binTypes.forEach(species => {
+        select.innerHTML += "<option id='" + species + "' value='" + species + "' selected='selected'>" + species + "</option>";
+    });
+    cell.getColumn().getTable().addFilter(filterFunc);
+    select.addEventListener('change', onChange);
+    return select;
+}
+
 var editCheck = (cell) => {
     return !cell.getRow().getData().hold;
 }
@@ -62,61 +116,6 @@ var dataFilter = (headerValue, rowValue, rowData, filterParams) => {
     //filterParams - params object passed to the headerFilterFuncParams property
     return rowData.name == filterParams.name && rowValue < headerValue;
 }
-
-//------------------------------------------------LOAD DEFAULT DATES CALCULATED--------------------------------------------------------
-
-const formatDate = (date) => {
-    let day = String(date.getDate()).padStart(2, '0');
-    let month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-    let year = date.getFullYear();
-    return `${year}-${month}-${day}`;
-}
-//----------------------------------------------DEFAULT DATES------------------------------------------------
-const setDefaultDates = () => {
-    let today = new Date();
-    let startDateInput = document.getElementById('start-date');
-    let endDateInput = document.getElementById('end-date');
-
-    if (!startDateInput.value) { startDateInput.value = formatDate(today); }
-    if (!endDateInput.value) { endDateInput.value = formatDate(today); }
-}
-
-const binTypes = ['PROD', 'MAG', 'SPED', 'KARDEX'];
-var multiSelectHeaderFilter = (cell) => {
-    var values = binTypes;
-    const filterFunc = (rowData) => {
-        return values.includes(rowData['bin']);
-    }
-    const getSelectedValues = (multiSelect) => {
-        var result = [];
-        var options = multiSelect && multiSelect.options;
-        var opt;
-        for (var i = 0, iLen = options.length; i < iLen; i++) {
-            opt = options[i];
-            if (opt.selected) { result.push(opt.value || opt.text); }
-        }
-        return result;
-    }
-    const onChange = () => {
-        var editor = document.getElementById('binSelector');
-        values = getSelectedValues(editor);
-        console.log("values: " + values);
-        cell.getColumn().getTable().removeFilter(filterFunc);
-        cell.getColumn().getTable().addFilter(filterFunc);
-    }
-    var select = document.createElement("select");
-    select.multiple = "multiple";
-    select.id = 'binSelector';
-    select.class = "chosen-select";
-    select.style = 'width: 100%';
-    binTypes.forEach(species => {
-        select.innerHTML += "<option id='" + species + "' value='" + species + "' selected='selected'>" + species + "</option>";
-    });
-    cell.getColumn().getTable().addFilter(filterFunc);
-    select.addEventListener('change', onChange);
-    return select;
-}
-
 var createLoadingIcon = () => {
     const loadingIcon = document.createElement('div');
     loadingIcon.id = 'loading-icon';
@@ -334,56 +333,3 @@ document.getElementById('print-xls').addEventListener('click', (event) => {
     event.preventDefault();
 }, false);
 
-//------------------------------------------------LOAD DEFAULT DATES CALCULATED--------------------------------------------------------
-
-const formatDate = (date) => {
-    let day = String(date.getDate()).padStart(2, '0');
-    let month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-    let year = date.getFullYear();
-    return `${year}-${month}-${day}`;
-}
-//----------------------------------------------DEFAULT DATES------------------------------------------------
-const setDefaultDates = () => {
-    let today = new Date();
-    let startDateInput = document.getElementById('start-date');
-    let endDateInput = document.getElementById('end-date');
-
-    if (!startDateInput.value) { startDateInput.value = formatDate(today); }
-    if (!endDateInput.value) { endDateInput.value = formatDate(today); }
-}
-
-const binTypes = ['PROD', 'MAG', 'SPED', 'KARDEX'];
-var multiSelectHeaderFilter = (cell) => {
-    var values = binTypes;
-    const filterFunc = (rowData) => {
-        return values.includes(rowData['bin']);
-    }
-    const getSelectedValues = (multiSelect) => {
-        var result = [];
-        var options = multiSelect && multiSelect.options;
-        var opt;
-        for (var i = 0, iLen = options.length; i < iLen; i++) {
-            opt = options[i];
-            if (opt.selected) { result.push(opt.value || opt.text); }
-        }
-        return result;
-    }
-    const onChange = () => {
-        var editor = document.getElementById('binSelector');
-        values = getSelectedValues(editor);
-        console.log("values: " + values);
-        cell.getColumn().getTable().removeFilter(filterFunc);
-        cell.getColumn().getTable().addFilter(filterFunc);
-    }
-    var select = document.createElement("select");
-    select.multiple = "multiple";
-    select.id = 'binSelector';
-    select.class = "chosen-select";
-    select.style = 'width: 100%';
-    binTypes.forEach(species => {
-        select.innerHTML += "<option id='" + species + "' value='" + species + "' selected='selected'>" + species + "</option>";
-    });
-    cell.getColumn().getTable().addFilter(filterFunc);
-    select.addEventListener('change', onChange);
-    return select;
-}
