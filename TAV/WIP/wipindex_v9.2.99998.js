@@ -198,39 +198,38 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
 //---------------------------------------------------EVENTO PER FILTRO CAMBIATO---------------------------------------------------
 document.getElementById('apply-filters').addEventListener('click', (event) => {
     event.preventDefault();
-    let startDate = document.getElementById('start-date').value;
-    let endDate = document.getElementById('end-date').value;
+
+    let startDateInput = document.getElementById('start-date');
+    let endDateInput = document.getElementById('end-date');
+    let startDate = startDateInput.value;
+    let endDate = endDateInput.value;
 
     let params = {};
 
-    let today = new Date();
-    let day = String(today.getDate()).padStart(2, '0');
-    let month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-    let year = today.getFullYear();
-    let formattedToday = `${day}/${month}/${year}`;
-
-    if (!startDate.value) { startDate.value = formattedToday; }
-    if (!endDate.value) { endDate.value = formattedToday; }
+    if (!startDate) {
+        startDate = formatDate(new Date());
+        startDateInput.value = startDate;
+    }
+    if (!endDate) {
+        endDate = formatDate(new Date());
+        endDateInput.value = endDate;
+    }
 
     const loadingIcon = createLoadingIcon();
-
     loadingIcon.style.display = 'block';
     document.getElementById('report-wip').style.display = 'none';
     document.getElementById('table-title').style.display = 'none';
+
     require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         let resourcesUrl = url.resolveScript({
             scriptId: 'customscript_gn_rl_reportwip_data',
             deploymentId: 'customdeploy_gn_rl_reportwip_data',
             params: {}
         });
-        if (!startDate) {
-            startDate = moment().format('DD/MM/YYYY');
-            document.getElementById('start-date').value = startDate;
-        }
-        if (!endDate) {
-            endDate = moment().format('DD/MM/YYYY');
-            document.getElementById('end-date').value = endDate;
-        }
+
+        params.startDate = startDate;
+        params.endDate = endDate;
+
         https.post.promise({
             url: resourcesUrl,
             body: JSON.stringify(params),
@@ -248,7 +247,6 @@ document.getElementById('apply-filters').addEventListener('click', (event) => {
                 document.getElementById('report-wip').style.display = 'block';
                 document.getElementById('table-title').style.display = 'block';
             });
-        event.preventDefault();
     });
 });
 
