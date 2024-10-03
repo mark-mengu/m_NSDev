@@ -292,3 +292,30 @@ document.getElementById('print-xls').addEventListener('click', (event) => {
     columnsToHide.forEach(column => table.showColumn(column));
     event.preventDefault();
 }, false);
+
+//------------------------------------------------LOAD DEFAULT--------------------------------------------------------
+
+function formatDate(date) {
+    let day = String(date.getDate()).padStart(2, '0');
+    let month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    let year = date.getFullYear();
+    return `${year}-${month}-${day}`;
+}
+
+function setDefaultDates() {
+    let today = new Date();
+    let startDateInput = document.getElementById('start-date');
+    let endDateInput = document.getElementById('end-date');
+
+    // Set default value if the input is empty
+    if (!startDateInput.value) {
+        startDateInput.value = formatDate(today);
+    }
+    if (!endDateInput.value) {
+        endDateInput.value = formatDate(today);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    setDefaultDates();
+});
