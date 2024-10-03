@@ -129,8 +129,8 @@ document.getElementById('report-wip').style.display = 'none';
 document.getElementById('table-title').style.display = 'none';
 require(['N/https', 'N/url', 'N/currentRecord'], (https, url) => {
     let resourcesUrl = url.resolveScript({
-        scriptId: 'customscript_gn_reportwip_data_sl',
-        deploymentId: 'customdeploy_gn_reportwip_data_sl',
+        scriptId: 'customscript_gn_rl_reportwip_data',
+        deploymentId: 'customdeploy_gn_rl_reportwip_data',
         params: {}
     });
     let docValueColumns = {
