@@ -141,12 +141,12 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url) => {
     let trxColumns = {
         title: "Tipo Transazione", field: "recordtype", editor: "textarea", validator: '', editable: false, width: 150, minWidth: 100, maxWidth: 200, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
     };
-    table.addColumn(itemColumns);
+    table.addColumn(trxColumns);
 
     let itemColumns = {
         title: "Articolo", field: "item", editor: "textarea", validator: '', editable: false, width: 150, minWidth: 100, maxWidth: 200, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
     };
-    table.addColumn(trxColumns);
+    table.addColumn(itemColumns);
 
     let displaynameColumns = {
         title: "Descrizione Articolo", field: "displayname", editor: "textarea", validator: '', width: 300, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "input",
