@@ -182,13 +182,24 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url) => {
     loadingIcon.style.display = 'block';
     reportWIP.style.display = 'none';
     tableTitle.style.display = 'none';
-    https.get.promise({ url: resourcesUrl })
-        .then((response) => {
-            let data = JSON.parse(response.body);
-            table.setData(data.data);
+    postRequest({ url: resourcesUrl })
+        .promise(function (response) {
+            try {
+                var data = JSON.parse(response.body);
+                table.setData(data.data);
+            } catch (parseError) {
+                log.error({
+                    title: 'JSON Parse Error',
+                    details: parseError
+                });
+                throw parseError;
+            }
         })
-        .catch((error) => {
-            console.error(error);
+        .catch(function (error) {
+            log.error({
+                title: 'Request Error',
+                details: error
+            });
         })
         .finally(() => {
             loadingIcon.style.display = 'none';
@@ -227,7 +238,30 @@ document.getElementById('print-xls').addEventListener('click', (event) => {
     columnsToHide.forEach(column => table.showColumn(column));
     event.preventDefault();
 }, false);
-
+//--------------------------------------------------------------FECTH---------------------------------------
+const postRequest = (options) => {
+    return {
+        promise: function (callback) {
+            try {
+                var headers = options.headers || {};
+                headers['Content-Type'] = 'application/json';
+                var postData = JSON.stringify(options.body || {});
+                var response = https.post({
+                    url: options.url,
+                    headers: headers,
+                    body: postData
+                });
+                callback({
+                    body: response.body,
+                    headers: response.headers,
+                    code: response.code
+                });
+            } catch (error) {
+                throw error;
+            }
+        }
+    };
+}
 //--------------------------------------------------------------EDITING NOT USED----------------------------------------------------------------------
 /*
 document.getElementById("").addEventListener("click", (event) => {
