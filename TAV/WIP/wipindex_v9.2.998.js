@@ -23,26 +23,20 @@ var linkFormatter = (cell, formatterParams) => {
 var stdFormatter = (cell, formatterParams) => {
     let value = cell.getValue();
     cell.getElement().style.backgroundColor = "#d0afae";
-    return value;
+    return `<strong>${value}</strong>`;
 };
 
-var transferorderFormatter = (cell, formatterParams) => {
+var detailFormatter = (cell, formatterParams) => {
     let value = cell.getValue();
     cell.getElement().style.backgroundColor = "#d0afae";
     let button = '<button id="opensss" class="sexy-button" onclick="openWind(event, \'' + value + '\')">Apri Transazione</button>';
     return button;
 };
 
-var customerFormatter = (cell, formatterParams) => {
+var recordtypeFormatter = (cell, formatterParams) => {
     let value = cell.getValue();
     cell.getElement().style.backgroundColor = "#d0afae";
     return '<u>' + value + '</u>';
-};
-
-var inventoryValueFormatter = (cell, formatterParams) => {
-    let value = cell.getValue();
-    cell.getElement().style.backgroundColor = "#d0afae";
-    return parseFloat(value).toFixed(2);
 };
 
 var openWind = (event, url) => {
@@ -136,7 +130,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url) => {
     });
 
     // let docValueColumns = {
-    //     title: " ", field: "seeitem", editor: "textarea", validator: '', editable: false, headerFilter: "", width: 200, minWidth: 150, maxWidth: 300, formatter: transferorderFormatter, tooltip: 'Vedi Dettaglio Articolo'
+    //     title: " ", field: "seeitem", editor: "textarea", validator: '', editable: false, headerFilter: "", width: 200, minWidth: 150, maxWidth: 300, formatter: detailFormatter, tooltip: 'Vedi Dettaglio Articolo'
     // };
     // table.addColumn(docValueColumns);
     let trxColumns = {
