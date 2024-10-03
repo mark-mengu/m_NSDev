@@ -157,6 +157,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         title: "Location", field: "location", editor: "textarea", validator: '', editable: false, width: 120, minWidth: 80, maxWidth: 150, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
     };
     table.addColumn(locationColumns);
+    
     let binColumns = {
         title: "Bin",
         field: "bin",
@@ -166,10 +167,11 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         width: 100,
         minWidth: 80,
         maxWidth: 150,
-        headerFilter: "select",
+        headerFilter: "MultiSelectFilter",
+        headerFilterFunc: "in",
         headerFilterParams: {
             values: true,
-            multiselect: true
+            verticalNavigation: "editor"
         },
         formatter: stdFormatter,
         tooltip: 'Magazzino/Location'
