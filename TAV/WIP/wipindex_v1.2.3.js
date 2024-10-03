@@ -212,18 +212,29 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     };
     table.addColumn(locationColumns);
 
-    let binColumns = { title: "Bin", field: "bin", width: 100, minWidth: 80, maxWidth: 150, headerFilter: multiSelectHeaderFilter,    headerFilterParams: {
-        values: binTypes,
-        elementAttributes: {
-            class: "tabulator-select-list"
-        }
-    }, headerFilterLiveFilter: false, formatter: stdFormatter, tooltip: 'Magazzino/Location' };
+    let binColumns = {
+        title: "Bin",
+        field: "bin",
+        width: 100,
+        minWidth: 80,
+        maxWidth: 150,
+        headerFilter: multiSelectHeaderFilter,
+        headerFilterParams: {
+            values: binTypes,
+            elementAttributes: {
+                class: "tabulator-select-list"
+            }
+        },
+        headerFilterLiveFilter: true,
+        formatter: stdFormatter,
+        tooltip: 'Magazzino/Location'
+    };
     table.addColumn(binColumns);
 
     let accountColumns = {
         title: "Conto di <br> Magazzino", field: "account", editor: "textarea", validator: '', width: 300, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "", formatter: stdFormatter, tooltip: 'Magazzino/Location'
     };
-    table.addColumn(accountColumns);
+    table.addColumn(accountColumns);    
     let inventoryValueColumns = {
         title: "Valore <br>al Costo Medio", field: "item_value", editor: "textarea", validator: '', width: 200, minWidth: 150, maxWidth: 300, editable: false, formatter: inventoryValueFormatter,
         topCalc: 'sum', tooltip: 'Valore al Costo Medio', topCalcParams: { precision: 2 },
@@ -238,7 +249,6 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     loadingIcon.style.display = 'block';
     reportWIP.style.display = 'none';
     tableTitle.style.display = 'none';
-
     https.post.promise({ url: resourcesUrl })
         .then((response) => {
             let data = JSON.parse(response.body);
@@ -254,7 +264,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         });
 });
 
-//---------------------------------------------------EVENTO PER FILTRO CAMBIATO---------------------------------------------------
+//---------------------------------------------------FILTER EVENT---------------------------------------------------
 document.getElementById('apply-filters').addEventListener('click', (event) => {
     event.preventDefault();
 
