@@ -29,7 +29,7 @@ var stdFormatter = (cell, formatterParams) => {
 var transferorderFormatter = (cell, formatterParams) => {
     let value = cell.getValue();
     cell.getElement().style.backgroundColor = "#d0afae";
-    let button = '<button id="opensss" class="sexy-button" onclick="openWind(event, \'' + value + '\')">Apri Transazione</button>';
+    let button = '<button id="opensss" class="sexy-button" onclick="openWind(event, \'' + value + '\')">Apri Dettaglio</button>';
     return button;
 };
 
