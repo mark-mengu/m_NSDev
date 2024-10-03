@@ -171,19 +171,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     };
     table.addColumn(inventoryValueColumns);
 
-    let startDate = document.getElementById('start-date').value;
-    let endDate = document.getElementById('end-date').value;
-
-    let params = {};
-
-    let today = new Date();
-    let day = String(today.getDate()).padStart(2, '0');
-    let month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-    let year = today.getFullYear();
-    let formattedToday = `${day}/${month}/${year}`;
-
-    if (!startDate.value) { startDate.value = formattedToday; }
-    if (!endDate.value) { endDate.value = formattedToday; }
+    document.addEventListener("DOMContentLoaded", () => { setDefaultDates(); });
 
     const loadingIcon = createLoadingIcon();
     const reportWIP = document.getElementById('report-wip');
@@ -293,7 +281,7 @@ document.getElementById('print-xls').addEventListener('click', (event) => {
     event.preventDefault();
 }, false);
 
-//------------------------------------------------LOAD DEFAULT--------------------------------------------------------
+//------------------------------------------------LOAD DEFAULT DATES CALCULATED--------------------------------------------------------
 
 const formatDate = (date) => {
     let day = String(date.getDate()).padStart(2, '0');
@@ -301,7 +289,7 @@ const formatDate = (date) => {
     let year = date.getFullYear();
     return `${year}-${month}-${day}`;
 }
-
+//----------------------------------------------DEFAULT DATES------------------------------------------------
 const setDefaultDates = () => {
     let today = new Date();
     let startDateInput = document.getElementById('start-date');
@@ -311,6 +299,3 @@ const setDefaultDates = () => {
     if (!endDateInput.value) { endDateInput.value = formatDate(today); }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    setDefaultDates();
-});
