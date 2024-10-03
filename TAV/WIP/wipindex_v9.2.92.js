@@ -183,14 +183,21 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     reportWIP.style.display = 'none';
     tableTitle.style.display = 'none';
 
-    let data = getData(search); 
-    if (data && data.length > 0) {
-        table.setData(data, {}, "scroll");
-    }
+    https.get.promise({ url: resourcesUrl })
+        .then((response) => {
+            let data = JSON.parse(response.body);
+            table.setData(data.data);
+        })
+        .catch((error) => {
+            console.error(error);
+        })
+        .finally(() => {
+            loadingIcon.style.display = 'none';
+            reportDeposito.style.display = 'block';
+            tableTitle.style.display = 'block';
+        });
 
-    loadingIcon.style.display = 'none';
-    reportWIP.style.display = 'block';
-    tableTitle.style.display = 'block';
+
 
 });
 //------------------------------------------------------------------EDIT------------------------------------------------------
