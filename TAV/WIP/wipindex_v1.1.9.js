@@ -158,19 +158,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     };
     table.addColumn(locationColumns);
 
-    let binColumns = {
-        title: "Bin",
-        field: "bin",
-        width: 100,
-        minWidth: 80,
-        maxWidth: 150,
-        headerFilterPlaceholder: " ",
-        headerFilter: 'select',
-        headerFilterFunc: "in",
-        headerFilterParams: { values: true, sortValuesList: "asc", multiselect: true },
-        formatter: stdFormatter,
-        tooltip: 'Magazzino/Location'
-    };
+    let binColumns = { title: "Bin", field: "bin", width: 100, minWidth: 80, maxWidth: 150, headerFilter: multiSelectHeaderFilter, headerFilterLiveFilter: false, formatter: stdFormatter, tooltip: 'Magazzino/Location' };
     table.addColumn(binColumns);
 
     let accountColumns = {
@@ -309,3 +297,38 @@ const setDefaultDates = () => {
     if (!endDateInput.value) { endDateInput.value = formatDate(today); }
 }
 
+const binTypes = ['PROD', 'MAG', 'SPED', 'KARDEX'];
+var multiSelectHeaderFilter = (cell) => {
+    var values = binTypes;
+    const filterFunc = (rowData) => {
+        return values.includes(rowData['species']);
+    }
+    const getSelectedValues = (multiSelect) => {
+        var result = [];
+        var options = multiSelect && multiSelect.options;
+        var opt;
+        for (var i = 0, iLen = options.length; i < iLen; i++) {
+            opt = options[i];
+            if (opt.selected) { result.push(opt.value || opt.text); }
+        }
+        return result;
+    }
+    const onChange = () => {
+        var editor = document.getElementById('binSelector');
+        values = getSelectedValues(editor);
+        console.log("values: " + values);
+        cell.getColumn().getTable().removeFilter(filterFunc);
+        cell.getColumn().getTable().addFilter(filterFunc);
+    }
+    var select = document.createElement("select");
+    select.multiple = "multiple";
+    select.id = 'binSelector';
+    select.class = "chosen-select";
+    select.style = 'width: 100%';
+    binTypes.forEach(species => {
+        select.innerHTML += "<option id='" + species + "' value='" + species + "' selected='selected'>" + species + "</option>";
+    });
+    cell.getColumn().getTable().addFilter(filterFunc);
+    select.addEventListener('change', onChange);
+    return select;
+}
