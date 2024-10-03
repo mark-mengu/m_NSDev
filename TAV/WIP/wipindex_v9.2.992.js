@@ -102,7 +102,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url) => {
         movableRows: false,
         groupToggleElement: true,
         tabulatorId: "report-wip-table",
-        ajaxURL: "your-server-endpoint",
+        ajaxURL: resourcesUrl,
         ajaxParams: {},
         ajaxFiltering: true,
         rowHeader: {
@@ -186,26 +186,14 @@ require(['N/https', 'N/url', 'N/search'], (https, url) => {
             tableTitle.style.display = 'block';
         });
 });
-//------------------------------------------------------------------EDIT------------------------------------------------------
-table.on("cellEdited", (cell) => {
 
-});
 //---------------------------------------------------EVENTO PER FILTRO CAMBIATO---------------------------------------------------
-
-table.on("headerFilterChanged", function (column, value) {
+document.getElementById('apply-filters').addEventListener('click', function () {
     const filters = table.getFilters(); // Recupera i filtri attivi
-    let startDate = null;
-    let endDate = null;
 
-    // Cerca i filtri relativi alle date, supponendo che i campi si chiamino "startDate" e "endDate"
-    filters.forEach((filter) => {
-        if (filter.field === "startDate") {
-            startDate = filter.value;
-        } else if (filter.field === "endDate") {
-            endDate = filter.value;
-        }
-    });
-    // Parametri di filtro per l'API (se le date sono state inserite nei filtri)
+    let startDate = document.getElementById('start-date').value;
+    let endDate = document.getElementById('end-date').value;
+
     let params = {};
     if (startDate) params.startDate = startDate;
     if (endDate) params.endDate = endDate;
@@ -213,7 +201,6 @@ table.on("headerFilterChanged", function (column, value) {
     loadingIcon.style.display = 'block';
     document.getElementById('report-wip').style.display = 'none';
     document.getElementById('table-title').style.display = 'none';
-
     https.post.promise({
         url: resourcesUrl,
         body: JSON.stringify(params),
@@ -234,6 +221,7 @@ table.on("headerFilterChanged", function (column, value) {
             document.getElementById('table-title').style.display = 'block';
         });
 });
+
 
 //-----------------------------------------------------------------PRINT PDF-------------------------------------------------------------------------------
 
