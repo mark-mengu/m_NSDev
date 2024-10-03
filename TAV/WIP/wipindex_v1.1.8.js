@@ -161,9 +161,6 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     let binColumns = {
         title: "Bin",
         field: "bin",
-        editor: "textarea",
-        validator: '',
-        editable: false,
         width: 100,
         minWidth: 80,
         maxWidth: 150,
