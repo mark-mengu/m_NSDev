@@ -208,12 +208,14 @@ document.getElementById('apply-filters').addEventListener('click', (event) => {
     loadingIcon.style.display = 'block';
     document.getElementById('report-wip').style.display = 'none';
     document.getElementById('table-title').style.display = 'none';
-    require(['N/https', 'N/url', 'N/search'], (https, url) => {
+    require(['N/https', 'N/url', 'N/search', './moment.js'], (https, url, moment) => {
         let resourcesUrl = url.resolveScript({
             scriptId: 'customscript_gn_rl_reportwip_data',
             deploymentId: 'customdeploy_gn_rl_reportwip_data',
             params: {}
         });
+        if (!params.startDate) { startDate = moment().format("DD/MM/YYYY");; };
+        if (!params.endDate) { endDate = moment().format("DD/MM/YYYY");; };
         https.post.promise({
             url: resourcesUrl,
             body: JSON.stringify(params),
