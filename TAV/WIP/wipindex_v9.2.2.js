@@ -70,7 +70,7 @@ var createLoadingIcon = () => {
     const spinner = document.createElement('div');
     spinner.style.cssText = `
     border: 7px solid #f3f3f3;
-    border-top: 7px solid #39ff14; /* Verde nucleare */
+    border-top: 7px solid #39ff14; 
     border-radius: 50%;
     width: 75px;
     height: 75px;
@@ -188,7 +188,7 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url) => {
     };
     https.post.promise({ url: resourcesUrl, headers: headers })
         .then((response) => {
-            let data = JSON.parse(response.body);
+            let data = response.body;
             table.setData(data.data);
         })
         .catch((error) => {
