@@ -337,8 +337,8 @@ document.getElementById('apply-filters-data-empty').addEventListener('click', (e
             params: {}
         });
         let params = {};
-        params.startDate = startDate;
-        params.endDate = endDate;
+        params.startDate = '';
+        params.endDate = '';
 
         https.post.promise({
             url: resourcesUrl,
