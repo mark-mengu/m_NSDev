@@ -204,11 +204,11 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     };
     table.addColumn(trxColumns);
     let itemColumns = {
-        title: "Articolo", field: "item", editor: "textarea", validator: '', editable: false, width: 400, minWidth: 200, maxWidth: 550, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
+        title: "Articolo", field: "item", editor: "textarea",headerFilterPlaceholder: "Filtra un articolo...", validator: '', editable: false, width: 400, minWidth: 200, maxWidth: 550, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
     };
     table.addColumn(itemColumns);
     let locationColumns = {
-        title: "Location", field: "location", editor: "textarea", validator: '', editable: false, width: 120, minWidth: 80, maxWidth: 150, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
+        title: "Location", field: "location", editor: "textarea", headerFilterPlaceholder: "Filtra Location", validator: '', editable: false, width: 120, minWidth: 80, maxWidth: 150, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
     };
     table.addColumn(locationColumns);
 
@@ -218,7 +218,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         width: 100,
         minWidth: 80,
         maxWidth: 150,
-        headerFilterPlaceholder: "Seleziona un bin",
+        headerFilterPlaceholder: "Filtra bin",
         //headerFilter: multiSelectHeaderFilter,
         // headerFilterParams: {
         //     values: binTypes,
