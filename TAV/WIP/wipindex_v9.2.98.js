@@ -144,16 +144,9 @@ require(['N/https', 'N/url', 'N/search'], (https, url) => {
     table.addColumn(trxColumns);
 
     let itemColumns = {
-        title: "Articolo", field: "item", editor: "textarea", validator: '', editable: false, width: 150, minWidth: 100, maxWidth: 200, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
+        title: "Articolo", field: "item", editor: "textarea", validator: '', editable: false, width: 3000, minWidth: 350, maxWidth: 400, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
     };
     table.addColumn(itemColumns);
-
-    let displaynameColumns = {
-        title: "Descrizione Articolo", field: "displayname", editor: "textarea", validator: '', width: 300, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "input",
-        formatter: stdFormatter,
-        tooltip: 'Descrizione Articolo'
-    };
-    table.addColumn(displaynameColumns);
 
     let locationColumns = {
         title: "Location", field: "location", editor: "textarea", validator: '', editable: false, width: 150, minWidth: 100, maxWidth: 200, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
