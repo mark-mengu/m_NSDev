@@ -225,7 +225,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
                 class: "tabulator-select-list"
             }
         },
-        headerFilterLiveFilter: true,
+        headerFilterLiveFilter: false,
         formatter: stdFormatter,
         tooltip: 'Magazzino/Location'
     };
