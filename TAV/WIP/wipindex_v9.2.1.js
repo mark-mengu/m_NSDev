@@ -182,15 +182,14 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url) => {
     loadingIcon.style.display = 'block';
     reportWIP.style.display = 'none';
     tableTitle.style.display = 'none';
-
-    https.post.promise({ url: resourcesUrl })
+    let headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    };
+    https.post.promise({ url: resourcesUrl, headers: headers })
         .then((response) => {
-            let data = JSON.parse(response.body;
+            let data = JSON.parse(response.body);
             table.setData(data.data);
-            let headers = {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            };
         })
         .catch((error) => {
             console.error(error);
