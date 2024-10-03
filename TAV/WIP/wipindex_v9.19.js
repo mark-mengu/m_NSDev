@@ -29,7 +29,7 @@ var stdFormatter = (cell, formatterParams) => {
 var transferorderFormatter = (cell, formatterParams) => {
     let value = cell.getValue();
     cell.getElement().style.backgroundColor = "#CACAEE";
-    let button = '<button id="opensss" class="sexy-button" onclick="openWind(event, \'' + value + '\')">Apri Transazione</button>';
+    let button = '<button id="opensss" class="sexy-button" onclick="openWind(event, \'' + value + '\')">Apri Transfer</button>';
     return button;
 };
 
@@ -182,24 +182,14 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url) => {
     loadingIcon.style.display = 'block';
     reportWIP.style.display = 'none';
     tableTitle.style.display = 'none';
-    postRequest({ url: resourcesUrl, https: https })
-        .promise(function (response) {
-            try {
-                var data = JSON.parse(response.body);
-                table.setData(data.data);
-            } catch (parseError) {
-                log.error({
-                    title: 'JSON Parse Error',
-                    details: parseError
-                });
-                throw parseError;
-            }
+
+    https.post.promise({ url: resourcesUrl })
+        .then((response) => {
+            let data = JSON.parse(response.body);
+            table.setData(data.data);
         })
-        .catch(function (error) {
-            log.error({
-                title: 'Request Error',
-                details: error
-            });
+        .catch((error) => {
+            console.error(error);
         })
         .finally(() => {
             loadingIcon.style.display = 'none';
@@ -239,31 +229,6 @@ document.getElementById('print-xls').addEventListener('click', (event) => {
     event.preventDefault();
 }, false);
 
-//--------------------------------------------------------------FECTH---------------------------------------
-const postRequest = (options, https) => {
-    let https = https.https;
-    return {
-        promise: function (callback) {
-            try {
-                var headers = options.headers || {};
-                headers['Content-Type'] = 'application/json';
-                var postData = JSON.stringify(options.body || {});
-                var response = https.post({
-                    url: options.url,
-                    headers: headers,
-                    body: postData
-                });
-                callback({
-                    body: response.body,
-                    headers: response.headers,
-                    code: response.code
-                });
-            } catch (error) {
-                throw error;
-            }
-        }
-    };
-}
 //--------------------------------------------------------------EDITING NOT USED----------------------------------------------------------------------
 /*
 document.getElementById("").addEventListener("click", (event) => {
