@@ -185,7 +185,7 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url) => {
 
     https.post.promise({ url: resourcesUrl })
         .then((response) => {
-            let data = JSON.parse(response.body);
+            let data = response.body;
             table.setData(data.data);
         })
         .catch((error) => {
