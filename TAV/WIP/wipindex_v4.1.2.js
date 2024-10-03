@@ -239,18 +239,21 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     };
     table.addColumn(inventoryValueColumns);
 
-    document.addEventListener("DOMContentLoaded", () => {
-        setDefaultDates();
-        //document.getElementById('table-title').classList.add('visible');
-    });
-
     const loadingIcon = createLoadingIcon();
     const reportWIP = document.getElementById('report-wip');
     const tableTitle = document.getElementById('table-title');
     loadingIcon.style.display = 'block';
     reportWIP.style.display = 'none';
     tableTitle.style.display = 'none';
-    https.post.promise({ url: resourcesUrl })
+    
+    document.addEventListener("DOMContentLoaded", () => { setDefaultDates(); });
+    let params = {};
+    startDate = formatDate(new Date());
+    startDateInput.value = startDate;
+    endDate = formatDate(new Date());
+    endDateInput.value = endDate;
+
+    https.post.promise({ url: resourcesUrl, body: JSON.stringify(params) })
         .then((response) => {
             let data = JSON.parse(response.body);
             table.setData(data.data);
