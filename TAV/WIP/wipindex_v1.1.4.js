@@ -150,7 +150,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     };
     table.addColumn(trxColumns);
     let itemColumns = {
-        title: "Articolo", field: "item", editor: "textarea", validator: '', editable: false, width: 400, minWidth: 200, maxWidth: 420, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
+        title: "Articolo", field: "item", editor: "textarea", validator: '', editable: false, width: 400, minWidth: 200, maxWidth: 550, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
     };
     table.addColumn(itemColumns);
     let locationColumns = {
