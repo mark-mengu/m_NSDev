@@ -241,7 +241,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
 
     document.addEventListener("DOMContentLoaded", () => {
         setDefaultDates();
-        document.getElementById('table-title').classList.add('visible');
+        document.getElementById('report-title').classList.add('visible');
     });
 
     const loadingIcon = createLoadingIcon();
