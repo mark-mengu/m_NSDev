@@ -127,7 +127,7 @@ const table = new Tabulator("#report-wip", {
 
 document.getElementById('report-wip').style.display = 'none';
 document.getElementById('table-title').style.display = 'none';
-require(['N/https', 'N/url', 'N/currentRecord'], (https, url) => {
+require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     let resourcesUrl = url.resolveScript({
         scriptId: 'customscript_gn_rl_reportwip_data',
         deploymentId: 'customdeploy_gn_rl_reportwip_data',
@@ -188,7 +188,7 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url) => {
     };
     https.post.promise({ url: resourcesUrl, headers: headers })
         .then((response) => {
-            let data = response.body;
+            let data = getData(search);;
             table.setData(data.data);
         })
         .catch((error) => {
@@ -231,7 +231,159 @@ document.getElementById('print-xls').addEventListener('click', (event) => {
     columnsToHide.forEach(column => table.showColumn(column));
     event.preventDefault();
 }, false);
+//------------------------------------------------------GET DATA-------------------------------------------------
+const getData = (search) => {
+    // const assemblies = [{
+    //     itemid: 11, item: 1111, displayname: 1111, recordtype: 111, bin: 1111, binid: 1111, location: 1111, locationid: 11111,
+    //     account: 1111, accountid: 1111, item_value: 111
+    // }];
+    // const itemreceipts = [];
 
+    const assemblies = getAssemblyBuildsMovements(search);
+    // const itemreceipts = getItemReceiptsMovements();
+    //const itemfulfillments = getItemFulfillsMovements();
+    //const inventorytransfers = getInventoryTransfersMovements();
+    //const bintransfers = getBinTransfersMovements();
+    //const adjustments = getInventoryAdjustmentMovements();
+
+    let warData = assemblies;
+    log.debug('warData', warData.length);
+    log.debug('warData', warData);
+    return warData;
+}
+//--------------------------------------------------ELABORATE DATA FUNCTION--------------------------------------
+const elaborateDatas = (transferReceipts, depositoFulfills) => {
+    const fulfillGroups = _.groupBy(depositoFulfills, (item) => `${item.itemid}-${item.to}`);
+    return _.filter(transferReceipts, (tf) => {
+        const k = `${tf.itemid}-${tf.to_id}`;
+        const matchingFfs = fulfillGroups[k];
+        if (matchingFfs && matchingFfs.length > 0) {
+            let remainingTfQuantity = _.parseInt(tf.quantity);
+            matchingFfs.forEach(ff => {
+                const fulfillQty = _.parseInt(ff.quantity);
+                if (remainingTfQuantity > 0) {
+                    const quantityMinus = Math.min(remainingTfQuantity, fulfillQty);
+                    // UPDATE TF
+                    remainingTfQuantity -= quantityMinus;
+                    // UPDATE FF
+                    ff.quantity = (fulfillQty - quantityMinus).toString();
+                }
+            });
+            tf.quantity = remainingTfQuantity.toString();
+        }
+        return _.parseInt(tf.quantity) > 0;
+    });
+}
+//---------------------------------------------------GET ASSEMBLY BUILD MOVEMENTS----------------------------------------
+const getAssemblyBuildsMovements = (search) => {
+    let itemsInfos = [];
+    var assemblybuilds = search.create({
+        type: "assemblybuild",
+        settings: [{ "name": "consolidationtype", "value": "AVERAGE" }, { "name": "includeperiodendtransactions", "value": "F" }],
+        filters:
+            [
+                ["type", "anyof", "Build"],
+                "AND",
+                ["account.type", "anyof", "OthCurrAsset"],
+                "AND",
+                ["taxline", "is", "F"],
+                "AND",
+                ["mainline", "any", ""],
+                "AND",
+                ["item.type", "anyof", "InvtPart", "Assembly"],
+                "AND",
+                ["quantity", "isnotempty", ""]
+            ],
+        columns:
+            [
+                search.createColumn({ name: "tranid", label: "Document Number" }),
+                search.createColumn({ name: "recordtype", label: "Record Type" }),
+                search.createColumn({ name: "trandate", label: "Date" }),
+                search.createColumn({ name: "postingperiod", label: "Period" }),
+                search.createColumn({ name: "item", label: "Item" }),
+                search.createColumn({ name: "type", join: "item", label: "Item Type" }),
+                search.createColumn({ name: "costingmethod", join: "item", label: "Costing Method" }),
+                search.createColumn({ name: "quantity", label: "Quantity" }),
+                search.createColumn({ name: "location", label: "Location" }),
+                search.createColumn({ name: "account", label: "Account" }),
+                search.createColumn({ name: "amount", label: "Amount" }),
+                search.createColumn({ name: "fxrate", label: "Item Rate" }),
+                search.createColumn({ name: "binnumber", join: "inventoryDetail", label: "Bin Number" })
+            ]
+    });
+    let resultsOvercame = Overcome4000Limit(assemblybuilds);
+    resultsOvercame.forEach((result) => {
+        let obj = {
+            itemid: result.getValue('item'),
+            item: result.getText('item'),
+            recordtype: result.getValue('recordtype'),
+            bin: result.getText({ name: "binnumber", join: "inventoryDetail" }),
+            binid: result.getValue({ name: "binnumber", join: "inventoryDetail" }),
+            location: result.getText('location'),
+            locationid: result.getValue('location'),
+            account: result.getText('account'),
+            accountid: result.getValue('account'),
+            item_value: result.getValue('amount')
+        };
+        itemsInfos.push(obj);
+        return false;
+    });
+    return itemsInfos;
+}
+//---------------------------------------------------GET ITEM RECEIPTS MOVEMENTS----------------------------------------
+const getItemReceiptsMovements = () => {
+    let itemsInfos = [];
+    var itemreceipt = search.create({
+        type: "itemreceipt",
+        settings: [{ "name": "consolidationtype", "value": "AVERAGE" }, { "name": "includeperiodendtransactions", "value": "F" }],
+        filters:
+            [
+                ["type", "anyof", "ItemRcpt"],
+                "AND",
+                ["account.type", "anyof", "OthCurrAsset"],
+                "AND",
+                ["taxline", "is", "F"],
+                "AND",
+                ["mainline", "is", "F"],
+                "AND",
+                ["item.type", "anyof", "InvtPart", "Assembly"]
+            ],
+        columns:
+            [
+                search.createColumn({ name: "tranid", label: "Document Number" }),
+                search.createColumn({ name: "recordtype", label: "Record Type" }),
+                search.createColumn({ name: "trandate", label: "Date" }),
+                search.createColumn({ name: "postingperiod", label: "Period" }),
+                search.createColumn({ name: "item", label: "Item" }),
+                search.createColumn({ name: "type", join: "item", label: "Item Type" }),
+                search.createColumn({ name: "costingmethod", join: "item", label: "Costing Method" }),
+                search.createColumn({ name: "quantity", label: "Quantity" }),
+                search.createColumn({ name: "location", label: "Location" }),
+                search.createColumn({ name: "account", label: "Account" }),
+                search.createColumn({ name: "amount", label: "Amount" }),
+                search.createColumn({ name: "fxrate", label: "Item Rate" }),
+                search.createColumn({ name: "binnumber", join: "inventoryDetail", label: "Bin Number" })
+            ]
+    });
+    let resultsOvercame = Overcome4000Limit(itemreceipt);
+    resultsOvercame.forEach((result) => {
+        let obj = {
+            itemid: result.getValue('item'),
+            item: result.getText('item'),
+            recordtype: result.getValue('recordtype'),
+            bin: result.getText({ name: "binnumber", join: "inventoryDetail" }),
+            binid: result.getValue({ name: "binnumber", join: "inventoryDetail" }),
+            location: result.getText('location'),
+            locationid: result.getValue('location'),
+            account: result.getText('account'),
+            accountid: result.getValue('account'),
+            item_value: result.getValue('amount')
+        };
+        itemsInfos.push(obj);
+        return false;
+    });
+    return itemsInfos;
+}
 //--------------------------------------------------------------EDITING NOT USED----------------------------------------------------------------------
 /*
 document.getElementById("").addEventListener("click", (event) => {
