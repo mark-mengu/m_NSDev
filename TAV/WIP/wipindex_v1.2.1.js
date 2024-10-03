@@ -27,7 +27,7 @@ const binTypes = ['PROD', 'MAG', 'SPED', 'KARDEX'];
 var multiSelectHeaderFilter = (cell) => {
     var values = binTypes;
     const filterFunc = (rowData) => {
-        return values.includes(rowData['species']);
+        return values.includes(rowData['bin']);
     }
     const getSelectedValues = (multiSelect) => {
         var result = [];
@@ -51,8 +51,8 @@ var multiSelectHeaderFilter = (cell) => {
     select.id = 'binSelector';
     select.class = "chosen-select";
     select.style = 'width: 100%';
-    binTypes.forEach(species => {
-        select.innerHTML += "<option id='" + species + "' value='" + species + "' selected='selected'>" + species + "</option>";
+    binTypes.forEach(bins => {
+        select.innerHTML += "<option id='" + bins + "' value='" + bins + "' selected='selected'>" + bins + "</option>";
     });
     cell.getColumn().getTable().addFilter(filterFunc);
     select.addEventListener('change', onChange);
