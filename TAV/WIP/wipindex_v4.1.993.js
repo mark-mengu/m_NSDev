@@ -329,11 +329,6 @@ document.getElementById('apply-filters-data-empty').addEventListener('click', (e
     document.getElementById('start-date').value = '';
     document.getElementById('end-date').value = '';
 
-    const emptyButtonDates = document.getElementById('apply-filters-data-empty');
-    emptyButtonDates.addEventListener('mouseover', () => {
-        emptyButtonDates.setAttribute('title', 'Se si clicca si aspetta');
-    });
-
     const loadingIcon = createLoadingIcon();
     loadingIcon.style.display = 'block';
     document.getElementById('report-wip').style.display = 'none';
@@ -376,7 +371,12 @@ document.getElementById('print-pdf').addEventListener('click', (event) => {
 
     event.preventDefault();
 }, false);
+//---------------------------------------------------------MOUSE OVER---------------------------------------------------------------------------
 
+const emptyButtonDates = document.getElementById('apply-filters-data-empty');
+emptyButtonDates.addEventListener('mouseover', () => {
+    emptyButtonDates.setAttribute('title', 'Resettare la data, potrebbe richiedere alcuni secondi...');
+});
 //-----------------------------------------------------------------PRINT XLS-------------------------------------------------------------------------------
 
 document.getElementById('print-xls').addEventListener('click', (event) => {
