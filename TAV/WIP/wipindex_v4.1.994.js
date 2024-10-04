@@ -373,9 +373,25 @@ document.getElementById('print-pdf').addEventListener('click', (event) => {
 }, false);
 //---------------------------------------------------------MOUSE OVER---------------------------------------------------------------------------
 
-const emptyButtonDates = document.getElementById('apply-filters-data-empty');
-emptyButtonDates.addEventListener('mouseover', () => {
-    emptyButtonDates.setAttribute('title', 'Resettare la data, potrebbe richiedere alcuni secondi...');
+const button = document.getElementById('apply-filters-data-empty');
+const tooltip = document.getElementById('tooltip');
+
+button.addEventListener('mouseover', (event) => {
+    // Posiziona il tooltip accanto al mouse
+    tooltip.style.display = 'block';
+    tooltip.style.left = event.pageX + 'px';
+    tooltip.style.top = (event.pageY + 10) + 'px'; // 10px sotto il cursore
+});
+
+button.addEventListener('mouseout', () => {
+    // Nasconde il tooltip quando il mouse esce
+    tooltip.style.display = 'none';
+});
+
+button.addEventListener('mousemove', (event) => {
+    // Segue il mouse mentre si muove
+    tooltip.style.left = event.pageX + 'px';
+    tooltip.style.top = (event.pageY + 10) + 'px';
 });
 //-----------------------------------------------------------------PRINT XLS-------------------------------------------------------------------------------
 
