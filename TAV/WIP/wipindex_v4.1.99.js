@@ -70,25 +70,25 @@ var printIcon = (cell, formatterParams) => {
 var linkFormatter = (cell, formatterParams) => {
     let value = cell.getValue();
     let url = 'https://example.com/' + encodeURIComponent(value);
-    cell.getElement().style.backgroundColor = "#d0afae";
+    cell.getElement().style.backgroundColor = "#ffffbf";
     return `<a href="${url}" target="_blank">${value}</a>`;
 };
 
 var stdFormatter = (cell, formatterParams) => {
     let value = cell.getValue();
-    cell.getElement().style.backgroundColor = "#d0afae";
+    cell.getElement().style.backgroundColor = "#ffffbf";
     return value;
 };
 
 var stdBoldFormatter = (cell, formatterParams) => {
     let value = cell.getValue();
-    cell.getElement().style.backgroundColor = "#d0afae";
+    cell.getElement().style.backgroundColor = "#ffffbf";
     return `<strong>${value}</strong>`;
 };
 
 var detailFormatter = (cell, formatterParams) => {
     let value = cell.getValue();
-    cell.getElement().style.backgroundColor = "#d0afae";
+    cell.getElement().style.backgroundColor = "#ffffbf";
     let button = '<button id="opensss" class="sexy-button" onclick="openWind(event, \'' + value + '\')">Apri Transazione</button>';
     return button;
 };
