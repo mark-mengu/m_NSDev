@@ -377,14 +377,14 @@ const tooltip = document.getElementById('tooltip');
 button.addEventListener('mouseover', (e) => {
     tooltip.style.display = 'block';
     tooltip.style.left = e.pageX + 'px';
-    tooltip.style.top = (e.pageY) + 'px';
-    tooltip.style.bottom = (e.pageY) + 'px';
+    tooltip.style.top = (e.pageY - 3) + 'px';
+    tooltip.style.bottom = (e.pageY - 3) + 'px';
 });
 button.addEventListener('mouseout', () => { tooltip.style.display = 'none'; });
 button.addEventListener('mousemove', (e) => {
     tooltip.style.left = e.pageX + 'px';
-    tooltip.style.top = (e.pageY) + 'px';
-    tooltip.style.bottom = (e.pageY) + 'px';
+    tooltip.style.top = (e.pageY - 3) + 'px';
+    tooltip.style.bottom = (e.pageY - 3) + 'px';
 });
 //-----------------------------------------------------------------PRINT XLS-------------------------------------------------------------------------------
 
