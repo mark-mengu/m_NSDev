@@ -368,37 +368,27 @@ document.getElementById('apply-filters-data-empty').addEventListener('click', (e
 
 document.getElementById('print-pdf').addEventListener('click', (event) => {
     table.download("pdf", "report_wip.pdf", { title: "Report WIP" });
-
     event.preventDefault();
 }, false);
 //---------------------------------------------------------MOUSE OVER---------------------------------------------------------------------------
 
 const button = document.getElementById('apply-filters-data-empty');
 const tooltip = document.getElementById('tooltip');
-
-button.addEventListener('mouseover', (event) => {
-    // Posiziona il tooltip accanto al mouse
+button.addEventListener('mouseover', (e) => {
     tooltip.style.display = 'block';
-    tooltip.style.left = event.pageX + 'px';
-    tooltip.style.top = (event.pageY + 10) + 'px'; // 10px sotto il cursore
+    tooltip.style.left = e.pageX + 'px';
+    tooltip.style.top = (e.pageY + 5) + 'px';
 });
-
-button.addEventListener('mouseout', () => {
-    // Nasconde il tooltip quando il mouse esce
-    tooltip.style.display = 'none';
-});
-
-button.addEventListener('mousemove', (event) => {
-    // Segue il mouse mentre si muove
-    tooltip.style.left = event.pageX + 'px';
-    tooltip.style.top = (event.pageY + 10) + 'px';
+button.addEventListener('mouseout', () => {   tooltip.style.display = 'none';});
+button.addEventListener('mousemove', (e) => {    
+    tooltip.style.left = e.pageX + 'px';
+    tooltip.style.top = (e.pageY + 5) + 'px';
 });
 //-----------------------------------------------------------------PRINT XLS-------------------------------------------------------------------------------
 
 document.getElementById('print-xls').addEventListener('click', (event) => {
     const columnsToHide = ["to"];
     columnsToHide.forEach(column => table.hideColumn(column));
-
     table.download("xlsx", "report_WIP.xlsx", { sheetName: "Report WIP", bom: true });
 
     columnsToHide.forEach(column => table.showColumn(column));
