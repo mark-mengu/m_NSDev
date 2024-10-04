@@ -374,16 +374,14 @@ document.getElementById('print-pdf').addEventListener('click', (event) => {
 
 const button = document.getElementById('apply-filters-data-empty');
 const tooltip = document.getElementById('tooltip');
+
 button.addEventListener('mouseover', (e) => {
+    const buttonRect = button.getBoundingClientRect();
     tooltip.style.display = 'block';
-    tooltip.style.left = e.pageX + 'px';
-    tooltip.style.top = (e.pageY + 3) + 'px';
+    tooltip.style.left = buttonRect.left + 'px';
+    tooltip.style.top = (buttonRect.bottom + 5) + 'px';
 });
-button.addEventListener('mouseout', () => {   tooltip.style.display = 'none';});
-button.addEventListener('mousemove', (e) => {    
-    tooltip.style.left = e.pageX + 'px';
-    tooltip.style.top = (e.pageY + 3) + 'px';
-});
+button.addEventListener('mouseout', () => { tooltip.style.display = 'none'; });
 //-----------------------------------------------------------------PRINT XLS-------------------------------------------------------------------------------
 
 document.getElementById('print-xls').addEventListener('click', (event) => {
