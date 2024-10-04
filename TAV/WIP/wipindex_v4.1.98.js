@@ -95,13 +95,13 @@ var detailFormatter = (cell, formatterParams) => {
 
 var recordtypeFormatter = (cell, formatterParams) => {
     let value = cell.getValue();
-    cell.getElement().style.backgroundColor = "#d0afae";
+    cell.getElement().style.backgroundColor = "#ffffbf";
     return '<u>' + value + '</u>';
 };
 
 var inventoryValueFormatter = (cell, formatterParams) => {
     let value = cell.getValue();
-    cell.getElement().style.backgroundColor = "#d0afae";
+    cell.getElement().style.backgroundColor = "#ffffbf";
     return parseFloat(value).toFixed(2);
 };
 
