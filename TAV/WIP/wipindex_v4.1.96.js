@@ -239,7 +239,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     };
     table.addColumn(accountColumns);
     let inventoryValueColumns = {
-        title: "Valore <br>al Costo Medio", field: "item_value", editor: "textarea", validator: '', width: 200, minWidth: 150, maxWidth: 300, editable: false, formatter: inventoryValueFormatter,
+        title: "Valore al Costo Medio", field: "item_value", editor: "textarea", validator: '', width: 200, minWidth: 150, maxWidth: 300, editable: false, formatter: inventoryValueFormatter,
         topCalc: 'sum', tooltip: 'Valore al Costo Medio', topCalcParams: { precision: 2 },
     };
     table.addColumn(inventoryValueColumns);
