@@ -204,7 +204,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     // };
     // table.addColumn(trxColumns);
     let quantityColumns = {
-        title: "Quantity", field: "quantity", editor: "textarea", validator: '', editable: false, width: 100, minWidth: 80, maxWidth: 120, formatter: stdFormatter, tooltip: 'Quantità'
+        title: "Quantity", field: "quantity", editor: "textarea", validator: '', editable: false, width: 130, minWidth: 80, maxWidth: 140, formatter: stdFormatter, tooltip: 'Quantità'
     };
     table.addColumn(quantityColumns);
 
