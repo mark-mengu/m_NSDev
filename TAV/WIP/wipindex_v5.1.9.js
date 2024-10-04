@@ -152,7 +152,7 @@ var createLoadingIcon = () => {
 const table = new Tabulator("#report-wip", {
     movableRows: false,
     groupToggleElement: true,
-    groupBy:"location",
+    dataTree: true,
     tabulatorId: "report-wip-table",
     ajaxURL: '',
     ajaxParams: {},
