@@ -230,7 +230,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         // },
         editor: "textarea", validator: '', editable: false, headerFilter: "input",
         formatter: stdFormatter,
-        tooltip: 'Magazzino/Location'
+        tooltip: 'Bin'
     };
     table.addColumn(binColumns);
 
