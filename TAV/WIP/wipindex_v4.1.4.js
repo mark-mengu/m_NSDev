@@ -247,9 +247,9 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     tableTitle.style.display = 'none';
 
     document.addEventListener("DOMContentLoaded", () => { setDefaultDates(); });
-    let params = {};
-    params.startDate = formatDate(new Date());
-    params.endDate = formatDate(new Date());
+    let startDate = document.getElementById('start-date').value;
+    let endDate = document.getElementById('end-date').value;
+    let params = { endDate, startDate };
 
     https.post.promise({ url: resourcesUrl, body: JSON.stringify(params) })
         .then((response) => {
