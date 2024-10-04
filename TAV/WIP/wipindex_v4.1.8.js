@@ -203,6 +203,10 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     //     title: "Tipo Transazione", field: "recordtype", editor: "textarea", validator: '', headerFilterPlaceholder: "Filtra una tipologia...", editable: false, width: 200, minWidth: 150, maxWidth: 300, headerFilter: "input", formatter: stdBoldFormatter, tooltip: 'Articolo'
     // };
     // table.addColumn(trxColumns);
+    let quantityColumns = {
+        title: "Quantity", field: "quantity", editor: "textarea", validator: '', editable: false, width: 100, minWidth: 80, maxWidth: 120, formatter: stdBoldFormatter, tooltip: 'Quantità'
+    };
+    table.addColumn(quantityColumns);
     let itemColumns = {
         title: "Articolo", field: "item", editor: "textarea", headerFilterPlaceholder: "Filtra un articolo...", validator: '', editable: false, width: 400, minWidth: 200, maxWidth: 550, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
     };
@@ -247,7 +251,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     tableTitle.style.display = 'none';
 
     document.addEventListener("DOMContentLoaded", () => { setDefaultDates(); });
-    let params = { endDate: formatDate(new Date()), startDate: formatDate(new Date())};
+    let params = { endDate: formatDate(new Date()), startDate: formatDate(new Date()) };
 
     https.post.promise({ url: resourcesUrl, body: JSON.stringify(params), headers: { 'Content-Type': 'application/json' } })
         .then((response) => {
