@@ -367,17 +367,8 @@ document.getElementById('apply-filters-data-empty').addEventListener('click', (e
 //-----------------------------------------------------------------PRINT PDF-------------------------------------------------------------------------------
 
 document.getElementById('print-pdf').addEventListener('click', (event) => {
-    table.hideColumn("to");
-    table.hideColumn("so_text");
-    table.hideColumn("item_value");
-    table.hideColumn("units");
-
     table.download("pdf", "report_wip.pdf", { title: "Report WIP" });
 
-    table.toggleColumn("to");
-    table.toggleColumn("so_text");
-    table.toggleColumn("item_value");
-    table.toggleColumn("units");
     event.preventDefault();
 }, false);
 
