@@ -329,6 +329,11 @@ document.getElementById('apply-filters-data-empty').addEventListener('click', (e
     document.getElementById('start-date').value = '';
     document.getElementById('end-date').value = '';
 
+    const emptyButtonDates = document.getElementById('apply-filters-data-empty');
+    emptyButtonDates.addEventListener('mouseover', () => {
+        emptyButtonDates.setAttribute('title', 'Se si clicca si aspetta');
+    });
+
     const loadingIcon = createLoadingIcon();
     loadingIcon.style.display = 'block';
     document.getElementById('report-wip').style.display = 'none';
