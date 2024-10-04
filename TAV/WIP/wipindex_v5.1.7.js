@@ -152,6 +152,7 @@ var createLoadingIcon = () => {
 const table = new Tabulator("#report-wip", {
     movableRows: false,
     groupToggleElement: true,
+    groupBy:"gender",
     tabulatorId: "report-wip-table",
     ajaxURL: '',
     ajaxParams: {},
@@ -165,9 +166,6 @@ const table = new Tabulator("#report-wip", {
             return '<div class="row-index">' + rowNumber + '</div>';
         },
         hozAlign: "center"
-    },
-    groupBy: function (data) {
-        return data.location + " - " + data.bin;
     },
     selectableRangeRows: false,
     columnDefaults: { headerSort: true, resizable: "header" },
