@@ -251,7 +251,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     let endDate = document.getElementById('end-date').value;
     let params = { endDate, startDate };
 
-    https.post.promise({ url: resourcesUrl, body: JSON.stringify(params) })
+    https.post.promise({ url: resourcesUrl, body: JSON.stringify(params), headers: { 'Content-Type': 'application/json' } })
         .then((response) => {
             let data = JSON.parse(response.body);
             table.setData(data.data);
