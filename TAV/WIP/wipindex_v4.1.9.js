@@ -204,9 +204,10 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     // };
     // table.addColumn(trxColumns);
     let quantityColumns = {
-        title: "Quantity", field: "quantity", editor: "textarea", validator: '', editable: false, width: 100, minWidth: 80, maxWidth: 120, formatter: stdBoldFormatter, tooltip: 'Quantità'
+        title: "Quantity", field: "quantity", editor: "textarea", validator: '', editable: false, width: 100, minWidth: 80, maxWidth: 120, formatter: stdFormatter, tooltip: 'Quantità'
     };
     table.addColumn(quantityColumns);
+
     let itemColumns = {
         title: "Articolo", field: "item", editor: "textarea", headerFilterPlaceholder: "Filtra un articolo...", validator: '', editable: false, width: 400, minWidth: 200, maxWidth: 550, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
     };
