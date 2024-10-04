@@ -63,10 +63,6 @@ var editCheck = (cell) => {
     return !cell.getRow().getData().hold;
 }
 
-var printIcon = (cell, formatterParams) => {
-    return "<i class='fa fa-print'></i>";
-};
-
 var linkFormatter = (cell, formatterParams) => {
     let value = cell.getValue();
     let url = 'https://example.com/' + encodeURIComponent(value);
@@ -109,13 +105,7 @@ var openWind = (event, url) => {
     event.preventDefault();
     window.open(url, '_blank');
 }
-var dataFilter = (headerValue, rowValue, rowData, filterParams) => {
-    //headerValue - the value of the header filter element
-    //rowValue - the value of the column in this row
-    //rowData - the data for the row being filtered
-    //filterParams - params object passed to the headerFilterFuncParams property
-    return rowData.name == filterParams.name && rowValue < headerValue;
-}
+var dataFilter = (headerValue, rowValue, rowData, filterParams) => { return rowData.name == filterParams.name && rowValue < headerValue; }
 var createLoadingIcon = () => {
     const loadingIcon = document.createElement('div');
     loadingIcon.id = 'loading-icon';
@@ -152,7 +142,7 @@ var createLoadingIcon = () => {
 const table = new Tabulator("#report-wip", {
     movableRows: false,
     groupToggleElement: true,
-    dataTree: true,
+    //dataTree: true,
     tabulatorId: "report-wip-table",
     ajaxURL: '',
     ajaxParams: {},
