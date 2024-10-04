@@ -171,7 +171,7 @@ const table = new Tabulator("#report-wip", {
     dataLoaderLoading: "Loading data...",
     placeholder: "No DATA Found...",
     pagination: "local",
-    paginationSize: 100,
+    paginationSize: 200,
     ajaxProgressiveLoad: "scroll",
     printFooter: "",
     printHeader: "<center><h1>WIP Overview</h1></center>",
