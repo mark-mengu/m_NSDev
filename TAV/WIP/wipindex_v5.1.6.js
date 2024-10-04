@@ -166,6 +166,9 @@ const table = new Tabulator("#report-wip", {
         },
         hozAlign: "center"
     },
+    groupBy: function (data) {
+        return data.location + " - " + data.bin;
+    },
     selectableRangeRows: false,
     columnDefaults: { headerSort: true, resizable: "header" },
     dataLoaderLoading: "Loading data...",
@@ -173,8 +176,6 @@ const table = new Tabulator("#report-wip", {
     pagination: "local",
     paginationSize: 200,
     ajaxProgressiveLoad: "scroll",
-    printFooter: "",
-    printHeader: "<center><h1>WIP Overview</h1></center>",
     rowFormatter: (row) => {
         let data = row.getData();
         if (data.inv_text == ' ') {
@@ -186,6 +187,7 @@ const table = new Tabulator("#report-wip", {
         }
     }
 });
+
 document.getElementById('report-wip').style.display = 'none';
 document.getElementById('table-title').style.display = 'none';
 require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
@@ -204,7 +206,8 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     // };
     // table.addColumn(trxColumns);
     let quantityColumns = {
-        title: "Quantity", field: "quantity", editor: "textarea", validator: '', editable: false, width: 130, minWidth: 80, maxWidth: 140, formatter: stdFormatter, tooltip: 'Quantità'
+        title: "Quantity", field: "quantity", editor: "textarea", validator: '', editable: false, width: 130, minWidth: 80, maxWidth: 140, formatter: stdFormatter,
+        tooltip: 'Quantità',
     };
     table.addColumn(quantityColumns);
 
