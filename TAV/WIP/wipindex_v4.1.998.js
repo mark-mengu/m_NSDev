@@ -379,7 +379,7 @@ button.addEventListener('mouseover', (e) => {
     const buttonRect = button.getBoundingClientRect();
     tooltip.style.display = 'block';
     tooltip.style.left = buttonRect.left + 'px';
-    tooltip.style.top = (buttonRect.bottom + 5) + 'px';
+    tooltip.style.top = (buttonRect.bottom) + 'px';
 });
 button.addEventListener('mouseout', () => { tooltip.style.display = 'none'; });
 //-----------------------------------------------------------------PRINT XLS-------------------------------------------------------------------------------
