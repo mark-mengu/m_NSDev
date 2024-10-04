@@ -377,14 +377,12 @@ const tooltip = document.getElementById('tooltip');
 button.addEventListener('mouseover', (e) => {
     tooltip.style.display = 'block';
     tooltip.style.left = e.pageX + 'px';
-    tooltip.style.right = e.pageX + 'px';
     tooltip.style.top = (e.pageY) + 'px';
     tooltip.style.bottom = (e.pageY) + 'px';
 });
 button.addEventListener('mouseout', () => { tooltip.style.display = 'none'; });
 button.addEventListener('mousemove', (e) => {
     tooltip.style.left = e.pageX + 'px';
-    tooltip.style.right = e.pageX + 'px';
     tooltip.style.top = (e.pageY) + 'px';
     tooltip.style.bottom = (e.pageY) + 'px';
 });
