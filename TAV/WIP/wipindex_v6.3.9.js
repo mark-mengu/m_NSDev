@@ -14,7 +14,21 @@ const formatDate = (date) => {
     return `${year}-${month}-${day}`;
 }
 //-------------------------------------------------FILTER BIN---------------------------------------------------------------
+// Store the original data outside the filter function
+let originalData = null;
+
 const binFilter = (headerValue, rowValue, rowData, filterParams) => {
+    // If this is the first time the filter is run, store the original data
+    if (!originalData) {
+        originalData = JSON.parse(JSON.stringify(rowData));
+    }
+
+    // If the filter is empty, reset to original data
+    if (!headerValue) {
+        Object.assign(rowData, originalData);
+        return true; // Show all rows
+    }
+
     // If the row has children, we need to filter them
     if (rowData._children && rowData._children.length > 0) {
         // Filter children based on the bin value
