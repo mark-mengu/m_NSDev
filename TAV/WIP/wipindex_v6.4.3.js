@@ -220,88 +220,51 @@ var createLoadingIcon = () => {
     return loadingIcon;
 };
 //----------------------------------------------------------------TABULATOR-----------------------------------------------------
+const table = new Tabulator("#report-wip", {
+    movableRows: false,
+    dataTree: true,
+    dataTreeCollapseElement: `<i class='fas fa-minus-square' style='font-size: 30px; color: #ff0000;'></i>`,
+    dataTreeExpandElement: `<i class="fa fa-plus-square" aria-hidden="true" style='font-size: 30px; color: #00ff00;'></i>`,
+    dataTreeChildIndent: 15,
+    dataTreeFilter: true,
+    tabulatorId: "report-wip-table",
+    ajaxURL: '',
+    ajaxParams: {},
+    ajaxFiltering: false,
+    rowHeader: {
+        resizable: true,
+        frozen: true,
+        width: 70,
+        formatter: (cell) => { cell.getRow().getPosition(); },
+        hozAlign: "center"
+    },
+    selectableRangeRows: false,
+    columnDefaults: { headerSort: true, resizable: "header" },
+    dataLoaderLoading: "Loading data...",
+    placeholder: "No DATA Found...",
+    pagination: "local",
+    paginationSize: 150,
+    ajaxProgressiveLoad: "scroll",
+    rowFormatter: (row) => {
+        let data = row.getData();
+        if (data.inv_text == ' ') {
+            let cells = row.getCells();
+            cells.forEach(cell => {
+                cell.getElement().style.color = "red";
+                cell.getElement().style.fontWeight = "bold";
+            });
+        }
+    }
+});
+
+document.getElementById('report-wip').style.display = 'none';
+document.getElementById('table-title').style.display = 'none';
 require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     let resourcesUrl = url.resolveScript({
         scriptId: 'customscript_gn_rl_reportwip_data',
         deploymentId: 'customdeploy_gn_rl_reportwip_data',
         params: {}
     });
-    const table = new Tabulator("#report-wip", {
-        movableRows: false,
-        dataTree: true,
-        dataTreeCollapseElement: `<i class='fas fa-minus-square' style='font-size: 30px; color: #ff0000;'></i>`,
-        dataTreeExpandElement: `<i class="fa fa-plus-square" aria-hidden="true" style='font-size: 30px; color: #00ff00;'></i>`,
-        dataTreeChildIndent: 15,
-        dataTreeFilter: true,
-        tabulatorId: "report-wip-table",
-        ajaxURL: resourcesUrl,
-        ajaxContentType: "json",
-        ajaxConfig: "POST",
-        ajaxParams: function () {
-            // Gather all current filter values
-            var filters = {};
-            this.getHeaderFilters().forEach(function (filter) {
-                if (filter.value) {
-                    filters[filter.field] = filter.value;
-                }
-            });
-            return { filters: filters };  
-        },
-        ajaxRequestFunc: function (url, config, params) {
-            loadingIcon.style.display = 'block';
-            reportWIP.style.display = 'none';
-            tableTitle.style.display = 'none';
-            params = { ...params, ...this.modules.ajax.getParams() };
-
-            return new Promise((resolve, reject) => {
-                https.post.promise({
-                    url: url,
-                    body: JSON.stringify(params),
-                    headers: { 'Content-Type': 'application/json' }
-                })
-                    .then((response) => {
-                        let data = JSON.parse(response.body);
-                        resolve(data.data);
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                        reject(error);
-                    })
-                    .finally(() => {
-                        loadingIcon.style.display = 'none';
-                        reportWIP.style.display = 'block';
-                        tableTitle.style.display = 'block';
-                    });
-            });
-        },
-        rowHeader: {
-            resizable: true,
-            frozen: true,
-            width: 70,
-            formatter: (cell) => { cell.getRow().getPosition(); },
-            hozAlign: "center"
-        },
-        selectableRangeRows: false,
-        columnDefaults: { headerSort: true, resizable: "header" },
-        dataLoaderLoading: "Loading data...",
-        placeholder: "No DATA Found...",
-        pagination: "local",
-        paginationSize: 150,
-        ajaxProgressiveLoad: "scroll",
-        rowFormatter: (row) => {
-            let data = row.getData();
-            if (data.inv_text == ' ') {
-                let cells = row.getCells();
-                cells.forEach(cell => {
-                    cell.getElement().style.color = "red";
-                    cell.getElement().style.fontWeight = "bold";
-                });
-            }
-        }
-    });
-
-    document.getElementById('report-wip').style.display = 'none';
-    document.getElementById('table-title').style.display = 'none';
 
     let accountColumns = {
         title: "Conto Magazzino", field: "account", editor: "textarea", headerFilterPlaceholder: "Filtra un conto...", validator: '', width: 570, minWidth: 200, maxWidth: 700, editable: false, headerFilter: "input", formatter: stdBoldFormatter, tooltip: 'Magazzino/Location'
@@ -335,7 +298,11 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         minWidth: 80,
         maxWidth: 150,
         headerFilterPlaceholder: "...",
-
+        headerFilterFunc: binFilter,
+        //headerFilter: multiSelectHeaderFilter,
+        // headerFilterParams: {
+        //     values: binTypes,
+        // },
         editor: "textarea", validator: '', editable: false, headerFilter: "input",
         formatter: stdFormatter,
         tooltip: 'Bin',
@@ -358,8 +325,19 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     document.addEventListener("DOMContentLoaded", () => { setDefaultDates(); });
     let params = { endDate: formatDate(new Date()), startDate: formatDate(new Date()) };
 
-    // Initial data load
-    table.setData();
+    https.post.promise({ url: resourcesUrl, body: JSON.stringify(params), headers: { 'Content-Type': 'application/json' } })
+        .then((response) => {
+            let data = JSON.parse(response.body);
+            table.setData(data.data);
+        })
+        .catch((error) => {
+            console.error(error);
+        })
+        .finally(() => {
+            loadingIcon.style.display = 'none';
+            reportWIP.style.display = 'block';
+            tableTitle.style.display = 'block';
+        });
 });
 
 //---------------------------------------------------APPLY FILTER EVENT DATA---------------------------------------------------
