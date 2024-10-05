@@ -189,6 +189,7 @@ const table = new Tabulator("#report-wip", {
     dataTree: true,
     dataTreeCollapseElement: `<i class='fas fa-minus-square' style='font-size: 30px; color: #ff0000;'></i>`,
     dataTreeExpandElement: `<i class="fa fa-plus-square" aria-hidden="true" style='font-size: 30px; color: #00ff00;'></i>`,
+    dataTreeChildIndent:15,
     tabulatorId: "report-wip-table",
     ajaxURL: '',
     ajaxParams: {},
