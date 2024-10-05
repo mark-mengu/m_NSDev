@@ -15,13 +15,9 @@ const formatDate = (date) => {
 }
 //-------------------------------------------------FILTER BIN---------------------------------------------------------------
 const binFilter = (headerValue, rowValue, rowData, filterParams) => {
-    //headerValue - the value of the header filter element
-    //rowValue - the value of the column in this row
-    //rowData - the data for the row being filtered
-    //filterParams - params object passed to the headerFilterFuncParams property
-
-    return rowData.name == filterParams.name && rowValue < headerValue; //must return a boolean, true if it passes the filter.
-}
+    if (rowData._children) { return rowData._children.some(child => { return child.bin.includes(headerValue); }); }
+    return false;
+};
 //-------------------------------------------------FILTER BIN---------------------------------------------------------------
 const locationFilter = (headerValue, rowValue, rowData, filterParams) => {
     //headerValue - the value of the header filter element
@@ -189,7 +185,7 @@ const table = new Tabulator("#report-wip", {
     dataTree: true,
     dataTreeCollapseElement: `<i class='fas fa-minus-square' style='font-size: 30px; color: #ff0000;'></i>`,
     dataTreeExpandElement: `<i class="fa fa-plus-square" aria-hidden="true" style='font-size: 30px; color: #00ff00;'></i>`,
-    dataTreeChildIndent:15,
+    dataTreeChildIndent: 15,
     tabulatorId: "report-wip-table",
     ajaxURL: '',
     ajaxParams: {},
@@ -261,13 +257,14 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         minWidth: 80,
         maxWidth: 150,
         headerFilterPlaceholder: "...",
+        headerFilterFunc: binFilter,
         //headerFilter: multiSelectHeaderFilter,
         // headerFilterParams: {
         //     values: binTypes,
         // },
         editor: "textarea", validator: '', editable: false, headerFilter: "input",
         formatter: stdFormatter,
-        tooltip: 'Bin'
+        tooltip: 'Bin',
     };
     table.addColumn(binColumns);
 
