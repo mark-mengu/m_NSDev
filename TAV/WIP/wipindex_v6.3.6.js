@@ -15,7 +15,28 @@ const formatDate = (date) => {
 }
 //-------------------------------------------------FILTER BIN---------------------------------------------------------------
 const binFilter = (headerValue, rowValue, rowData, filterParams) => {
-    if (rowData._children) { return rowData._children.some(child => { return child.bin.includes(headerValue); }); }
+    // Verifica se ci sono figli in rowData
+    if (rowData._children) {
+        // Filtra i figli in base al bin
+        const filteredChildren = rowData._children.filter(child =>
+            child.bin.includes(headerValue) // Controlla se il bin contiene headerValue
+        );
+
+        // Se ci sono figli filtrati, aggiorna il totale nel padre
+        if (filteredChildren.length > 0) {
+            // Calcola il nuovo totale di item_value
+            const totalItemValue = filteredChildren.reduce((total, child) => {
+                return total + parseFloat(child.item_value) || 0; // Somma i valori, gestisce eventuali NaN
+            }, 0);
+
+            // Aggiorna il padre con il nuovo totale
+            rowData.item_value = totalItemValue.toFixed(2); // Puoi formattarlo come preferisci
+
+            return true; // Mostra il padre
+        }
+    }
+
+    // Restituisce false se non ci sono figli corrispondenti
     return false;
 };
 //-------------------------------------------------FILTER BIN---------------------------------------------------------------
