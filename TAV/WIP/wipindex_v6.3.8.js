@@ -15,29 +15,34 @@ const formatDate = (date) => {
 }
 //-------------------------------------------------FILTER BIN---------------------------------------------------------------
 const binFilter = (headerValue, rowValue, rowData, filterParams) => {
-    // Verifica se ci sono figli in rowData
-    if (rowData._children) {
-        // Filtra i figli in base al bin
+    // If the row has children, we need to filter them
+    if (rowData._children && rowData._children.length > 0) {
+        // Filter children based on the bin value
         const filteredChildren = rowData._children.filter(child =>
-            child.bin.includes(headerValue) // Controlla se il bin contiene headerValue
+            child.bin.toLowerCase().includes(headerValue.toLowerCase())
         );
 
-        // Se ci sono figli filtrati, aggiorna il totale nel padre
+        // If there are matching children, we need to show this row and update its value
         if (filteredChildren.length > 0) {
-            // Calcola il nuovo totale di item_value
-            const totalItemValue = filteredChildren.reduce((total, child) => {
-                return total + parseFloat(child.item_value) || 0; // Somma i valori, gestisce eventuali NaN
-            }, 0);
+            // Calculate new item_value for the parent based on filtered children
+            const newItemValue = filteredChildren.reduce((sum, child) => 
+                sum + parseFloat(child.item_value), 0
+            ).toFixed(2);
 
-            // Aggiorna il padre con il nuovo totale
-            rowData.item_value = totalItemValue.toFixed(2); // Puoi formattarlo come preferisci
+            // Update the parent's item_value
+            rowData.item_value = newItemValue;
 
-            return true; // Mostra il padre
+            // Update the children array with only the filtered children
+            rowData._children = filteredChildren;
+
+            return true; // Show this row
         }
+
+        return false; // Hide this row if no children match
     }
 
-    // Restituisce false se non ci sono figli corrispondenti
-    return false;
+    // For rows without children, check if their bin matches
+    return rowData.bin.toLowerCase().includes(headerValue.toLowerCase());
 };
 //-------------------------------------------------FILTER BIN---------------------------------------------------------------
 const locationFilter = (headerValue, rowValue, rowData, filterParams) => {
