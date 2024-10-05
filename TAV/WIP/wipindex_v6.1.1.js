@@ -142,21 +142,11 @@ var createLoadingIcon = () => {
 const table = new Tabulator("#report-wip", {
     movableRows: false,
     dataTree: true,
-    dataTreeCollapseElement: `<span class="data-tree-collapse-element"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><rect x="2" y="2" width="20" height="20" rx="4" ry="4" fill="#FFC107" /><rect x="6" y="11" width="12" height="2" fill="#FFFFFF" /></svg></span>`, 
+    dataTreeCollapseElement: `<span class="data-tree-collapse-element"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><rect x="2" y="2" width="20" height="20" rx="4" ry="4" fill="#FFC107" /><rect x="6" y="11" width="12" height="2" fill="#FFFFFF" /></svg></span>`,
     tabulatorId: "report-wip-table",
     ajaxURL: '',
     ajaxParams: {},
     ajaxFiltering: true,
-    // rowHeader: {
-    //     resizable: true,
-    //     frozen: true,
-    //     width: 70,
-    //     formatter: (cell) => {
-    //         let rowNumber = cell.getRow().getPosition();
-    //         return '<div class="row-index">' + rowNumber + '</div>';
-    //     },
-    //     hozAlign: "center"
-    // },
     selectableRangeRows: false,
     columnDefaults: { headerSort: true, resizable: "header" },
     dataLoaderLoading: "Loading data...",
@@ -166,8 +156,18 @@ const table = new Tabulator("#report-wip", {
     ajaxProgressiveLoad: "scroll",
     rowFormatter: (row) => {
         let data = row.getData();
+        let cells = row.getCells();
+
+        // Style for parent rows
+        if (row.getTreeLevel() === 0) {
+            cells.forEach(cell => {
+                cell.getElement().style.backgroundColor = "#FFA000"; // Darker yellow
+                cell.getElement().style.fontWeight = "bold";
+            });
+        }
+
+        // Style for specific condition
         if (data.inv_text == ' ') {
-            let cells = row.getCells();
             cells.forEach(cell => {
                 cell.getElement().style.color = "red";
                 cell.getElement().style.fontWeight = "bold";
