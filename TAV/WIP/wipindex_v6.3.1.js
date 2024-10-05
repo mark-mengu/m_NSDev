@@ -187,8 +187,8 @@ var createLoadingIcon = () => {
 const table = new Tabulator("#report-wip", {
     movableRows: false,
     dataTree: true,
-     dataTreeCollapseElement: `<span class="data-tree-collapse-element"><svg viewBox="0 0 24 24" width="25" height="25"><rect x="2" y="2" width="20" height="20" rx="4" ry="4" fill="#4CAF50" /><polygon points="12,16 8,12 16,12" fill="#FFFFFF" /></svg></span>`,
-     dataTreeExpandElement: `<span class="data-tree-expand-element"><svg viewBox="0 0 24 24" width="25" height="25"><rect x="2" y="2" width="20" height="20" rx="4" ry="4" fill="#2196F3" /><polygon points="8,8 12,12 16,8" fill="#FFFFFF" /></svg></span>`,
+     dataTreeCollapseElement: `<svg viewBox="0 0 24 24" width="25" height="25"><rect x="2" y="2" width="20" height="20" rx="4" ry="4" fill="#4CAF50" /><polygon points="12,16 8,12 16,12" fill="#FFFFFF" /></svg>`,
+     dataTreeExpandElement: `<svg viewBox="0 0 24 24" width="25" height="25"><rect x="2" y="2" width="20" height="20" rx="4" ry="4" fill="#2196F3" /><polygon points="8,8 12,12 16,8" fill="#FFFFFF" /></svg>`,
     // dataTreeCollapseElement: "<i class='fas fa-minus-square'></i>",
     // dataTreeExpandElement: "<i class='fas fa-minus-square'></i>",
     tabulatorId: "report-wip-table",
