@@ -164,7 +164,7 @@ const table = new Tabulator("#report-wip", {
     dataLoaderLoading: "Loading data...",
     placeholder: "No DATA Found...",
     pagination: "local",
-    paginationSize: 200,
+    paginationSize: 500,
     ajaxProgressiveLoad: "scroll",
     rowFormatter: (row) => {
         let data = row.getData();
