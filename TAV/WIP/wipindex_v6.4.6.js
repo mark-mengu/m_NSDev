@@ -259,7 +259,6 @@ const table = new Tabulator("#report-wip", {
 
 document.getElementById('report-wip').style.display = 'none';
 document.getElementById('table-title').style.display = 'none';
-
 require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     let resourcesUrl = url.resolveScript({
         scriptId: 'customscript_gn_rl_reportwip_data',
@@ -267,42 +266,6 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         params: {}
     });
 
-    // Function to load data with filters
-    function loadFilteredData(filters = {}) {
-        const loadingIcon = document.getElementById('loading-icon');
-        const reportWIP = document.getElementById('report-wip');
-        const tableTitle = document.getElementById('table-title');
-
-        loadingIcon.style.display = 'block';
-        reportWIP.style.display = 'none';
-        tableTitle.style.display = 'none';
-
-        let params = { 
-            endDate: formatDate(new Date()), 
-            startDate: formatDate(new Date()),
-            filters: filters
-        };
-
-        https.post.promise({ 
-            url: resourcesUrl, 
-            body: JSON.stringify(params), 
-            headers: { 'Content-Type': 'application/json' } 
-        })
-        .then((response) => {
-            let data = JSON.parse(response.body);
-            table.setData(data.data);
-        })
-        .catch((error) => {
-            console.error(error);
-        })
-        .finally(() => {
-            loadingIcon.style.display = 'none';
-            reportWIP.style.display = 'block';
-            tableTitle.style.display = 'block';
-        });
-    }
-
-    // Add columns with header filters
     let accountColumns = {
         title: "Conto Magazzino", field: "account", editor: "textarea", headerFilterPlaceholder: "Filtra un conto...", validator: '', width: 570, minWidth: 200, maxWidth: 700, editable: false, headerFilter: "input", formatter: stdBoldFormatter, tooltip: 'Magazzino/Location'
     };
@@ -323,7 +286,6 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         title: "Articolo", field: "item", editor: "textarea", headerFilterPlaceholder: "Filtra un articolo...", validator: '', editable: false, width: 500, minWidth: 300, maxWidth: 600, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
     };
     table.addColumn(itemColumns);
-
     let locationColumns = {
         title: "Location", field: "location", editor: "textarea", headerFilterPlaceholder: "...", validator: '', editable: false, width: 120, minWidth: 80, maxWidth: 150, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
     };
@@ -336,7 +298,11 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         minWidth: 80,
         maxWidth: 150,
         headerFilterPlaceholder: "...",
-        //headerFilterFunc: binFilter,
+        headerFilterFunc: binFilter,
+        //headerFilter: multiSelectHeaderFilter,
+        // headerFilterParams: {
+        //     values: binTypes,
+        // },
         editor: "textarea", validator: '', editable: false, headerFilter: "input",
         formatter: stdFormatter,
         tooltip: 'Bin',
@@ -349,21 +315,29 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     };
     table.addColumn(inventoryValueColumns);
 
-    // Add event listener for header filter changes
-    table.on("headerFilterChanged", function(){
-        let filters = {};
-        table.getHeaderFilters().forEach(function(filter){
-            if(filter.value){
-                filters[filter.field] = filter.value;
-            }
-        });
-        loadFilteredData(filters);
-    });
-
-    // Initial data load
-    loadFilteredData();
+    const loadingIcon = createLoadingIcon();
+    const reportWIP = document.getElementById('report-wip');
+    const tableTitle = document.getElementById('table-title');
+    loadingIcon.style.display = 'block';
+    reportWIP.style.display = 'none';
+    tableTitle.style.display = 'none';
 
     document.addEventListener("DOMContentLoaded", () => { setDefaultDates(); });
+    let params = { endDate: formatDate(new Date()), startDate: formatDate(new Date()) };
+
+    https.post.promise({ url: resourcesUrl, body: JSON.stringify(params), headers: { 'Content-Type': 'application/json' } })
+        .then((response) => {
+            let data = JSON.parse(response.body);
+            table.setData(data.data);
+        })
+        .catch((error) => {
+            console.error(error);
+        })
+        .finally(() => {
+            loadingIcon.style.display = 'none';
+            reportWIP.style.display = 'block';
+            tableTitle.style.display = 'block';
+        });
 });
 
 //---------------------------------------------------APPLY FILTER EVENT DATA---------------------------------------------------
