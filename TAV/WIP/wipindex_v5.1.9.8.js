@@ -143,6 +143,7 @@ const table = new Tabulator("#report-wip", {
     movableRows: false,
     groupToggleElement: true,
     dataTree: true,
+    dataTreeCollapseElement:"<i class='fas fa-minus-square'></i>", //fontawesome toggle icon
     tabulatorId: "report-wip-table",
     ajaxURL: '',
     ajaxParams: {},
