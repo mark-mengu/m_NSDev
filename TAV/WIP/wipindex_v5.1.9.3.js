@@ -142,21 +142,21 @@ var createLoadingIcon = () => {
 const table = new Tabulator("#report-wip", {
     movableRows: false,
     groupToggleElement: true,
-    //dataTree: true,
+    dataTree: true,
     tabulatorId: "report-wip-table",
     ajaxURL: '',
     ajaxParams: {},
     ajaxFiltering: true,
-    rowHeader: {
-        resizable: true,
-        frozen: true,
-        width: 70,
-        formatter: (cell) => {
-            let rowNumber = cell.getRow().getPosition();
-            return '<div class="row-index">' + rowNumber + '</div>';
-        },
-        hozAlign: "center"
-    },
+    // rowHeader: {
+    //     resizable: true,
+    //     frozen: true,
+    //     width: 70,
+    //     formatter: (cell) => {
+    //         let rowNumber = cell.getRow().getPosition();
+    //         return '<div class="row-index">' + rowNumber + '</div>';
+    //     },
+    //     hozAlign: "center"
+    // },
     selectableRangeRows: false,
     columnDefaults: { headerSort: true, resizable: "header" },
     dataLoaderLoading: "Loading data...",
@@ -193,7 +193,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         title: "Transazione", field: "docnumber", editor: "textarea", validator: '', headerFilterPlaceholder: "Filtra una transazione...", editable: false, width: 200, minWidth: 150, maxWidth: 300, headerFilter: "input", formatter: stdBoldFormatter, tooltip: 'Articolo'
     };
     table.addColumn(trxColumns);
-    
+
     let quantityColumns = {
         title: "Quantity", field: "quantity", editor: "textarea", validator: '', editable: false, width: 130, minWidth: 80, maxWidth: 140, formatter: stdFormatter,
         tooltip: 'Quantità',
