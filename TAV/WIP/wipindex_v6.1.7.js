@@ -156,10 +156,7 @@ const table = new Tabulator("#report-wip", {
         resizable: true,
         frozen: true,
         width: 70,
-        formatter: (cell) => {
-            let rowNumber = cell.getRow().getPosition();
-            return '<div class="row-index">' + rowNumber + '</div>';
-        },
+        formatter: (cell) => { let rowNumber = cell.getRow().getPosition(); },
         hozAlign: "center"
     },
     selectableRangeRows: false,
