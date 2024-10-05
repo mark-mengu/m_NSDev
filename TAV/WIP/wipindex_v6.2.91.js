@@ -230,7 +230,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     });
 
     let accountColumns = {
-        title: "Conto Magazzino", field: "account", editor: "textarea", headerFilterPlaceholder: "Filtra un conto...", validator: '', width: 570, minWidth: 200, maxWidth: 700, editable: false, headerFilter: "input", formatter: stdBoldFormatter, tooltip: 'Magazzino/Location'
+        title: "Conto Magazzino", field: "account", editor: "textarea", headerFilterPlaceholder: "Filtra un conto...", validator: '', width: 570, minWidth: 200, maxWidth: 700, editable: false, headerFilter: "", formatter: stdBoldFormatter, tooltip: 'Magazzino/Location'
     };
     table.addColumn(accountColumns);
 
@@ -246,11 +246,11 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     table.addColumn(quantityColumns);
 
     let itemColumns = {
-        title: "Articolo", field: "item", editor: "textarea", headerFilterPlaceholder: "Filtra un articolo...", validator: '', editable: false, width: 500, minWidth: 300, maxWidth: 600, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
+        title: "Articolo", field: "item", editor: "textarea", headerFilterPlaceholder: "Filtra un articolo...", validator: '', editable: false, width: 500, minWidth: 300, maxWidth: 600, headerFilter: "", formatter: stdFormatter, tooltip: 'Articolo'
     };
     table.addColumn(itemColumns);
     let locationColumns = {
-        title: "Location", field: "location", editor: "textarea", headerFilterPlaceholder: "...", validator: '', editable: false, width: 120, minWidth: 80, maxWidth: 150, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
+        title: "Location", field: "location", editor: "textarea", headerFilterPlaceholder: "...", validator: '', editable: false, width: 120, minWidth: 80, maxWidth: 150, headerFilter: "", formatter: stdFormatter, tooltip: 'Magazzino/Location'
     };
     table.addColumn(locationColumns);
 
@@ -265,7 +265,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         // headerFilterParams: {
         //     values: binTypes,
         // },
-        editor: "textarea", validator: '', editable: false, headerFilter: "input",
+        editor: "textarea", validator: '', editable: false, headerFilter: "",
         formatter: stdFormatter,
         tooltip: 'Bin'
     };
