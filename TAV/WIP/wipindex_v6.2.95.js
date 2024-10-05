@@ -189,16 +189,15 @@ const table = new Tabulator("#report-wip", {
     dataTree: true,
     dataTreeCollapseElement: `<span class="data-tree-collapse-element"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><rect x="2" y="2" width="20" height="20" rx="4" ry="4" fill="#00ff00" /><rect x="6" y="11" width="12" height="2" fill="#FFFFFF" /></svg></span>`,
     dataTreeExpandElement: `<span class="data-tree-collapse-element"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><rect x="2" y="2" width="20" height="20" rx="4" ry="4" fill="#ff0000" /><rect x="6" y="11" width="12" height="2" fill="#FFFFFF" /></svg></span>`,
-    dataTreeFilter: true,
     tabulatorId: "report-wip-table",
     ajaxURL: '',
     ajaxParams: {},
-    ajaxFiltering: true,
+    ajaxFiltering: false,
     rowHeader: {
         resizable: true,
         frozen: true,
         width: 70,
-        formatter: (cell) => { let rowNumber = cell.getRow().getPosition(); },
+        formatter: (cell) => { cell.getRow().getPosition(); },
         hozAlign: "center"
     },
     selectableRangeRows: false,
@@ -206,7 +205,7 @@ const table = new Tabulator("#report-wip", {
     dataLoaderLoading: "Loading data...",
     placeholder: "No DATA Found...",
     pagination: "local",
-    paginationSize: 500,
+    paginationSize: 150,
     ajaxProgressiveLoad: "scroll",
     rowFormatter: (row) => {
         let data = row.getData();
