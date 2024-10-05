@@ -39,7 +39,7 @@ const binFilter = (headerValue, rowValue, rowData, filterParams) => {
         // If there are matching children, we need to show this row and update its value
         if (filteredChildren.length > 0) {
             // Calculate new item_value for the parent based on filtered children
-            const newItemValue = filteredChildren.reduce((sum, child) => 
+            const newItemValue = filteredChildren.reduce((sum, child) =>
                 sum + parseFloat(child.item_value), 0
             ).toFixed(2);
 
@@ -226,6 +226,7 @@ const table = new Tabulator("#report-wip", {
     dataTreeCollapseElement: `<i class='fas fa-minus-square' style='font-size: 30px; color: #ff0000;'></i>`,
     dataTreeExpandElement: `<i class="fa fa-plus-square" aria-hidden="true" style='font-size: 30px; color: #00ff00;'></i>`,
     dataTreeChildIndent: 15,
+    dataTreeFilter: true,
     tabulatorId: "report-wip-table",
     ajaxURL: '',
     ajaxParams: {},
@@ -297,7 +298,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         minWidth: 80,
         maxWidth: 150,
         headerFilterPlaceholder: "...",
-        headerFilterFunc: binFilter,
+        //headerFilterFunc: binFilter,
         //headerFilter: multiSelectHeaderFilter,
         // headerFilterParams: {
         //     values: binTypes,
