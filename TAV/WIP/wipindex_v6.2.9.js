@@ -9,9 +9,54 @@ var validate = (cell) => {
 
 const formatDate = (date) => {
     let day = String(date.getDate()).padStart(2, '0');
-    let month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    let month = String(date.getMonth() + 1).padStart(2, '0');
     let year = date.getFullYear();
     return `${year}-${month}-${day}`;
+}
+//-------------------------------------------------FILTER BIN---------------------------------------------------------------
+const binFilter = (headerValue, rowValue, rowData, filterParams) => {
+    //headerValue - the value of the header filter element
+    //rowValue - the value of the column in this row
+    //rowData - the data for the row being filtered
+    //filterParams - params object passed to the headerFilterFuncParams property
+
+    return rowData.name == filterParams.name && rowValue < headerValue; //must return a boolean, true if it passes the filter.
+}
+//-------------------------------------------------FILTER BIN---------------------------------------------------------------
+const locationFilter = (headerValue, rowValue, rowData, filterParams) => {
+    //headerValue - the value of the header filter element
+    //rowValue - the value of the column in this row
+    //rowData - the data for the row being filtered
+    //filterParams - params object passed to the headerFilterFuncParams property
+
+    return rowData.name == filterParams.name && rowValue < headerValue; //must return a boolean, true if it passes the filter.
+}
+//-------------------------------------------------FILTER BIN---------------------------------------------------------------
+const tranFilter = (headerValue, rowValue, rowData, filterParams) => {
+    //headerValue - the value of the header filter element
+    //rowValue - the value of the column in this row
+    //rowData - the data for the row being filtered
+    //filterParams - params object passed to the headerFilterFuncParams property
+
+    return rowData.name == filterParams.name && rowValue < headerValue; //must return a boolean, true if it passes the filter.
+}
+//-------------------------------------------------FILTER BIN---------------------------------------------------------------
+const itemFilter = (headerValue, rowValue, rowData, filterParams) => {
+    //headerValue - the value of the header filter element
+    //rowValue - the value of the column in this row
+    //rowData - the data for the row being filtered
+    //filterParams - params object passed to the headerFilterFuncParams property
+
+    return rowData.name == filterParams.name && rowValue < headerValue; //must return a boolean, true if it passes the filter.
+}
+//-------------------------------------------------FILTER BIN---------------------------------------------------------------
+const accountFilter = (headerValue, rowValue, rowData, filterParams) => {
+    //headerValue - the value of the header filter element
+    //rowValue - the value of the column in this row
+    //rowData - the data for the row being filtered
+    //filterParams - params object passed to the headerFilterFuncParams property
+
+    return rowData.name == filterParams.name && rowValue < headerValue; //must return a boolean, true if it passes the filter.
 }
 //----------------------------------------------DEFAULT DATES------------------------------------------------
 const setDefaultDates = () => {
