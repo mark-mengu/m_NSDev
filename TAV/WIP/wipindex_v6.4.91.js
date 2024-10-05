@@ -22,7 +22,25 @@ const binFilter = (headerValue, rowValue, rowData, filterParams) => {
         originalData = JSON.parse(JSON.stringify(rowData));
     }
 
-    // Se il filtro è vuoto, ripristina i dati originali
+    // Funzione per ricalcolare i totali per i padri
+    const recalculateParentTotals = (data) => {
+        data.forEach(row => {
+            if (row._children && row._children.length > 0) {
+                // Ricalcola il totale per il padre
+                let totalItemValue = row._children.reduce((sum, child) => {
+                    return sum + parseFloat(child.item_value) || 0;
+                }, 0);
+                
+                // Aggiorna il valore del padre
+                row.item_value = totalItemValue.toFixed(2);
+
+                // Ricorsione per ricalcolare eventuali padri nei livelli inferiori
+                recalculateParentTotals(row._children);
+            }
+        });
+    };
+
+    // Se il filtro è vuoto, ripristina i dati originali e ricalcola i totali
     if (!headerValue) {
         // Ripristina i dati originali
         rowData.forEach((row, index) => {
@@ -35,14 +53,17 @@ const binFilter = (headerValue, rowValue, rowData, filterParams) => {
             }
         });
 
-        // Restituisci true per mostrare tutte le righe
+        // Ricalcola i totali per tutti i padri
+        recalculateParentTotals(rowData);
+
+        // Mostra tutte le righe
         return true;
     }
 
     // Variabile per mantenere il totale item_value
     let totalItemValue = 0;
 
-    // Se la riga ha figli, filtrali
+    // Se la riga ha figli, filtrali e aggiorna il totale automaticamente
     if (rowData._children && rowData._children.length > 0) {
         // Filtra i figli in base al bin
         const filteredChildren = rowData._children.filter(child =>
@@ -57,6 +78,9 @@ const binFilter = (headerValue, rowValue, rowData, filterParams) => {
             
             // Aggiorna la riga padre con il nuovo totale
             rowData.item_value = totalItemValue.toFixed(2);
+
+            // Aggiorna i figli con i figli filtrati
+            rowData._children = filteredChildren;
 
             // Mostra il padre
             return true;
