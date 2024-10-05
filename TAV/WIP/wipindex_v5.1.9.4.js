@@ -147,16 +147,16 @@ const table = new Tabulator("#report-wip", {
     ajaxURL: '',
     ajaxParams: {},
     ajaxFiltering: true,
-    // rowHeader: {
-    //     resizable: true,
-    //     frozen: true,
-    //     width: 70,
-    //     formatter: (cell) => {
-    //         let rowNumber = cell.getRow().getPosition();
-    //         return '<div class="row-index">' + rowNumber + '</div>';
-    //     },
-    //     hozAlign: "center"
-    // },
+    rowHeader: {
+        resizable: true,
+        frozen: true,
+        width: 70,
+        formatter: (cell) => {
+            let rowNumber = cell.getRow().getPosition();
+            return '<div class="row-index">' + rowNumber + '</div>';
+        },
+        hozAlign: "center"
+    },
     selectableRangeRows: false,
     columnDefaults: { headerSort: true, resizable: "header" },
     dataLoaderLoading: "Loading data...",
