@@ -143,6 +143,7 @@ const table = new Tabulator("#report-wip", {
     movableRows: false,
     groupToggleElement: true,
     dataTree: true,
+    dataTreeChildField: "_account",
     tabulatorId: "report-wip-table",
     ajaxURL: '',
     ajaxParams: {},
@@ -189,6 +190,11 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     //     title: " ", field: "seeitem", editor: "textarea", validator: '', editable: false, headerFilter: "", width: 200, minWidth: 150, maxWidth: 300, formatter: detailFormatter, tooltip: 'Vedi Dettaglio Articolo'
     // };
     // table.addColumn(docValueColumns);
+    let accountColumns = {
+        title: "Conto Magazzino", field: "account", editor: "textarea", headerFilterPlaceholder: "Filtra un conto...", validator: '', width: 450, minWidth: 200, maxWidth: 500, editable: false, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
+    };
+    table.addColumn(accountColumns);
+
     let trxColumns = {
         title: "Transazione", field: "docnumber", editor: "textarea", validator: '', headerFilterPlaceholder: "Filtra una transazione...", editable: false, width: 200, minWidth: 150, maxWidth: 300, headerFilter: "input", formatter: stdBoldFormatter, tooltip: 'Articolo'
     };
@@ -226,10 +232,6 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     };
     table.addColumn(binColumns);
 
-    let accountColumns = {
-        title: "Conto Magazzino", field: "account", editor: "textarea", headerFilterPlaceholder: "Filtra un conto...", validator: '', width: 450, minWidth: 200, maxWidth: 500, editable: false, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
-    };
-    table.addColumn(accountColumns);
     let inventoryValueColumns = {
         title: "Valore al Costo Medio", field: "item_value", editor: "textarea", validator: '', width: 260, minWidth: 150, maxWidth: 300, editable: false, formatter: inventoryValueFormatter,
         topCalc: 'sum', tooltip: 'Valore al Costo Medio', topCalcParams: { precision: 2 },
