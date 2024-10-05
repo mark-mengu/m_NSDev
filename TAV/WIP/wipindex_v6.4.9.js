@@ -22,9 +22,21 @@ const binFilter = (headerValue, rowValue, rowData, filterParams) => {
         originalData = JSON.parse(JSON.stringify(rowData));
     }
 
-    // Se il filtro è vuoto, mostra tutte le righe
+    // Se il filtro è vuoto, ripristina i dati originali
     if (!headerValue) {
-        return true; // Mostra tutte le righe
+        // Ripristina i dati originali
+        rowData.forEach((row, index) => {
+            // Ripristina la riga padre dal dataset originale
+            row.item_value = originalData[index].item_value;
+            
+            // Ripristina anche i figli se ci sono
+            if (row._children) {
+                row._children = originalData[index]._children;
+            }
+        });
+
+        // Restituisci true per mostrare tutte le righe
+        return true;
     }
 
     // Variabile per mantenere il totale item_value
