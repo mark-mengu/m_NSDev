@@ -145,7 +145,7 @@ const table = new Tabulator("#report-wip", {
     dataTreeCollapseElement: `<span class="data-tree-collapse-element"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><rect x="2" y="2" width="20" height="20" rx="4" ry="4" fill="#FFC107" /><rect x="6" y="11" width="12" height="2" fill="#FFFFFF" /></svg></span>`,
     dataTreeExpandElement: `<span class="data-tree-collapse-element"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25"><rect x="2" y="2" width="20" height="20" rx="4" ry="4" fill="#FFC107" /><rect x="6" y="11" width="12" height="2" fill="#FFFFFF" /></svg></span>`,
     dataTreeStartExpanded: function (row, level) {
-        return row.getData().driver; //expand rows where the "driver" data field is true;
+        return row.getData().driver; 
     },
     tabulatorId: "report-wip-table",
     ajaxURL: '',
@@ -194,12 +194,12 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     // };
     // table.addColumn(docValueColumns);
     let accountColumns = {
-        title: "Conto Magazzino", field: "account", editor: "textarea", headerFilterPlaceholder: "Filtra un conto...", validator: '', width: 450, minWidth: 200, maxWidth: 500, editable: false, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
+        title: "Conto Magazzino", field: "account", editor: "textarea", headerFilterPlaceholder: "Filtra un conto...", validator: '', width: 450, minWidth: 200, maxWidth: 500, editable: false, headerFilter: "input", formatter: stdBoldFormatter, tooltip: 'Magazzino/Location'
     };
     table.addColumn(accountColumns);
 
     let trxColumns = {
-        title: "Transazione", field: "docnumber", editor: "textarea", validator: '', headerFilterPlaceholder: "Filtra una transazione...", editable: false, width: 200, minWidth: 150, maxWidth: 300, headerFilter: "input", formatter: stdBoldFormatter, tooltip: 'Articolo'
+        title: "Transazione", field: "docnumber", editor: "textarea", validator: '', headerFilterPlaceholder: "Filtra una transazione...", editable: false, width: 200, minWidth: 150, maxWidth: 300, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
     };
     table.addColumn(trxColumns);
 
