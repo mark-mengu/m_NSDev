@@ -189,10 +189,11 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     //     title: " ", field: "seeitem", editor: "textarea", validator: '', editable: false, headerFilter: "", width: 200, minWidth: 150, maxWidth: 300, formatter: detailFormatter, tooltip: 'Vedi Dettaglio Articolo'
     // };
     // table.addColumn(docValueColumns);
-    // let trxColumns = {
-    //     title: "Tipo Transazione", field: "recordtype", editor: "textarea", validator: '', headerFilterPlaceholder: "Filtra una tipologia...", editable: false, width: 200, minWidth: 150, maxWidth: 300, headerFilter: "input", formatter: stdBoldFormatter, tooltip: 'Articolo'
-    // };
-    // table.addColumn(trxColumns);
+    let trxColumns = {
+        title: "Transazione", field: "docnumber", editor: "textarea", validator: '', headerFilterPlaceholder: "Filtra una transazione...", editable: false, width: 200, minWidth: 150, maxWidth: 300, headerFilter: "input", formatter: stdBoldFormatter, tooltip: 'Articolo'
+    };
+    table.addColumn(trxColumns);
+    
     let quantityColumns = {
         title: "Quantity", field: "quantity", editor: "textarea", validator: '', editable: false, width: 130, minWidth: 80, maxWidth: 140, formatter: stdFormatter,
         tooltip: 'Quantità',
