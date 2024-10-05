@@ -149,13 +149,13 @@ const table = new Tabulator("#report-wip", {
     ajaxURL: '',
     ajaxParams: {},
     ajaxFiltering: true,
-    // rowHeader: {
-    //     resizable: true,
-    //     frozen: true,
-    //     width: 70,
-    //     formatter: (cell) => { let rowNumber = cell.getRow().getPosition(); },
-    //     hozAlign: "center"
-    // },
+    rowHeader: {
+        resizable: true,
+        frozen: true,
+        width: 70,
+        formatter: (cell) => { let rowNumber = cell.getRow().getPosition(); },
+        hozAlign: "center"
+    },
     selectableRangeRows: false,
     columnDefaults: { headerSort: true, resizable: "header" },
     dataLoaderLoading: "Loading data...",
@@ -184,17 +184,13 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         params: {}
     });
 
-    // let docValueColumns = {
-    //     title: " ", field: "seeitem", editor: "textarea", validator: '', editable: false, headerFilter: "", width: 200, minWidth: 150, maxWidth: 300, formatter: detailFormatter, tooltip: 'Vedi Dettaglio Articolo'
-    // };
-    // table.addColumn(docValueColumns);
     let accountColumns = {
         title: "Conto Magazzino", field: "account", editor: "textarea", headerFilterPlaceholder: "Filtra un conto...", validator: '', width: 570, minWidth: 200, maxWidth: 700, editable: false, headerFilter: "input", formatter: stdBoldFormatter, tooltip: 'Magazzino/Location'
     };
     table.addColumn(accountColumns);
 
     let trxColumns = {
-        title: "Transazione", field: "docnumber", editor: "textarea", validator: '', headerFilterPlaceholder: "Filtra una transazione...", editable: false, width: 200, minWidth: 150, maxWidth: 300, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
+        title: "Transazione", field: "docnumber", editor: "textarea", validator: '', headerFilterPlaceholder: "Filtra una transazione...", editable: false, width: 200, minWidth: 150, maxWidth: 300, headerFilter: "", formatter: stdFormatter, tooltip: 'Articolo'
     };
     table.addColumn(trxColumns);
 
