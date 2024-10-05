@@ -14,49 +14,51 @@ const formatDate = (date) => {
     return `${year}-${month}-${day}`;
 }
 //-------------------------------------------------FILTER BIN---------------------------------------------------------------
-// Store the original data outside the filter function
 let originalData = null;
 
 const binFilter = (headerValue, rowValue, rowData, filterParams) => {
-    // If this is the first time the filter is run, store the original data
+    // Se è la prima volta che viene eseguito il filtro, memorizza i dati originali
     if (!originalData) {
         originalData = JSON.parse(JSON.stringify(rowData));
     }
 
-    // If the filter is empty, reset to original data
+    // Se il filtro è vuoto, mostra tutte le righe
     if (!headerValue) {
-        Object.assign(rowData, originalData);
-        return true; // Show all rows
+        return true; // Mostra tutte le righe
     }
 
-    // If the row has children, we need to filter them
+    // Variabile per mantenere il totale item_value
+    let totalItemValue = 0;
+
+    // Se la riga ha figli, filtrali
     if (rowData._children && rowData._children.length > 0) {
-        // Filter children based on the bin value
+        // Filtra i figli in base al bin
         const filteredChildren = rowData._children.filter(child =>
             child.bin.toLowerCase().includes(headerValue.toLowerCase())
         );
 
-        // If there are matching children, we need to show this row and update its value
+        // Se ci sono figli filtrati, calcola il nuovo totale
         if (filteredChildren.length > 0) {
-            // Calculate new item_value for the parent based on filtered children
-            const newItemValue = filteredChildren.reduce((sum, child) =>
-                sum + parseFloat(child.item_value), 0
-            ).toFixed(2);
+            totalItemValue = filteredChildren.reduce((sum, child) => {
+                return sum + parseFloat(child.item_value) || 0;
+            }, 0);
+            
+            // Aggiorna la riga padre con il nuovo totale
+            rowData.item_value = totalItemValue.toFixed(2);
 
-            // Update the parent's item_value
-            rowData.item_value = newItemValue;
-
-            // Update the children array with only the filtered children
-            rowData._children = filteredChildren;
-
-            return true; // Show this row
+            // Mostra il padre
+            return true;
         }
-
-        return false; // Hide this row if no children match
+        
+        // Se non ci sono figli che corrispondono al filtro, nascondi il padre
+        return false;
     }
 
-    // For rows without children, check if their bin matches
-    return rowData.bin.toLowerCase().includes(headerValue.toLowerCase());
+    // Per le righe senza figli, verifica se il bin corrisponde
+    const matchesBin = rowData.bin.toLowerCase().includes(headerValue.toLowerCase());
+    
+    // Se corrisponde, mostra la riga, altrimenti nascondila
+    return matchesBin;
 };
 //-------------------------------------------------FILTER BIN---------------------------------------------------------------
 const locationFilter = (headerValue, rowValue, rowData, filterParams) => {
