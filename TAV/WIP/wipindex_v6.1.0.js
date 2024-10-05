@@ -142,7 +142,7 @@ var createLoadingIcon = () => {
 const table = new Tabulator("#report-wip", {
     movableRows: false,
     dataTree: true,
-    dataTreeCollapseElement:"<i class='fas fa-minus-square'></i>", //fontawesome toggle icon
+    dataTreeCollapseElement: `<span class="data-tree-collapse-element"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><rect x="2" y="2" width="20" height="20" rx="4" ry="4" fill="#FFC107" /><rect x="6" y="11" width="12" height="2" fill="#FFFFFF" /></svg></span>`, 
     tabulatorId: "report-wip-table",
     ajaxURL: '',
     ajaxParams: {},
