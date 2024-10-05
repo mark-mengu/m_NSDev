@@ -335,24 +335,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         minWidth: 80,
         maxWidth: 150,
         headerFilterPlaceholder: "...",
-        headerFilterParams: {
-            values: true, //enable the values list for the filter
-            sortValuesList: "asc", //sort the values list in ascending order
-            allowEmpty: true, //allow empty string values
-            valuesLookup: function (cell, filterParams) {
-                //ajax request to get the filter options
-                return new Promise((resolve, reject) => {
-                    fetch('https://api.example.com/filter-options')
-                        .then(response => response.json())
-                        .then(data => {
-                            resolve(data);
-                        })
-                        .catch(error => {
-                            reject(error);
-                        });
-                });
-            }
-        },
+
         editor: "textarea", validator: '', editable: false, headerFilter: "input",
         formatter: stdFormatter,
         tooltip: 'Bin',
@@ -375,19 +358,8 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     document.addEventListener("DOMContentLoaded", () => { setDefaultDates(); });
     let params = { endDate: formatDate(new Date()), startDate: formatDate(new Date()) };
 
-    https.post.promise({ url: resourcesUrl, body: JSON.stringify(params), headers: { 'Content-Type': 'application/json' } })
-        .then((response) => {
-            let data = JSON.parse(response.body);
-            table.setData(data.data);
-        })
-        .catch((error) => {
-            console.error(error);
-        })
-        .finally(() => {
-            loadingIcon.style.display = 'none';
-            reportWIP.style.display = 'block';
-            tableTitle.style.display = 'block';
-        });
+    // Initial data load
+    table.setData();
 });
 
 //---------------------------------------------------APPLY FILTER EVENT DATA---------------------------------------------------
