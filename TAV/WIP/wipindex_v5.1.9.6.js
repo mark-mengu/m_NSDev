@@ -143,7 +143,6 @@ const table = new Tabulator("#report-wip", {
     movableRows: false,
     groupToggleElement: true,
     dataTree: true,
-    dataTreeChildField: "_account",
     tabulatorId: "report-wip-table",
     ajaxURL: '',
     ajaxParams: {},
