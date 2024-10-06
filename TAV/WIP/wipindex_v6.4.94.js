@@ -335,12 +335,14 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         minWidth: 80,
         maxWidth: 150,
         headerFilterPlaceholder: "...",
+        headerFilter: "input",
+        headerFilterLiveFilter:false,
         //headerFilterFunc: binFilter,
         //headerFilter: multiSelectHeaderFilter,
         // headerFilterParams: {
         //     values: binTypes,
         // },
-        editor: "textarea", validator: '', editable: false, headerFilter: "input",
+        validator: '',
         formatter: stdFormatter,
         tooltip: 'Bin',
     };
