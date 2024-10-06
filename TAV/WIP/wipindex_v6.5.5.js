@@ -151,7 +151,8 @@ const table = new Tabulator("#report-wip", {
         let totalValue = data.reduce((sum, row) => sum + row.item_value, 0);
         return value +
             "<span style='color:#d00; margin-left:10px;'>(" + count + " risultati)</span>" +
-            "<span style='margin-left:20px;'>Valore TOTALE CONTO: " + totalValue.toFixed(2) + "</span>";
+            "<span style='margin-left:20px; padding: 5px; border: 2px solid #ffcc00; background-color: #ffeb3b; font-weight: bold;'>" +
+            "TOTALE CONTO: " + totalValue.toFixed(2) + " €</span>";
     },
     tabulatorId: "report-wip-table",
     ajaxURL: '',
