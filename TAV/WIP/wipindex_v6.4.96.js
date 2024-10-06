@@ -14,19 +14,16 @@ const formatDate = (date) => {
     return `${year}-${month}-${day}`;
 }
 //-------------------------------------------------FILTER BIN---------------------------------------------------------------
+
+// Variabile per salvare i dati originali
 let originalData = null;
 
 const binFilter = (headerValue, rowValue, rowData, filterParams) => {
-    // Se è la prima volta che viene eseguito il filtro, memorizza i dati originali
-    if (!originalData) {
-        originalData = JSON.parse(JSON.stringify(rowData));
-    }
-
     // Funzione per ricalcolare i totali per i padri
     const recalculateParentTotals = (data) => {
         data.forEach(row => {
             if (row._children && row._children.length > 0) {
-                // Ricalcola il totale per il padre
+                // Ricalcola il totale per il padre basato sui figli filtrati
                 let totalItemValue = row._children.reduce((sum, child) => {
                     return sum + parseFloat(child.item_value) || 0;
                 }, 0);
@@ -40,61 +37,56 @@ const binFilter = (headerValue, rowValue, rowData, filterParams) => {
         });
     };
 
-    // Se il filtro è vuoto, ripristina i dati originali e ricalcola i totali
+    // Se è la prima volta che viene eseguito il filtro, memorizza i dati originali
+    if (!originalData) {
+        originalData = JSON.parse(JSON.stringify(rowData.getData()));
+    }
+
+    // Se il filtro è vuoto, ripristina i dati originali
     if (!headerValue) {
         // Ripristina i dati originali
-        rowData.forEach((row, index) => {
-            // Ripristina la riga padre dal dataset originale
-            row.item_value = originalData[index].item_value;
-            
-            // Ripristina anche i figli se ci sono
-            if (row._children) {
-                row._children = originalData[index]._children;
-            }
-        });
+        rowData.updateData(originalData);
 
         // Ricalcola i totali per tutti i padri
-        recalculateParentTotals(rowData);
+        recalculateParentTotals(originalData);
 
         // Mostra tutte le righe
         return true;
     }
 
-    // Variabile per mantenere il totale item_value
-    let totalItemValue = 0;
+    // Funzione per filtrare i figli e aggiornare i padri
+    const filterChildren = (row) => {
+        if (row._children && row._children.length > 0) {
+            // Filtra i figli in base al bin
+            const filteredChildren = row._children.filter(child => 
+                child.bin.toLowerCase().includes(headerValue.toLowerCase())
+            );
 
-    // Se la riga ha figli, filtrali e aggiorna il totale automaticamente
-    if (rowData._children && rowData._children.length > 0) {
-        // Filtra i figli in base al bin
-        const filteredChildren = rowData._children.filter(child =>
-            child.bin.toLowerCase().includes(headerValue.toLowerCase())
-        );
+            // Se ci sono figli filtrati, calcola il nuovo totale e mostra il padre
+            if (filteredChildren.length > 0) {
+                const totalItemValue = filteredChildren.reduce((sum, child) => {
+                    return sum + parseFloat(child.item_value) || 0;
+                }, 0);
 
-        // Se ci sono figli filtrati, calcola il nuovo totale
-        if (filteredChildren.length > 0) {
-            totalItemValue = filteredChildren.reduce((sum, child) => {
-                return sum + parseFloat(child.item_value) || 0;
-            }, 0);
-            
-            // Aggiorna la riga padre con il nuovo totale
-            rowData.item_value = totalItemValue.toFixed(2);
+                // Aggiorna il valore del padre
+                row.item_value = totalItemValue.toFixed(2);
 
-            // Aggiorna i figli con i figli filtrati
-            rowData._children = filteredChildren;
+                // Aggiorna i figli del padre con i figli filtrati
+                row._children = filteredChildren;
 
-            // Mostra il padre
-            return true;
+                // Mostra il padre
+                return true;
+            }
+            // Se non ci sono figli che corrispondono al filtro, nascondi il padre
+            return false;
         }
-        
-        // Se non ci sono figli che corrispondono al filtro, nascondi il padre
-        return false;
-    }
 
-    // Per le righe senza figli, verifica se il bin corrisponde
-    const matchesBin = rowData.bin.toLowerCase().includes(headerValue.toLowerCase());
-    
-    // Se corrisponde, mostra la riga, altrimenti nascondila
-    return matchesBin;
+        // Per le righe senza figli, verifica se il bin corrisponde
+        return row.bin.toLowerCase().includes(headerValue.toLowerCase());
+    };
+
+    // Applica il filtro a ciascuna riga del dataset
+    return filterChildren(rowData);
 };
 //-------------------------------------------------FILTER BIN---------------------------------------------------------------
 const locationFilter = (headerValue, rowValue, rowData, filterParams) => {
@@ -263,7 +255,7 @@ const table = new Tabulator("#report-wip", {
     dataTree: true,
     dataTreeCollapseElement: `<i class='fas fa-minus-square' style='font-size: 30px; color: #ff0000;'></i>`,
     dataTreeExpandElement: `<i class="fa fa-plus-square" aria-hidden="true" style='font-size: 30px; color: #00ff00;'></i>`,
-    dataTreeFilter: true,
+    dataTreeChildIndent: 15,
     tabulatorId: "report-wip-table",
     ajaxURL: '',
     ajaxParams: {},
@@ -275,7 +267,6 @@ const table = new Tabulator("#report-wip", {
     //     formatter: (cell) => { cell.getRow().getPosition(); },
     //     hozAlign: "center"
     // },
-    selectableRangeRows: false,
     columnDefaults: { headerSort: true, resizable: "header" },
     dataLoaderLoading: "Loading data...",
     placeholder: "No DATA Found...",
@@ -284,7 +275,7 @@ const table = new Tabulator("#report-wip", {
     ajaxProgressiveLoad: "scroll",
     rowFormatter: (row) => {
         let data = row.getData();
-        if (data.inv_text == ' ') {
+        if (data.item_value == 0) {
             let cells = row.getCells();
             cells.forEach(cell => {
                 cell.getElement().style.color = "red";
@@ -336,8 +327,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         maxWidth: 150,
         headerFilterPlaceholder: "...",
         headerFilter: "input",
-        headerFilterLiveFilter:false,
-        //headerFilterFunc: binFilter,
+        headerFilterFunc: binFilter,
         //headerFilter: multiSelectHeaderFilter,
         // headerFilterParams: {
         //     values: binTypes,
