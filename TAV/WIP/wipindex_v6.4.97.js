@@ -14,79 +14,57 @@ const formatDate = (date) => {
     return `${year}-${month}-${day}`;
 }
 //-------------------------------------------------FILTER BIN---------------------------------------------------------------
-
-// Variabile per salvare i dati originali
-let originalData = null;
-
 const binFilter = (headerValue, rowValue, rowData, filterParams) => {
-    // Funzione per ricalcolare i totali per i padri
-    const recalculateParentTotals = (data) => {
-        data.forEach(row => {
-            if (row._children && row._children.length > 0) {
-                // Ricalcola il totale per il padre basato sui figli filtrati
-                let totalItemValue = row._children.reduce((sum, child) => {
-                    return sum + parseFloat(child.item_value) || 0;
-                }, 0);
-                
-                // Aggiorna il valore del padre
-                row.item_value = totalItemValue.toFixed(2);
-
-                // Ricorsione per ricalcolare eventuali padri nei livelli inferiori
-                recalculateParentTotals(row._children);
-            }
-        });
-    };
-
-    // Se è la prima volta che viene eseguito il filtro, memorizza i dati originali
-    if (!originalData) {
-        originalData = JSON.parse(JSON.stringify(rowData.getData()));
+    // Controlla se il valore del filtro è vuoto o nullo, in tal caso non applicare alcun filtro
+    if (!headerValue || headerValue.trim() === "") {
+        return true; // Nessun filtro applicato, quindi mostra tutte le righe
     }
 
-    // Se il filtro è vuoto, ripristina i dati originali
-    if (!headerValue) {
-        // Ripristina i dati originali
-        rowData.updateData(originalData);
+    // Converti il valore del filtro in minuscolo per un confronto case-insensitive
+    const filterText = headerValue.toLowerCase();
 
-        // Ricalcola i totali per tutti i padri
-        recalculateParentTotals(originalData);
-
-        // Mostra tutte le righe
-        return true;
-    }
-
-    // Funzione per filtrare i figli e aggiornare i padri
-    const filterChildren = (row) => {
-        if (row._children && row._children.length > 0) {
-            // Filtra i figli in base al bin
-            const filteredChildren = row._children.filter(child => 
-                child.bin.toLowerCase().includes(headerValue.toLowerCase())
+    // Funzione ricorsiva per filtrare figli e aggiornare il valore dell'item_value del padre
+    const filterChildren = (parent) => {
+        // Filtra i figli che soddisfano il filtro
+        let filteredChildren = parent._children.filter(child => {
+            return (
+                (child.item && child.item.toLowerCase().includes(filterText)) ||
+                (child.docnumber && child.docnumber.toLowerCase().includes(filterText)) ||
+                (child.bin && child.bin.toLowerCase().includes(filterText)) ||
+                (child.location && child.location.toLowerCase().includes(filterText))
             );
+        });
 
-            // Se ci sono figli filtrati, calcola il nuovo totale e mostra il padre
-            if (filteredChildren.length > 0) {
-                const totalItemValue = filteredChildren.reduce((sum, child) => {
-                    return sum + parseFloat(child.item_value) || 0;
-                }, 0);
+        // Se ci sono figli filtrati, aggiorna il valore dell'item_value del padre
+        if (filteredChildren.length > 0) {
+            // Somma il valore item_value dei figli filtrati e aggiornalo nel padre
+            parent.item_value = filteredChildren.reduce((sum, child) => {
+                return sum + parseFloat(child.item_value || 0);
+            }, 0).toFixed(2);
 
-                // Aggiorna il valore del padre
-                row.item_value = totalItemValue.toFixed(2);
+            // Assegna i figli filtrati come _children del padre
+            parent._children = filteredChildren;
 
-                // Aggiorna i figli del padre con i figli filtrati
-                row._children = filteredChildren;
-
-                // Mostra il padre
-                return true;
-            }
-            // Se non ci sono figli che corrispondono al filtro, nascondi il padre
+            return true; // Mantieni la riga del padre visibile
+        } else {
+            // Nessun figlio soddisfa il filtro, nascondi questa riga padre
             return false;
         }
-
-        // Per le righe senza figli, verifica se il bin corrisponde
-        return row.bin.toLowerCase().includes(headerValue.toLowerCase());
     };
 
-    // Applica il filtro a ciascuna riga del dataset
-    return filterChildren(rowData);
+    // Controlla se il nodo principale ha figli (_children) e filtra di conseguenza
+    if (rowData._children && rowData._children.length > 0) {
+        return filterChildren(rowData);
+    }
+
+    // Filtra le righe principali (quelle senza figli)
+    return (
+        (rowValue && rowValue.toString().toLowerCase().includes(filterText)) ||
+        (rowData.item && rowData.item.toLowerCase().includes(filterText)) ||
+        (rowData.docnumber && rowData.docnumber.toLowerCase().includes(filterText)) ||
+        (rowData.bin && rowData.bin.toLowerCase().includes(filterText)) ||
+        (rowData.location && rowData.location.toLowerCase().includes(filterText))
+    );
 };
 //-------------------------------------------------FILTER BIN---------------------------------------------------------------
 const locationFilter = (headerValue, rowValue, rowData, filterParams) => {
