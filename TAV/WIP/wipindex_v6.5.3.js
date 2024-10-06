@@ -1,6 +1,5 @@
 //--------------------------------------------------------------RAWss FUNCTIONS-----------------------------------------
 var validate = (cell) => {
-    let q = cell.getValue();
     console.log('cell.getData()', cell.getData());
     return true;
 }
@@ -13,50 +12,7 @@ const formatDate = (date) => {
     let year = date.getFullYear();
     return `${year}-${month}-${day}`;
 }
-//-------------------------------------------------FILTER BIN---------------------------------------------------------------
-const binFilter = (headerValue, rowValue, rowData, filterParams) => {
-    if (!headerValue) return true; // Se il filtro è vuoto, non filtrare
-    return rowData._children.some(child => {
-        // Confronta ogni campo del figlio con il valore dell'input di filtro
-        return child.bin.includes(headerValue);
-    });
-};
-//-------------------------------------------------FILTER BIN---------------------------------------------------------------
-const locationFilter = (headerValue, rowValue, rowData, filterParams) => {
-    //headerValue - the value of the header filter element
-    //rowValue - the value of the column in this row
-    //rowData - the data for the row being filtered
-    //filterParams - params object passed to the headerFilterFuncParams property
 
-    return rowData.name == filterParams.name && rowValue < headerValue; //must return a boolean, true if it passes the filter.
-}
-//-------------------------------------------------FILTER BIN---------------------------------------------------------------
-const tranFilter = (headerValue, rowValue, rowData, filterParams) => {
-    //headerValue - the value of the header filter element
-    //rowValue - the value of the column in this row
-    //rowData - the data for the row being filtered
-    //filterParams - params object passed to the headerFilterFuncParams property
-
-    return rowData.name == filterParams.name && rowValue < headerValue; //must return a boolean, true if it passes the filter.
-}
-//-------------------------------------------------FILTER BIN---------------------------------------------------------------
-const itemFilter = (headerValue, rowValue, rowData, filterParams) => {
-    //headerValue - the value of the header filter element
-    //rowValue - the value of the column in this row
-    //rowData - the data for the row being filtered
-    //filterParams - params object passed to the headerFilterFuncParams property
-
-    return rowData.name == filterParams.name && rowValue < headerValue; //must return a boolean, true if it passes the filter.
-}
-//-------------------------------------------------FILTER BIN---------------------------------------------------------------
-const accountFilter = (headerValue, rowValue, rowData, filterParams) => {
-    //headerValue - the value of the header filter element
-    //rowValue - the value of the column in this row
-    //rowData - the data for the row being filtered
-    //filterParams - params object passed to the headerFilterFuncParams property
-
-    return rowData.name == filterParams.name && rowValue < headerValue; //must return a boolean, true if it passes the filter.
-}
 //----------------------------------------------DEFAULT DATES------------------------------------------------
 const setDefaultDates = () => {
     let today = new Date();
@@ -186,9 +142,20 @@ var createLoadingIcon = () => {
 const table = new Tabulator("#report-wip", {
     movableRows: false,
     dataTree: true,
-    dataTreeCollapseElement: `<i class='fas fa-minus-square' style='font-size: 30px; color: #ff0000;'></i>`,
-    dataTreeExpandElement: `<i class="fa fa-plus-square" aria-hidden="true" style='font-size: 30px; color: #00ff00;'></i>`,
+    //dataTreeCollapseElement: `<i class='fas fa-minus-square' style='font-size: 30px; color: #ff0000;'></i>`,
+    //dataTreeExpandElement: `<i class="fa fa-plus-square" aria-hidden="true" style='font-size: 30px; color: #00ff00;'></i>`,
     groupBy: "account",
+    groupStartOpen: false,
+    groupToggleElement: "header",
+    groupHeader: function (value, count, data, group) {
+        // Calcola la somma di item_value per il gruppo
+        let totalValue = data.reduce((sum, row) => sum + row.item_value, 0);
+
+        // Visualizza l'header del gruppo
+        return value +
+            "<span style='color:#d00; margin-left:10px;'>(" + count + " items)</span>" +
+            "<span style='margin-left:20px;'>Total Value: " + totalValue.toFixed(2) + "</span>";
+    },
     tabulatorId: "report-wip-table",
     ajaxURL: '',
     ajaxParams: {},
