@@ -410,18 +410,9 @@ document.getElementById('print-xls').addEventListener('click', (event) => {
 document.getElementById('expandeee').addEventListener('click', (event) => {
     event.preventDefault();
     table.getGroups().forEach(group => {
-        group.getElement().click(); 
+        group.getElement().click();
+        return true;
     });
 
 }, false);
 
-//-----------------------------------------------------------------COLLAPSE-------------------------------------------------------------------------------
-
-document.getElementById('collapseee').addEventListener('click', (event) => {
-    event.preventDefault();
-    table.getGroups().forEach(group => {
-        if (group.isExpanded()) {
-            group.getElement().click(); 
-        }
-    });
-}, false);
