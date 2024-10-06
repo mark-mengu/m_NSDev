@@ -404,3 +404,23 @@ document.getElementById('print-xls').addEventListener('click', (event) => {
     columnsToHide.forEach(column => table.showColumn(column));
     event.preventDefault();
 }, false);
+
+//-----------------------------------------------------------------EXPAND-------------------------------------------------------------------------------
+
+document.getElementById('expandeee').addEventListener('click', (event) => {
+    table.getGroups().forEach(group => {
+        group.getElement().click(); 
+    });
+    event.preventDefault();
+}, false);
+
+//-----------------------------------------------------------------COLLAPSE-------------------------------------------------------------------------------
+
+document.getElementById('collapseee').addEventListener('click', (event) => {
+    table.getGroups().forEach(group => {
+        if (group.isExpanded()) {
+            group.getElement().click(); 
+        }
+    });
+    event.preventDefault();
+}, false);
