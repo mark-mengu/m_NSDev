@@ -161,7 +161,7 @@ const table = new Tabulator("#report-wip", {
         return value +
             `<span style='color:#007bff; margin-left:10px;'>"` + count + `" risultati"</span>` +
             `<span style='margin-left:20px; padding: 5px; border: 2px solid #ffcc00; background-color: #ffeb3b; font-weight: bold;'>` +
-            `TOTALE CONTO: ` + num.toLocaleString('it-IT', {
+            `TOTALE CONTO: ` + totalValue.toLocaleString('it-IT', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             }) + ` €</span>`;
