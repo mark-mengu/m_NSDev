@@ -164,7 +164,7 @@ const table = new Tabulator("#report-wip", {
             `TOTALE CONTO: ` + totalValue.toLocaleString('it-IT', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
-            }) + ` €</span>`;
+            }) + ` </span>`;
     },
     tabulatorId: "report-wip-table",
     ajaxURL: '',
