@@ -268,13 +268,13 @@ const table = new Tabulator("#report-wip", {
     ajaxURL: '',
     ajaxParams: {},
     ajaxFiltering: false,
-    rowHeader: {
-        resizable: true,
-        frozen: true,
-        width: 70,
-        formatter: (cell) => { cell.getRow().getPosition(); },
-        hozAlign: "center"
-    },
+    // rowHeader: {
+    //     resizable: true,
+    //     frozen: true,
+    //     width: 70,
+    //     formatter: (cell) => { cell.getRow().getPosition(); },
+    //     hozAlign: "center"
+    // },
     selectableRangeRows: false,
     columnDefaults: { headerSort: true, resizable: "header" },
     dataLoaderLoading: "Loading data...",
