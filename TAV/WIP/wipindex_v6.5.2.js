@@ -188,7 +188,7 @@ const table = new Tabulator("#report-wip", {
     dataTree: true,
     dataTreeCollapseElement: `<i class='fas fa-minus-square' style='font-size: 30px; color: #ff0000;'></i>`,
     dataTreeExpandElement: `<i class="fa fa-plus-square" aria-hidden="true" style='font-size: 30px; color: #00ff00;'></i>`,
-    //dataTreeChildIndent: 15,
+    groupBy: "account",
     tabulatorId: "report-wip-table",
     ajaxURL: '',
     ajaxParams: {},
@@ -260,7 +260,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         maxWidth: 150,
         headerFilterPlaceholder: "...",
         headerFilter: "input",
-        headerFilterFunc: binFilter,
+        //headerFilterFunc: binFilter,
         //headerFilter: multiSelectHeaderFilter,
         // headerFilterParams: {
         //     values: binTypes,
