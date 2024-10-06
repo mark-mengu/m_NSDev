@@ -407,13 +407,19 @@ document.getElementById('print-xls').addEventListener('click', (event) => {
 
 //-----------------------------------------------------------------EXPAND-------------------------------------------------------------------------------
 
-document.getElementById('expandeee').addEventListener('click', (event) => {
+document.getElementById('expande-groups').addEventListener('click', (event) => {
     event.preventDefault();
     table.blockRedraw();
-    table.getGroups().forEach((c) => {
-        console.log('group key', c.getKey(), c.isVisible());
-        c.hide();
-    });
+    table.getGroups().forEach((g) => { g.show(); });
+    table.restoreRedraw();
+
+}, false);
+//-----------------------------------------------------------------COLLAPSE-------------------------------------------------------------------------------
+
+document.getElementById('collapse-groups').addEventListener('click', (event) => {
+    event.preventDefault();
+    table.blockRedraw();
+    table.getGroups().forEach((g) => { g.hide(); });
     table.restoreRedraw();
 
 }, false);
