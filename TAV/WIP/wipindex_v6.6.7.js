@@ -408,19 +408,20 @@ document.getElementById('print-xls').addEventListener('click', (event) => {
 //-----------------------------------------------------------------EXPAND-------------------------------------------------------------------------------
 
 document.getElementById('expandeee').addEventListener('click', (event) => {
+    event.preventDefault();
     table.getGroups().forEach(group => {
         group.getElement().click(); 
     });
-    event.preventDefault();
+
 }, false);
 
 //-----------------------------------------------------------------COLLAPSE-------------------------------------------------------------------------------
 
 document.getElementById('collapseee').addEventListener('click', (event) => {
+    event.preventDefault();
     table.getGroups().forEach(group => {
         if (group.isExpanded()) {
             group.getElement().click(); 
         }
     });
-    event.preventDefault();
 }, false);
