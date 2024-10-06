@@ -15,56 +15,11 @@ const formatDate = (date) => {
 }
 //-------------------------------------------------FILTER BIN---------------------------------------------------------------
 const binFilter = (headerValue, rowValue, rowData, filterParams) => {
-    // Controlla se il valore del filtro è vuoto o nullo, in tal caso non applicare alcun filtro
-    if (!headerValue || headerValue.trim() === "") {
-        return true; // Nessun filtro applicato, quindi mostra tutte le righe
-    }
-
-    // Converti il valore del filtro in minuscolo per un confronto case-insensitive
-    const filterText = headerValue.toLowerCase();
-
-    // Funzione ricorsiva per filtrare figli e aggiornare il valore dell'item_value del padre
-    const filterChildren = (parent) => {
-        // Filtra i figli che soddisfano il filtro
-        let filteredChildren = parent._children.filter(child => {
-            return (
-                (child.item && child.item.toLowerCase().includes(filterText)) ||
-                (child.docnumber && child.docnumber.toLowerCase().includes(filterText)) ||
-                (child.bin && child.bin.toLowerCase().includes(filterText)) ||
-                (child.location && child.location.toLowerCase().includes(filterText))
-            );
-        });
-
-        // Se ci sono figli filtrati, aggiorna il valore dell'item_value del padre
-        if (filteredChildren.length > 0) {
-            // Somma il valore item_value dei figli filtrati e aggiornalo nel padre
-            parent.item_value = filteredChildren.reduce((sum, child) => {
-                return sum + parseFloat(child.item_value || 0);
-            }, 0).toFixed(2);
-
-            // Assegna i figli filtrati come _children del padre
-            parent._children = filteredChildren;
-
-            return true; // Mantieni la riga del padre visibile
-        } else {
-            // Nessun figlio soddisfa il filtro, nascondi questa riga padre
-            return false;
-        }
-    };
-
-    // Controlla se il nodo principale ha figli (_children) e filtra di conseguenza
-    if (rowData._children && rowData._children.length > 0) {
-        return filterChildren(rowData);
-    }
-
-    // Filtra le righe principali (quelle senza figli)
-    return (
-        (rowValue && rowValue.toString().toLowerCase().includes(filterText)) ||
-        (rowData.item && rowData.item.toLowerCase().includes(filterText)) ||
-        (rowData.docnumber && rowData.docnumber.toLowerCase().includes(filterText)) ||
-        (rowData.bin && rowData.bin.toLowerCase().includes(filterText)) ||
-        (rowData.location && rowData.location.toLowerCase().includes(filterText))
-    );
+    if (!headerValue) return true; // Se il filtro è vuoto, non filtrare
+    return rowData._children.some(child => {
+        // Confronta ogni campo del figlio con il valore dell'input di filtro
+        return child.item.includes(headerValue);
+    });
 };
 //-------------------------------------------------FILTER BIN---------------------------------------------------------------
 const locationFilter = (headerValue, rowValue, rowData, filterParams) => {
