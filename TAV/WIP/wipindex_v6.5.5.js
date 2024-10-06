@@ -148,7 +148,7 @@ const table = new Tabulator("#report-wip", {
     groupStartOpen: false,
     groupToggleElement: "header",
     groupHeader: (value, count, data, group) => {
-        let totalValue = data.reduce((sum, row) => sum + row.item_value, 0);
+        let totalValue = data.reduce((sum, row) => Number(sum) + Number(row.item_value), 0);
         return value +
             "<span style='color:#d00; margin-left:10px;'>(" + count + " risultati)</span>" +
             "<span style='margin-left:20px; padding: 5px; border: 2px solid #ffcc00; background-color: #ffeb3b; font-weight: bold;'>" +
