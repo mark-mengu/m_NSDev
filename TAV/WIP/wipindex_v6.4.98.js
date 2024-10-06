@@ -233,18 +233,18 @@ const table = new Tabulator("#report-wip", {
     dataTree: true,
     dataTreeCollapseElement: `<i class='fas fa-minus-square' style='font-size: 30px; color: #ff0000;'></i>`,
     dataTreeExpandElement: `<i class="fa fa-plus-square" aria-hidden="true" style='font-size: 30px; color: #00ff00;'></i>`,
-    dataTreeChildIndent: 15,
+    //dataTreeChildIndent: 15,
     tabulatorId: "report-wip-table",
     ajaxURL: '',
     ajaxParams: {},
     ajaxFiltering: false,
-    // rowHeader: {
-    //     resizable: true,
-    //     frozen: true,
-    //     width: 70,
-    //     formatter: (cell) => { cell.getRow().getPosition(); },
-    //     hozAlign: "center"
-    // },
+    rowHeader: {
+        resizable: true,
+        frozen: true,
+        width: 70,
+        formatter: (cell) => { cell.getRow().getPosition(); },
+        hozAlign: "center"
+    },
     columnDefaults: { headerSort: true, resizable: "header" },
     dataLoaderLoading: "Loading data...",
     placeholder: "No DATA Found...",
