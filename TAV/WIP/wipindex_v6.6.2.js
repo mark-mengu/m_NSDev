@@ -4,13 +4,22 @@ var validate = (cell) => {
     return true;
 }
 
-//------------------------------------------------LOAD DEFAULT DATES CALCULATED--------------------------------------------------------
+//------------------------------------------------FORMAT DATES CALCULATED--------------------------------------------------------
 
 const formatDate = (date) => {
     let day = String(date.getDate()).padStart(2, '0');
     let month = String(date.getMonth() + 1).padStart(2, '0');
     let year = date.getFullYear();
     return `${year}-${month}-${day}`;
+}
+//------------------------------------------------FORMAT NUMBERS CALCULATED--------------------------------------------------------
+
+function formatNumber(num) {
+    const roundedNum = Math.round(num * 100) / 100;
+    const [integerPart, decimalPart] = roundedNum.toString().split('.');
+    const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    const formattedDecimal = decimalPart ? decimalPart.padEnd(2, '0') : '00';
+    return `${formattedInteger},${formattedDecimal}`;
 }
 
 //----------------------------------------------DEFAULT DATES------------------------------------------------
