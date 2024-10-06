@@ -147,14 +147,11 @@ const table = new Tabulator("#report-wip", {
     groupBy: "account",
     groupStartOpen: false,
     groupToggleElement: "header",
-    groupHeader: function (value, count, data, group) {
-        // Calcola la somma di item_value per il gruppo
+    groupHeader: (value, count, data, group) => {
         let totalValue = data.reduce((sum, row) => sum + row.item_value, 0);
-
-        // Visualizza l'header del gruppo
         return value +
-            "<span style='color:#d00; margin-left:10px;'>(" + count + " items)</span>" +
-            "<span style='margin-left:20px;'>Total Value: " + totalValue.toFixed(2) + "</span>";
+            "<span style='color:#d00; margin-left:10px;'>(" + count + " risultati)</span>" +
+            "<span style='margin-left:20px;'>Valore TOTALE CONTO: " + totalValue.toFixed(2) + "</span>";
     },
     tabulatorId: "report-wip-table",
     ajaxURL: '',
