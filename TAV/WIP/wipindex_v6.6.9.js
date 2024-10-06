@@ -409,10 +409,12 @@ document.getElementById('print-xls').addEventListener('click', (event) => {
 
 document.getElementById('expandeee').addEventListener('click', (event) => {
     event.preventDefault();
-    table.getGroups().forEach(group => {
-        group.getElement().click();
-        return true;
+    table.blockRedraw();
+    table.getGroups().forEach((c) => {
+        console.log('group key', c.getKey(), c.isVisible());
+        c.hide();
     });
+    table.restoreRedraw();
 
 }, false);
 
