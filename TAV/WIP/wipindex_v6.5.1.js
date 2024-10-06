@@ -18,7 +18,7 @@ const binFilter = (headerValue, rowValue, rowData, filterParams) => {
     if (!headerValue) return true; // Se il filtro è vuoto, non filtrare
     return rowData._children.some(child => {
         // Confronta ogni campo del figlio con il valore dell'input di filtro
-        return child.item.includes(headerValue);
+        return child.bin.includes(headerValue);
     });
 };
 //-------------------------------------------------FILTER BIN---------------------------------------------------------------
