@@ -14,7 +14,7 @@ const formatDate = (date) => {
 }
 //------------------------------------------------FORMAT NUMBERS CALCULATED--------------------------------------------------------
 
-function formatNumber(num) {
+const formatNumber = (num) => {
     const roundedNum = Math.round(num * 100) / 100;
     const [integerPart, decimalPart] = roundedNum.toString().split('.');
     const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
