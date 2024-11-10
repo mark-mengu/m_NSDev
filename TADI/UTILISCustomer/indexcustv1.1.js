@@ -102,6 +102,9 @@ var createLoadingIcon = () => {
 const table = new Tabulator("#report-deposito", {
     movableRows: false,
     groupToggleElement: true,
+    initialFilter: [
+        { field: "customer_id", type: "=", value: "1" }
+    ],
     tabulatorId: "report-deposito-table",
     rowHeader: {
         resizable: true,
