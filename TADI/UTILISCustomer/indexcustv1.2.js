@@ -142,7 +142,7 @@ const table = new Tabulator("#report-deposito", {
 
 document.getElementById('report-deposito').style.display = 'none';
 document.getElementById('table-title').style.display = 'none';
-require(['N/https', 'N/url', 'N/currentRecord'], (https, url, cr) => {
+require(['N/https', 'N/url', 'N/currentRecord', 'N/runtime'], (https, url, cr, runtime) => {
     let resourcesUrl = url.resolveScript({
         scriptId: 'customscript_gn_ta_conto_deposito_data',
         deploymentId: 'customdeploy_gn_ta_conto_deposito_data',
@@ -153,6 +153,8 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url, cr) => {
             serial: cr.get().getValue('custpage_serial'),
         }
     });
+    table.setFilter(`customer_id", "=", ${runtime.getCurrentUser().id}`);
+
     let docValueColumns = {
         title: " ", field: "so_link", editor: "textarea", validator: '', editable: false, headerFilter: "", formatter: salesorderFormatter, tooltip: 'Vedi Documento'
     };
