@@ -154,10 +154,6 @@ require(['N/https', 'N/url', 'N/currentRecord', 'N/runtime'], (https, url, cr, r
         }
     });
     table.setFilter("customer_id", "=", `${runtime.getCurrentUser().id}`);
-    // table.setFilter([
-    //     { field: "customer_id", type: "=", value: currentUserId },
-    //     { field: "date", type: "=", value: cr.get().getValue('custpage_date') }
-    // ]);
 
     let docValueColumns = {
         title: " ", field: "so_link", editor: "textarea", validator: '', editable: false, headerFilter: "", formatter: salesorderFormatter, tooltip: 'Vedi Documento'
