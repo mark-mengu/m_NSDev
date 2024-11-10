@@ -102,9 +102,6 @@ var createLoadingIcon = () => {
 const table = new Tabulator("#report-deposito", {
     movableRows: false,
     groupToggleElement: true,
-    initialFilter: [
-        { field: "customer_id", type: "=", value: "1" }
-    ],
     tabulatorId: "report-deposito-table",
     rowHeader: {
         resizable: true,
@@ -154,6 +151,7 @@ require(['N/https', 'N/url', 'N/currentRecord', 'N/runtime'], (https, url, cr, r
         }
     });
     table.setFilter(`customer_id", "=", ${runtime.getCurrentUser().id}`);
+    console.log(runtime.getCurrentUser().id);
 
     let docValueColumns = {
         title: " ", field: "so_link", editor: "textarea", validator: '', editable: false, headerFilter: "", formatter: salesorderFormatter, tooltip: 'Vedi Documento'
