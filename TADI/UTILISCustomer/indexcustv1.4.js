@@ -102,6 +102,9 @@ var createLoadingIcon = () => {
 const table = new Tabulator("#report-deposito", {
     movableRows: false,
     groupToggleElement: true,
+    initialFilter: [
+        { field: "customer_id", type: "=", value: "1" }
+    ],
     tabulatorId: "report-deposito-table",
     rowHeader: {
         resizable: true,
@@ -150,8 +153,11 @@ require(['N/https', 'N/url', 'N/currentRecord', 'N/runtime'], (https, url, cr, r
             serial: cr.get().getValue('custpage_serial'),
         }
     });
-    table.setFilter(`customer_id", "=", ${runtime.getCurrentUser().id}`);
-    console.log(runtime.getCurrentUser().id);
+    table.setFilter("customer_id", "=", `${runtime.getCurrentUser().id}`);
+    // table.setFilter([
+    //     { field: "customer_id", type: "=", value: currentUserId },
+    //     { field: "date", type: "=", value: cr.get().getValue('custpage_date') }
+    // ]);
 
     let docValueColumns = {
         title: " ", field: "so_link", editor: "textarea", validator: '', editable: false, headerFilter: "", formatter: salesorderFormatter, tooltip: 'Vedi Documento'
