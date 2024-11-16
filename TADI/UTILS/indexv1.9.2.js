@@ -242,16 +242,18 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url, cr) => {
 
 document.getElementById('print-pdf').addEventListener('click', (event) => {
     table.hideColumn("to");
-    table.hideColumn("so_text");
     table.hideColumn("item_value");
     table.hideColumn("units");
+    table.hideColumn("so_consegna_link");
+    table.toggleColumn("so_text");
 
     table.download("pdf", "report_deposito.pdf", { title: "Report Controllo Merce in Conto Deposito" });
 
     table.toggleColumn("to");
-    table.toggleColumn("so_text");
+    table.toggleColumn("so_consegna_link");
     table.toggleColumn("item_value");
     table.toggleColumn("units");
+    table.hideColumn("so_text");
     event.preventDefault();
 
 }, false);
@@ -259,14 +261,17 @@ document.getElementById('print-pdf').addEventListener('click', (event) => {
 //-----------------------------------------------------------------PRINT XLS-------------------------------------------------------------------------------
 
 document.getElementById('print-xls').addEventListener('click', (event) => {
-    const columnsToHide = ["to"];
-    columnsToHide.forEach(column => table.hideColumn(column));
+    const normalcolumns = ["to", "so_consegna_link"];
+    const reversecolumns = ["so_text"];
+    normalcolumns.forEach(column => table.hideColumn(column));
+    reversecolumns.forEach(column => table.showColumn(column));
 
     table.download("xlsx", "report_deposito.xlsx", { sheetName: "Report Deposito", bom: true });
 
-    columnsToHide.forEach(column => table.showColumn(column));
-    event.preventDefault();
+    normalcolumns.forEach(column => table.showColumn(column));
+    reversecolumns.forEach(column => table.hideColumn(column));
 
+    event.preventDefault();
 }, false);
 
 
