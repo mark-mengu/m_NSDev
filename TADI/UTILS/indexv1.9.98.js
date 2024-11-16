@@ -1,7 +1,7 @@
 //--------------------------------------------------------------RAWss FUNCTIONS-----------------------------------------
 const styleS = document.createElement('style');
 styleS.textContent = `
-.custom-link {
+.custom-so-link {
     color: #4CAF50 !important;
     font-weight: bold;
     text-decoration: none;
@@ -13,20 +13,20 @@ styleS.textContent = `
     transition: all 0.3s ease;
 }
 
-.custom-link:hover {
+.custom-so-link:hover {
     background-color: #4CAF50;
     color: white !important;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transform: translateY(-2px);
 }
 
-.custom-cell {
+.custom-so-cell {
     background-color: #CACAEE;
     padding: 8px;
     border-radius: 4px;
 }
 `;
-document.head.appendChild(styleSheet);
+document.head.appendChild(styleS);
 
 var validate = (cell) => {
     let q = cell.getValue();
@@ -81,10 +81,10 @@ const salesOrderFormatter = (cell, formatterParams) => {
     let parts = so_consegna_link.split('|').map(value => value || "");    
     let link = `<a href="https://6518658.app.netsuite.com/app/common/search/searchresults.nl?searchtype=Transaction&IT_Item_NAME=&CU_Entity_ENTITYID=&AFC_Transaction_NUMBERTEXT=${parts[2]}&Transaction_NUMBERTEXT=&style=NORMAL&IT_Item_NAMEtype=CONTAINS&CU_Entity_ENTITYIDtype=CONTAINS&AFC_Transaction_NUMBERTEXTtype=CONTAINS&Transaction_NUMBERTEXTtype=CONTAINS&report=&grid=&searchid=2435&dle=T&sortcol=Transction_DATATED11_raw&sortdir=DESC&csv=HTML&OfficeXML=F&pdf=&size=1000&_csrf=nRz36NGWjWsvP7GzsEiTlgPOWs0ch0TQ6oRNqk9S4nnJHBgZd3NMuSQsJFgKf33phq1f7N9dpkE2KC20mt1IqfIIoLZD5V_MX8Euk8k384S6lIbklLz8sORggkYkhTGTo6zgkkzfQ2jFOlpvDY0eyIdnXHNHcjMhPCP7EMUIJLs%3D&twbx=F" 
         target="_blank" 
-        class="custom-link">
+        class="custom-so-link">
         ${parts[0]}
     </a>`;    
-    cell.getElement().classList.add('custom-cell');
+    cell.getElement().classList.add('custom-so-cell');
     
     return link;
 };
