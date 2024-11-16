@@ -78,16 +78,15 @@ var customerFormatter = (cell, formatterParams) => {
 
 const salesOrderFormatter = (cell, formatterParams) => {
     let so_consegna_link = cell.getValue();
-    console.log(so_consegna_link)
     let parts = so_consegna_link.split('|').map(value => value || "");
     let link = `<a href="https://6518658.app.netsuite.com/app/common/search/searchresults.nl?searchtype=Transaction&IT_Item_NAME=&CU_Entity_ENTITYID=&AFC_Transaction_NUMBERTEXT=${parts[2]}&Transaction_NUMBERTEXT=&style=NORMAL&IT_Item_NAMEtype=CONTAINS&CU_Entity_ENTITYIDtype=CONTAINS&AFC_Transaction_NUMBERTEXTtype=CONTAINS&Transaction_NUMBERTEXTtype=CONTAINS&report=&grid=&searchid=2435&dle=T&sortcol=Transction_DATATED11_raw&sortdir=DESC&csv=HTML&OfficeXML=F&pdf=&size=1000&_csrf=nRz36NGWjWsvP7GzsEiTlgPOWs0ch0TQ6oRNqk9S4nnJHBgZd3NMuSQsJFgKf33phq1f7N9dpkE2KC20mt1IqfIIoLZD5V_MX8Euk8k384S6lIbklLz8sORggkYkhTGTo6zgkkzfQ2jFOlpvDY0eyIdnXHNHcjMhPCP7EMUIJLs%3D&twbx=F" 
         target="_blank" 
         class="custom-so-link">
-        Storico C/C
+        ${parts[0]}
     </a>`;
     cell.getElement().classList.add('custom-so-cell');
 
-    return link;//parts[1] + ' ' +
+    return link;
 };
 
 var invoiceDateFormatter = (cell, formatterParams) => {
@@ -236,7 +235,7 @@ require(['N/https', 'N/url', 'N/currentRecord', "N/search", "N/runtime"], (https
     };
     table.addColumn(machineColumns);
     let machineClassColumns = {
-        title: "Item Class", field: "item_class", editor: "textarea", validator: '', width: 280, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "input", formatter: salesOrderFormatter, tooltip: '', visible: false
+        title: "Item Class", field: "item_class", editor: "textarea", validator: '', width: 280, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "input", formatter: stdFormatter, tooltip: '', visible: false
     };
     table.addColumn(machineClassColumns);
     let displaynameColumns = {
@@ -257,7 +256,6 @@ require(['N/https', 'N/url', 'N/currentRecord', "N/search", "N/runtime"], (https
         title: "U.tà", field: "units", editor: "textarea", validator: '', editable: false, formatter: stdFormatter, tooltip: 'U.tà'
     };
     table.addColumn(unitsColumn);
-
 
     const loadingIcon = createLoadingIcon();
     const reportDeposito = document.getElementById('report-deposito');
@@ -315,7 +313,7 @@ document.getElementById('print-xls').addEventListener('click', (event) => {
 
 //------------------------------------------------------------------GET SALES-------------------------------------------------------------------
 
-const getSales = (agent) => {
+const getSales = (agent) => { 
 
 }
 
