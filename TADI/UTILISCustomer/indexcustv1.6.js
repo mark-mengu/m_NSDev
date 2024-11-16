@@ -164,13 +164,13 @@ require(['N/https', 'N/url', 'N/currentRecord', 'N/runtime'], (https, url, cr, r
     };
     table.addColumn(soValueColumns);
     let invValueColumns = {
-        title: "Invoice", field: "inv_text", editor: "textarea", validator: '', editable: false, headerFilter: "input", formatter: stdFormatter, tooltip: 'Invoice Collegata'
+        title: "Fattura", field: "inv_text", editor: "textarea", validator: '', editable: false, headerFilter: "input", formatter: stdFormatter, tooltip: 'Invoice Collegata'
     };
     table.addColumn(invValueColumns);
     let customerColumn = {
-        title: "Cliente", field: "customer", editor: "textarea", validator: '', width: 280, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "input",
+        title: "Data Fattura", field: "inv_date", editor: "textarea", validator: '', width: 280, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "input",
         formatter: customerFormatter,
-        tooltip: 'Cliente',
+        tooltip: 'Data Fattura',
     };
     table.addColumn(customerColumn);
     let machineColumns = {
@@ -188,7 +188,7 @@ require(['N/https', 'N/url', 'N/currentRecord', 'N/runtime'], (https, url, cr, r
     };
     table.addColumn(serialColumns);
     let quantityColumn = {
-        title: "Quantità", field: "quantity", editor: "number", validator: '', editable: false, formatter: stdFormatter, tooltip: 'Quantità', bottomCalc: ''
+        title: "Quantità", field: "quantity", editor: "number", validator: '', editable: false, formatter: stdFormatter, tooltip: 'Quantità', bottomCalc: 'sum'
     };
     table.addColumn(quantityColumn);
     let unitsColumn = {
@@ -224,24 +224,18 @@ table.on("cellEdited", (cell) => {
 //-----------------------------------------------------------------PRINT PDF-------------------------------------------------------------------------------
 
 document.getElementById('print-pdf').addEventListener('click', (event) => {
-    table.hideColumn("to");
-    table.hideColumn("so_text");
-    table.hideColumn("item_value");
-    table.hideColumn("units");
+    table.hideColumn("so_link");
 
     table.download("pdf", "report_deposito.pdf", { title: "Report Controllo Merce in Conto Deposito" });
 
-    table.toggleColumn("to");
-    table.toggleColumn("so_text");
-    table.toggleColumn("item_value");
-    table.toggleColumn("units");
+    table.toggleColumn("so_link");
     event.preventDefault();
 }, false);
 
 //-----------------------------------------------------------------PRINT XLS-------------------------------------------------------------------------------
 
 document.getElementById('print-xls').addEventListener('click', (event) => {
-    const columnsToHide = ["to"];
+    const columnsToHide = ["so_link"];
     columnsToHide.forEach(column => table.hideColumn(column));
 
     table.download("xlsx", "report_deposito.xlsx", { sheetName: "Report Deposito", bom: true });
@@ -251,45 +245,3 @@ document.getElementById('print-xls').addEventListener('click', (event) => {
 
 }, false);
 
-//--------------------------------------------------------------EDITING NOT USED----------------------------------------------------------------------
-/*
-document.getElementById("").addEventListener("click", (event) => {
-  event.preventDefault();
-  require(['N/https', 'N/url', 'N/currentRecord', 'N/ui/dialog'], (https, url, cr, dialog) => {
-    const scriptFix = document.createElement('script');
-    scriptFix.src = "https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js";
-    scriptFix.onload = () => {
-      const _ = window._;
-      let binDatas = _.some(table.getData(), obj => _.has(obj, 'bin') && (obj.bin == null || obj.bin === '' || obj.bin === undefined));
-      if (binDatas) {
-        dialog.alert({
-          title: 'ATTENZIONE',
-          message: `<center><img src="https://9094479.app.netsuite.com/core/media/media.nl?id=3105&c=9094479&h=lZQSbeBwUYC4IQL-ZVNFLj9yHvee0pyclIO65T5hPbXxV0EY&fcts=20240401080554&whence=" width="150" height="150"> <div style="color:yellow; background-color:gray; padding:10px; border-radius:10px;"><b>Non è possibile procedere con il controllo, non è stato inserito il BIN in tutte le righe.</b></div></center>`,
-        });
-        return false;
-      }
-      let resourcesUrl = url.resolveScript({
-        scriptId: 'customscript_gn_tav_quality_control_data',
-        deploymentId: 'customdeploy_gn_tav_quality_control_data',
-      });
-      let body = {
-        data: table.getData(),
-        qualitycontrol: cr.get().getValue('custpage_quality_control'),
-        item: cr.get().getValue('custpage_item'),
-        transaction: cr.get().getValue('custpage_transaction'),
-        line: cr.get().getValue('custpage_line')
-      };
-      let response = https.post({ url: resourcesUrl, body: JSON.stringify(body) });
-      table.setData(JSON.parse(response.body).data);
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "Quality Control has been saved",
-        showConfirmButton: false,
-        timer: 2400
-      });
-      table.clearAlert();
-    };
-    document.head.appendChild(scriptFix);
-  });
-}, false);*/
