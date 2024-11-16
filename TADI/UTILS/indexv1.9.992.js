@@ -87,7 +87,7 @@ const salesOrderFormatter = (cell, formatterParams) => {
     </a>`;
     cell.getElement().classList.add('custom-so-cell');
 
-    return parts[1] + ' ' + link;
+    return link;//parts[1] + ' ' +
 };
 
 var invoiceDateFormatter = (cell, formatterParams) => {
