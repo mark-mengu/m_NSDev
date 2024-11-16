@@ -47,17 +47,54 @@ var customerFormatter = (cell, formatterParams) => {
     return '<u>' + value + '</u>';
 };
 
-var salesOrderFormatter = (cell, formatterParams) => {
+/ Definizione dello stile CSS
+const styleSheet = document.createElement('style');
+styleSheet.textContent = `
+.custom-link {
+    color: #4CAF50 !important;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background-color: #f0f0f0;
+    display: inline-block;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.custom-link:hover {
+    background-color: #4CAF50;
+    color: white !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.custom-cell {
+    background-color: #CACAEE;
+    padding: 8px;
+    border-radius: 4px;
+}
+`;
+document.head.appendChild(styleSheet);
+
+// Formatter per la colonna
+const salesOrderFormatter = (cell, formatterParams) => {
+    // Recupera il valore del campo dalla cella
     let so_consegna_link = cell.getValue();
+    
+    // Separa i dati ottenuti dal valore
     let parts = so_consegna_link.split('|').map(value => value || "");
-    let link = `<a href="https://6518658.app.netsuite.com/app/common/search/searchresults.nl?searchtype=Transaction&IT_Item_NAME=&CU_Entity_ENTITYID=&AFC_Transaction_NUMBERTEXT=${parts[2]}&Transaction_NUMBERTEXT=&style=NORMAL&IT_Item_NAMEtype=CONTAINS&CU_Entity_ENTITYIDtype=CONTAINS&AFC_Transaction_NUMBERTEXTtype=CONTAINS&Transaction_NUMBERTEXTtype=CONTAINS&report=&grid=&searchid=2435&dle=T&sortcol=Transction_DATATED11_raw&sortdir=DESC&csv=HTML&OfficeXML=F&pdf=&size=1000&_csrf=nRz36NGWjWsvP7GzsEiTlgPOWs0ch0TQ6oRNqk9S4nnJHBgZd3NMuSQsJFgKf33phq1f7N9dpkE2KC20mt1IqfIIoLZD5V_MX8Euk8k384S6lIbklLz8sORggkYkhTGTo6zgkkzfQ2jFOlpvDY0eyIdnXHNHcjMhPCP7EMUIJLs%3D&twbx=F" target="_blank" style="color: #4CAF50; font-weight: bold; text-decoration: none; padding: 4px 8px; border-radius: 4px; background-color: #f0f0f0; display: inline-block; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;">
-        ${parts[0]} 
+    
+    // Crea il link HTML con il formato desiderato
+    let link = `<a href="https://6518658.app.netsuite.com/app/common/search/searchresults.nl?searchtype=Transaction&IT_Item_NAME=&CU_Entity_ENTITYID=&AFC_Transaction_NUMBERTEXT=${parts[2]}&Transaction_NUMBERTEXT=&style=NORMAL&IT_Item_NAMEtype=CONTAINS&CU_Entity_ENTITYIDtype=CONTAINS&AFC_Transaction_NUMBERTEXTtype=CONTAINS&Transaction_NUMBERTEXTtype=CONTAINS&report=&grid=&searchid=2435&dle=T&sortcol=Transction_DATATED11_raw&sortdir=DESC&csv=HTML&OfficeXML=F&pdf=&size=1000&_csrf=nRz36NGWjWsvP7GzsEiTlgPOWs0ch0TQ6oRNqk9S4nnJHBgZd3NMuSQsJFgKf33phq1f7N9dpkE2KC20mt1IqfIIoLZD5V_MX8Euk8k384S6lIbklLz8sORggkYkhTGTo6zgkkzfQ2jFOlpvDY0eyIdnXHNHcjMhPCP7EMUIJLs%3D&twbx=F" 
+        target="_blank" 
+        class="custom-link">
+        ${parts[0]}
     </a>`;
-
-    cell.getElement().style.backgroundColor = "#CACAEE";
-    cell.getElement().style.padding = "8px";
-    cell.getElement().style.borderRadius = "4px";
-
+    
+    // Aggiungi la classe alla cella
+    cell.getElement().classList.add('custom-cell');
+    
     return link;
 };
 
