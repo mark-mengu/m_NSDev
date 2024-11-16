@@ -55,7 +55,7 @@ var salesOrderFormatter = (cell, formatterParams) => {
 
     console.log(link);
     cell.getElement().style.backgroundColor = "#CACAEE";
-    return '<u>' + so_consegna_link + '</u>';
+    return '<u>' + link + '</u>';
 };
 
 var invoiceDateFormatter = (cell, formatterParams) => {
@@ -176,7 +176,7 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url, cr) => {
     };
     table.addColumn(toValueColumns);
     let soLinkColumns = {
-        title: "Sales Order", field: "so_consegna_link", editor: "textarea", validator: '', width: 280, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "input", formatter: salesOrderFormatter, tooltip: 'Clicca per vedere i Conti Consegna Collegati'
+        title: "Sales Order", field: "so_consegna_link", editor: "textarea", validator: '', width: 280, minWidth: 200, maxWidth: 600, editable: false, headerFilter: "input", formatter: salesOrderFormatter, tooltip: 'Clicca per vedere i Conti Consegna Collegati'
     };
     table.addColumn(soLinkColumns);
     let soValueColumns = {
