@@ -41,7 +41,7 @@ var salesorderFormatter = (cell, formatterParams) => {
     return button;
 };
 
-var invoiceDateFormatterFormatter = (cell, formatterParams) => {
+var invoiceDateFormatter = (cell, formatterParams) => {
     let value = cell.getValue();
     cell.getElement().style.backgroundColor = "#CACAEE";
     return '<u>' + value + '</u>';
