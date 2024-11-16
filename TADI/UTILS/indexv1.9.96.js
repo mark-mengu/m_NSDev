@@ -47,7 +47,7 @@ var customerFormatter = (cell, formatterParams) => {
     return '<u>' + value + '</u>';
 };
 
-/ Definizione dello stile CSS
+// Definizione dello stile CSS
 const styleSheet = document.createElement('style');
 styleSheet.textContent = `
 .custom-link {
