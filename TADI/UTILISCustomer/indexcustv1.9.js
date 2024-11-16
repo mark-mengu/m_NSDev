@@ -41,7 +41,7 @@ var salesorderFormatter = (cell, formatterParams) => {
     return button;
 };
 
-var customerFormatter = (cell, formatterParams) => {
+var invoiceDateFormatterFormatter = (cell, formatterParams) => {
     let value = cell.getValue();
     cell.getElement().style.backgroundColor = "#CACAEE";
     return '<u>' + value + '</u>';
@@ -164,7 +164,7 @@ require(['N/https', 'N/url', 'N/currentRecord', 'N/runtime'], (https, url, cr, r
     };
     table.addColumn(soValueColumns);
     let invValueColumns = {
-        title: "Fattura", field: "inv_text", editor: "textarea", validator: '', editable: false, headerFilter: "input", formatter: customerFormatter, tooltip: 'Invoice Collegata'
+        title: "Fattura", field: "inv_text", editor: "textarea", validator: '', editable: false, headerFilter: "input", formatter: invoiceDateFormatter, tooltip: 'Invoice Collegata'
     };
     table.addColumn(invValueColumns);
     let invDateColumn = {
@@ -174,7 +174,7 @@ require(['N/https', 'N/url', 'N/currentRecord', 'N/runtime'], (https, url, cr, r
     };
     table.addColumn(invDateColumn);
     let machineColumns = {
-        title: "Articolo", field: "item", editor: "textarea", validator: '', editable: false, headerFilter: "input", formatter: customerFormatter, tooltip: 'Articolo'
+        title: "Articolo", field: "item", editor: "textarea", validator: '', editable: false, headerFilter: "input", formatter: invoiceDateFormatter, tooltip: 'Articolo'
     };
     table.addColumn(machineColumns);
     let displaynameColumns = {
