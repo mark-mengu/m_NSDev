@@ -17,8 +17,8 @@ styleS.textContent = `
 }
 
 .custom-so-link svg {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     fill: #4CAF50;
     transition: all 0.3s ease;
 }
@@ -98,7 +98,7 @@ const salesOrderFormatter = (cell, formatterParams) => {
     </a>`;
     
     cell.getElement().classList.add('custom-so-cell');    
-    return `<u>${parts[1]}</u> ${link}`;
+    return `${parts[1]}   ${link}`;
 };
 
 var invoiceDateFormatter = (cell, formatterParams) => {
