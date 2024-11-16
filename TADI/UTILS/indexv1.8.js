@@ -47,6 +47,18 @@ var customerFormatter = (cell, formatterParams) => {
     return '<u>' + value + '</u>';
 };
 
+var salesOrderFormatter = (cell, formatterParams) => {
+    let value = cell.getValue();
+    cell.getElement().style.backgroundColor = "#CACAEE";
+    return '<u>' + value + '</u>';
+};
+
+var invoiceDateFormatter = (cell, formatterParams) => {
+    let value = cell.getValue();
+    cell.getElement().style.backgroundColor = "#CACAEE";
+    return '<u>' + value + '</u>';
+};
+
 var inventoryValueFormatter = (cell, formatterParams) => {
     let value = cell.getValue();
     cell.getElement().style.backgroundColor = "#CACAEE";
@@ -58,13 +70,9 @@ var openWind = (event, url) => {
     window.open(url, '_blank');
 }
 var dataFilter = (headerValue, rowValue, rowData, filterParams) => {
-    //headerValue - the value of the header filter element
-    //rowValue - the value of the column in this row
-    //rowData - the data for the row being filtered
-    //filterParams - params object passed to the headerFilterFuncParams property
-
     return rowData.name == filterParams.name && rowValue < headerValue;
 }
+
 var createLoadingIcon = () => {
     const loadingIcon = document.createElement('div');
     loadingIcon.id = 'loading-icon';
@@ -163,13 +171,19 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url, cr) => {
     };
     table.addColumn(toValueColumns);
     let soValueColumns = {
-        title: "Sales Order", field: "so_text", editor: "textarea", validator: '', width: 280, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "input", formatter: stdFormatter, tooltip: 'Sales Order Collegato'
+        title: "Sales Order", field: "so_text", editor: "textarea", validator: '', width: 280, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "input", formatter: salesOrderFormatter, tooltip: 'Clicca per vedere i Conti Consegna Collegati'
     };
     table.addColumn(soValueColumns);
     let invValueColumns = {
         title: "Invoice", field: "inv_text", editor: "textarea", validator: '', editable: false, headerFilter: "input", formatter: stdFormatter, tooltip: 'Invoice Collegata'
     };
     table.addColumn(invValueColumns);
+    let invDateColumns = {
+        title: "Data Fattura", field: "inv_date", editor: "textarea", validator: '', width: 200, minWidth: 180, maxWidth: 240, editable: false, headerFilter: "input",
+        formatter: invoiceDateFormatter,
+        tooltip: 'Cliente',
+    };
+    table.addColumn(invDateColumns);
     let customerColumn = {
         title: "Cliente", field: "customer", editor: "textarea", validator: '', width: 280, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "input",
         formatter: customerFormatter,
@@ -198,11 +212,7 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url, cr) => {
         title: "U.tà", field: "units", editor: "textarea", validator: '', editable: false, formatter: stdFormatter, tooltip: 'U.tà'
     };
     table.addColumn(unitsColumn);
-    let inventoryValueColumns = {
-        title: "Valore Totale <br>al Costo Medio", field: "item_value", editor: "textarea", validator: '', editable: false, formatter: inventoryValueFormatter,
-        bottomCalc: 'sum', tooltip: 'Valore Totale <br>al Costo Medio', bottomCalcParams: { precision: 2 },
-    };
-    table.addColumn(inventoryValueColumns);
+
     const loadingIcon = createLoadingIcon();
     const reportDeposito = document.getElementById('report-deposito');
     const tableTitle = document.getElementById('table-title');
@@ -223,17 +233,10 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url, cr) => {
             tableTitle.style.display = 'block';
         });
 });
-//------------------------------------------------------------------EDIT------------------------------------------------------
-table.on("cellEdited", (cell) => {
-    //cell.getData()['edit'] = true;
-});
 
 //-----------------------------------------------------------------PRINT PDF-------------------------------------------------------------------------------
 
 document.getElementById('print-pdf').addEventListener('click', (event) => {
-    //event.preventDefault();
-    //document.getElementById('report-deposito').style.display = 'none';
-    //document.getElementById('table-title').style.display = 'none';
     table.hideColumn("to");
     table.hideColumn("so_text");
     table.hideColumn("item_value");
@@ -246,16 +249,12 @@ document.getElementById('print-pdf').addEventListener('click', (event) => {
     table.toggleColumn("item_value");
     table.toggleColumn("units");
     event.preventDefault();
-    //setTimeout(() => {
-    //    window.location.reload();
-    //}, 1000);
+
 }, false);
 
 //-----------------------------------------------------------------PRINT XLS-------------------------------------------------------------------------------
 
 document.getElementById('print-xls').addEventListener('click', (event) => {
-    //document.getElementById('report-deposito').style.display = 'none';
-    //document.getElementById('table-title').style.display = 'none';
     const columnsToHide = ["to"];
     columnsToHide.forEach(column => table.hideColumn(column));
 
@@ -263,53 +262,8 @@ document.getElementById('print-xls').addEventListener('click', (event) => {
 
     columnsToHide.forEach(column => table.showColumn(column));
     event.preventDefault();
-    //document.getElementById('report-deposito').style.display = '';
-    //document.getElementById('table-title').style.display = '';
-    // setTimeout(() => {
-    //     window.location.reload();
-    // }, 1000);
 
 }, false);
 
-//--------------------------------------------------------------EDITING NOT USED----------------------------------------------------------------------
-/*
-document.getElementById("").addEventListener("click", (event) => {
-  event.preventDefault();
-  require(['N/https', 'N/url', 'N/currentRecord', 'N/ui/dialog'], (https, url, cr, dialog) => {
-    const scriptFix = document.createElement('script');
-    scriptFix.src = "https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js";
-    scriptFix.onload = () => {
-      const _ = window._;
-      let binDatas = _.some(table.getData(), obj => _.has(obj, 'bin') && (obj.bin == null || obj.bin === '' || obj.bin === undefined));
-      if (binDatas) {
-        dialog.alert({
-          title: 'ATTENZIONE',
-          message: `<center><img src="https://9094479.app.netsuite.com/core/media/media.nl?id=3105&c=9094479&h=lZQSbeBwUYC4IQL-ZVNFLj9yHvee0pyclIO65T5hPbXxV0EY&fcts=20240401080554&whence=" width="150" height="150"> <div style="color:yellow; background-color:gray; padding:10px; border-radius:10px;"><b>Non è possibile procedere con il controllo, non è stato inserito il BIN in tutte le righe.</b></div></center>`,
-        });
-        return false;
-      }
-      let resourcesUrl = url.resolveScript({
-        scriptId: 'customscript_gn_tav_quality_control_data',
-        deploymentId: 'customdeploy_gn_tav_quality_control_data',
-      });
-      let body = {
-        data: table.getData(),
-        qualitycontrol: cr.get().getValue('custpage_quality_control'),
-        item: cr.get().getValue('custpage_item'),
-        transaction: cr.get().getValue('custpage_transaction'),
-        line: cr.get().getValue('custpage_line')
-      };
-      let response = https.post({ url: resourcesUrl, body: JSON.stringify(body) });
-      table.setData(JSON.parse(response.body).data);
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "Quality Control has been saved",
-        showConfirmButton: false,
-        timer: 2400
-      });
-      table.clearAlert();
-    };
-    document.head.appendChild(scriptFix);
-  });
-}, false);*/
+
+
