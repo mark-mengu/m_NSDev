@@ -55,7 +55,7 @@ var salesOrderFormatter = (cell, formatterParams) => {
 
     console.log(link);
     cell.getElement().style.backgroundColor = "#CACAEE";
-    return '<u>' + value + '</u>';
+    return '<u>' + so_consegna_link + '</u>';
 };
 
 var invoiceDateFormatter = (cell, formatterParams) => {
