@@ -170,8 +170,12 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url, cr) => {
         title: "Transfer Order", field: "to_text", editor: "textarea", validator: '', width: 280, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "input", formatter: stdFormatter, tooltip: 'Transfer Order di riferimento'
     };
     table.addColumn(toValueColumns);
+    let soLinkColumns = {
+        title: "Sales Order", field: "so_consegna_link", editor: "textarea", validator: '', width: 280, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "input", formatter: salesOrderFormatter, tooltip: 'Clicca per vedere i Conti Consegna Collegati'
+    };
+    table.addColumn(soLinkColumns);
     let soValueColumns = {
-        title: "Sales Order", field: "so_text", editor: "textarea", validator: '', width: 280, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "input", formatter: salesOrderFormatter, tooltip: 'Clicca per vedere i Conti Consegna Collegati'
+        title: "Sales Order", field: "so_text", editor: "textarea", validator: '', width: 280, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "input", formatter: salesOrderFormatter, tooltip: 'Sales Order Collegato', visible: false
     };
     table.addColumn(soValueColumns);
     let invValueColumns = {
