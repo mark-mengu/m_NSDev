@@ -242,7 +242,7 @@ require(['N/https', 'N/url', 'N/currentRecord'], (https, url, cr) => {
 
 document.getElementById('print-pdf').addEventListener('click', (event) => {
     table.hideColumn("to");
-    table.hideColumn("item_value");
+    //table.hideColumn("item_value");
     table.hideColumn("units");
     table.hideColumn("so_consegna_link");
     table.toggleColumn("so_text");
@@ -251,7 +251,7 @@ document.getElementById('print-pdf').addEventListener('click', (event) => {
 
     table.toggleColumn("to");
     table.toggleColumn("so_consegna_link");
-    table.toggleColumn("item_value");
+    //table.toggleColumn("item_value");
     table.toggleColumn("units");
     table.hideColumn("so_text");
     event.preventDefault();
