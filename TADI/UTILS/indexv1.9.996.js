@@ -2,22 +2,28 @@
 const styleS = document.createElement('style');
 styleS.textContent = `
 .custom-so-link {
-    color: #4CAF50 !important;
-    font-weight: bold;
-    text-decoration: none;
+    color: #4CAF50;
     padding: 4px 8px;
     border-radius: 4px;
-    background-color: #f0f0f0;
-    display: inline-block;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
     transition: all 0.3s ease;
 }
 
 .custom-so-link:hover {
-    background-color: #4CAF50;
-    color: white !important;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transform: translateY(-2px);
+}
+
+.custom-so-link svg {
+    width: 16px;
+    height: 16px;
+    fill: #4CAF50;
+    transition: all 0.3s ease;
+}
+
+.custom-so-link:hover svg {
+    fill: #45a049;
 }
 
 .custom-so-cell {
@@ -79,14 +85,23 @@ var customerFormatter = (cell, formatterParams) => {
 const salesOrderFormatter = (cell, formatterParams) => {
     let so_consegna_link = cell.getValue();
     let parts = so_consegna_link.split('|').map(value => value || "");
+
+    // Icona SVG per lo storico
+    const historyIcon = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.25 2.52.77-1.28-3.52-2.09V8z"/>
+        </svg>`;
+
     let link = `<a href="https://6518658.app.netsuite.com/app/common/search/searchresults.nl?searchtype=Transaction&IT_Item_NAME=&CU_Entity_ENTITYID=&AFC_Transaction_NUMBERTEXT=${parts[2]}&Transaction_NUMBERTEXT=&style=NORMAL&IT_Item_NAMEtype=CONTAINS&CU_Entity_ENTITYIDtype=CONTAINS&AFC_Transaction_NUMBERTEXTtype=CONTAINS&Transaction_NUMBERTEXTtype=CONTAINS&report=&grid=&searchid=2435&dle=T&sortcol=Transction_DATATED11_raw&sortdir=DESC&csv=HTML&OfficeXML=F&pdf=&size=1000&_csrf=nRz36NGWjWsvP7GzsEiTlgPOWs0ch0TQ6oRNqk9S4nnJHBgZd3NMuSQsJFgKf33phq1f7N9dpkE2KC20mt1IqfIIoLZD5V_MX8Euk8k384S6lIbklLz8sORggkYkhTGTo6zgkkzfQ2jFOlpvDY0eyIdnXHNHcjMhPCP7EMUIJLs%3D&twbx=F" 
         target="_blank" 
-        class="custom-so-link">
-        C/Consegna
+        class="custom-so-link" 
+        title="Visualizza storico">
+        ${historyIcon}
     </a>`;
+
     cell.getElement().classList.add('custom-so-cell');
 
-    return `<u>${parts[1]}</u>` + ' ' + link;
+    return `<u>${parts[1]}</u> ${link}`;
 };
 
 var invoiceDateFormatter = (cell, formatterParams) => {
