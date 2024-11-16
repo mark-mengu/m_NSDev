@@ -167,12 +167,12 @@ require(['N/https', 'N/url', 'N/currentRecord', 'N/runtime'], (https, url, cr, r
         title: "Fattura", field: "inv_text", editor: "textarea", validator: '', editable: false, headerFilter: "input", formatter: customerFormatter, tooltip: 'Invoice Collegata'
     };
     table.addColumn(invValueColumns);
-    let customerColumn = {
-        title: "Data Fattura", field: "inv_date", editor: "textarea", validator: '', width: 280, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "input",
+    let invDateColumn = {
+        title: "Data Fattura", field: "inv_date", editor: "textarea", validator: '', width: 180, minWidth: 150, maxWidth: 200, editable: false, headerFilter: "input",
         formatter: stdFormatter,
         tooltip: 'Data Fattura',
     };
-    table.addColumn(customerColumn);
+    table.addColumn(invDateColumn);
     let machineColumns = {
         title: "Articolo", field: "item", editor: "textarea", validator: '', editable: false, headerFilter: "input", formatter: customerFormatter, tooltip: 'Articolo'
     };
