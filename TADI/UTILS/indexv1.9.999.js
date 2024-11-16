@@ -219,7 +219,7 @@ require(['N/https', 'N/url', 'N/currentRecord', "N/search", "N/runtime"], (https
     };
     table.addColumn(toValueColumns);
     let soLinkColumns = {
-        title: "Sales Order", field: "so_consegna_link", editor: "textarea", validator: '', width: 280, minWidth: 200, maxWidth: 600, editable: false, headerFilter: "input", formatter: salesOrderFormatter, tooltip: 'Clicca per vedere i Conto Consegna Collegati a questo Sales Order'
+        title: "Sales Order", field: "so_consegna_link", editor: "textarea", validator: '', width: 200, minWidth: 190, maxWidth: 300, editable: false, headerFilter: "input", formatter: salesOrderFormatter, tooltip: 'Clicca per vedere i Conto Consegna Collegati a questo Sales Order'
     };
     table.addColumn(soLinkColumns);
     let soValueColumns = {
