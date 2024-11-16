@@ -19,12 +19,12 @@ styleS.textContent = `
 .custom-so-link svg {
     width: 28px;
     height: 28px;
-    fill: #4CAF50;
+    fill: #e77f08;
     transition: all 0.3s ease;
 }
 
 .custom-so-link:hover svg {
-    fill: #45a049;
+    fill: #e77f08;
 }
 
 .custom-so-cell {
