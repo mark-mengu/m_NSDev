@@ -209,7 +209,7 @@ const table = new Tabulator("#report-deposito", {
 
 document.getElementById('report-deposito').style.display = 'none';
 document.getElementById('table-title').style.display = 'none';
-require(['N/https', 'N/url', 'N/currentRecord', "N/search", "N/runtime"], (https, url, cr, search, runtime) => {
+require(['N/https', 'N/url', 'N/currentRecord', "N/runtime"], (https, url, cr, runtime) => {
     let resourcesUrl = url.resolveScript({
         scriptId: 'customscript_gn_ta_conto_deposito_data',
         deploymentId: 'customdeploy_gn_ta_conto_deposito_data',
@@ -260,10 +260,10 @@ require(['N/https', 'N/url', 'N/currentRecord', "N/search", "N/runtime"], (https
         title: "Articolo", field: "item", editor: "textarea", validator: '', editable: false, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
     };
     table.addColumn(machineColumns);
-    let machineClassColumns = {
-        title: "Item Class", field: "item_class", editor: "textarea", validator: '', width: 280, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "", formatter: stdFormatter, tooltip: '', visible: false
+    let agentColumns = {
+        title: "Agent", field: "agent", editor: "textarea", validator: '', width: 280, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "", formatter: stdFormatter, tooltip: '', visible: false
     };
-    table.addColumn(machineClassColumns);
+    table.addColumn(agentColumns);
     let displaynameColumns = {
         title: "Descrizione Articolo", field: "displayname", editor: "textarea", validator: '', width: 300, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "input",
         formatter: stdFormatter,
@@ -284,9 +284,7 @@ require(['N/https', 'N/url', 'N/currentRecord', "N/search", "N/runtime"], (https
     table.addColumn(unitsColumn);
 
     if (runtime.getCurrentUser().role == 3) {
-        let customers = getSales(search);
-        console.log(customers);
-        table.setFilter(agentBusinessFilter(1517, customers))
+        table.setFilter("agent", "=", 1517); //runtime.getCurrentUser().id);
     };
 
     const loadingIcon = createLoadingIcon();
@@ -343,35 +341,4 @@ document.getElementById('print-xls').addEventListener('click', (event) => {
     event.preventDefault();
 }, false);
 
-//------------------------------------------------------------------GET SALES-------------------------------------------------------------------
-
-const getSales = (search) => {
-    let customers = [];
-    var customer = search.create({
-        type: "customer",
-        filters:
-            [
-                ["custentity_ta_agente_monitor", "anyof", "@CURRENT@", 1517],
-                "OR",
-                ["custentity_ta_agente_printing", "anyof", "@CURRENT@", 1517]
-            ],
-        columns:
-            [
-                search.createColumn({ name: "entityid", label: "ID" }),
-                search.createColumn({ name: "altname", label: "Name" }),
-                search.createColumn({ name: "custentity_ta_agente_monitor", label: "[TA] SALES REP MONITOR" }),
-                search.createColumn({ name: "custentity_ta_agente_printing", label: "[TA] SALES REP PRINTING" })
-            ]
-    });
-    customer.run().each((result) => {
-        let obj = {
-            customer: result.getValue({ name: "entityid" }),
-            printingagent: result.getValue({ name: "custentity_ta_agente_printing" }),
-            monitoragent: result.getValue({ name: "custentity_ta_agente_monitor" })
-        };
-        customers.push(obj);
-        return true;
-    });
-    return customers;
-}
 
