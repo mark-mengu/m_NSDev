@@ -264,7 +264,7 @@ require(['N/https', 'N/url', 'N/currentRecord', "N/runtime"], (https, url, cr, r
         }
     });
     let docValueColumns = {
-        title: " ", field: "to", editor: "textarea", validator: '', editable: false, headerFilter: "", width: 200, minWidth: 200, maxWidth: 200, formatter: transferorderFormatter, tooltip: 'Vedi Documento'
+        title: " ", field: "to", editor: "textarea", validator: '', editable: false, headerFilter: "", width: 200, minWidth: 199, maxWidth: 201, formatter: transferorderFormatter, tooltip: 'Vedi Documento'
     };
     table.addColumn(docValueColumns);
     let toDateColumns = {
