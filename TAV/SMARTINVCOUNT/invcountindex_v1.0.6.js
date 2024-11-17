@@ -22,52 +22,6 @@ const formatNumber = (num) => {
     return `${formattedInteger},${formattedDecimal}`;
 }
 
-//----------------------------------------------DEFAULT DATES------------------------------------------------
-const setDefaultDates = () => {
-    let today = new Date();
-    let startDateInput = document.getElementById('start-date');
-    let endDateInput = document.getElementById('end-date');
-
-    if (!startDateInput.value) { startDateInput.value = formatDate(today); }
-    if (!endDateInput.value) { endDateInput.value = formatDate(today); }
-}
-
-const binTypes = ['PROD', 'MAG', 'SPED', 'KARDEX'];
-var multiSelectHeaderFilter = (cell) => {
-    var values = binTypes;
-    const filterFunc = (rowData) => {
-        return values.includes(rowData['bin']);
-    }
-    const getSelectedValues = (multiSelect) => {
-        var result = [];
-        var options = multiSelect && multiSelect.options;
-        var opt;
-        for (var i = 0, iLen = options.length; i < iLen; i++) {
-            opt = options[i];
-            if (opt.selected) { result.push(opt.value || opt.text); }
-        }
-        return result;
-    }
-    const onChange = () => {
-        var editor = document.getElementById('binSelector');
-        values = getSelectedValues(editor);
-        console.log("values: " + values);
-        cell.getColumn().getTable().removeFilter(filterFunc);
-        cell.getColumn().getTable().addFilter(filterFunc);
-    }
-    var select = document.createElement("select");
-    select.multiple = "multiple";
-    select.id = 'binSelector';
-    select.class = "chosen-select";
-    select.style = 'width: 100%';
-    binTypes.forEach(bins => {
-        select.innerHTML += "<option id='" + bins + "' value='" + bins + "' selected='selected'>" + bins + "</option>";
-    });
-    cell.getColumn().getTable().addFilter(filterFunc);
-    select.addEventListener('change', onChange);
-    return select;
-}
-
 var editCheck = (cell) => {
     return !cell.getRow().getData().hold;
 }
