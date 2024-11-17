@@ -123,20 +123,13 @@ var dataFilter = (headerValue, rowValue, rowData, filterParams) => {
 var agentBusinessFilter = (agent, agentsMap) => {
     return function (data) {
         if (!agent) { return true; }
-        // Estrai l'ID cliente dalla stringa (es: da "C000335 MAKHYMO SRL" prendi "C000335")
         let customerCode = data.customer.split(" ")[0].toLowerCase();
-        // Trova il mapping degli agenti per questo cliente
         let customerAgents = agentsMap.find(item => item.customer.toLowerCase() === customerCode);
-        // Se non troviamo il mapping per questo cliente, non mostrare la riga
         if (!customerAgents) { return false; }
-        // Controlla se l'agente è presente come printing agent o monitor agent
         let isPrintingAgent = customerAgents.printingagent === agent;
         let isMonitorAgent = customerAgents.monitoragent === agent;
-        // Se l'agente è printing agent, mostra solo le righe con itemclass che contiene "printing"
         if (isPrintingAgent && data.itemclass.toLowerCase().includes("printing")) { return true; }
-        // Se l'agente è monitor agent, mostra solo le righe con itemclass che contiene "monitor"
         if (isMonitorAgent && data.itemclass.toLowerCase().includes("monitor")) { return true; }
-        // Se l'agente non corrisponde o l'itemclass non corrisponde, non mostrare la riga
         return false;
     };
 }
