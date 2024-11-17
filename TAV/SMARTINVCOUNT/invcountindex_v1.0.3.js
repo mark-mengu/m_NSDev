@@ -203,50 +203,42 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     });
 
     let accountColumns = {
-        title: "Conto Magazzino", field: "account", editor: "textarea", headerFilterPlaceholder: "Filtra un conto...", validator: '', width: 570, minWidth: 200, maxWidth: 700, editable: false, headerFilter: "input", formatter: stdBoldFormatter, tooltip: 'Magazzino/Location'
+        title: "Bin", field: "bin", editor: "textarea", headerFilterPlaceholder: "Filtra per BIN...", validator: '', width: 130, minWidth: 100, maxWidth: 150, editable: false, headerFilter: "input", formatter: stdBoldFormatter, tooltip: ''
     };
     table.addColumn(accountColumns);
 
+    let itemColumns = {
+        title: "Articolo", field: "item", editor: "textarea", headerFilterPlaceholder: "Filtra per Articolo...", validator: '', editable: false, width: 500, minWidth: 300, maxWidth: 600, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
+    };
+    table.addColumn(itemColumns);
     let trxColumns = {
-        title: "Transazione", field: "docnumber", editor: "textarea", validator: '', headerFilterPlaceholder: "Filtra una transazione...", editable: false, width: 200, minWidth: 150, maxWidth: 300, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
+        title: "Shelf", field: "shelf", editor: "textarea", validator: '', headerFilterPlaceholder: "Filtra per Shelf...", editable: false, width: 200, minWidth: 150, maxWidth: 300, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
     };
     table.addColumn(trxColumns);
 
-    let quantityColumns = {
-        title: "Quantity", field: "quantity", editor: "textarea", validator: '', editable: false, width: 130, minWidth: 80, maxWidth: 140, formatter: stdFormatter,
+    let quantitynetsuiteColumns = {
+        title: "Quantity", field: "quantityn", editor: "textarea", validator: '', editable: false, width: 130, minWidth: 80, maxWidth: 140, formatter: stdFormatter,
         tooltip: 'Quantità',
     };
-    table.addColumn(quantityColumns);
+    table.addColumn(quantitynetsuiteColumns);
 
-    let itemColumns = {
-        title: "Articolo", field: "item", editor: "textarea", headerFilterPlaceholder: "Filtra un articolo...", validator: '', editable: false, width: 500, minWidth: 300, maxWidth: 600, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
+    let quantitykardexColumns = {
+        title: "Quantity", field: "quantityk", editor: "textarea", validator: '', editable: false, width: 130, minWidth: 80, maxWidth: 140, formatter: stdFormatter,
+        tooltip: 'Quantità',
     };
-    table.addColumn(itemColumns);
-
-    let locationColumns = {
-        title: "Location", field: "location", editor: "textarea", headerFilterPlaceholder: "...", validator: '', editable: false, width: 120, minWidth: 80, maxWidth: 150, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
-    };
-    table.addColumn(locationColumns);
-
-    let binColumns = {
-        title: "Bin",
-        field: "bin",
-        width: 100,
-        minWidth: 80,
-        maxWidth: 150,
-        headerFilterPlaceholder: "...",
-        headerFilter: "input",
-        validator: '',
-        formatter: stdFormatter,
-        tooltip: 'Bin',
-    };
-    table.addColumn(binColumns);
+    table.addColumn(quantitykardexColumns);
 
     let inventoryValueColumns = {
-        title: "Valore al Costo Medio", field: "item_value", editor: "textarea", validator: '', width: 260, minWidth: 150, maxWidth: 300, editable: false, formatter: inventoryValueFormatter,
+        title: "Valore al Costo Medio", field: "valuedifference", editor: "textarea", validator: '', width: 260, minWidth: 150, maxWidth: 300, editable: false, formatter: inventoryValueFormatter,
         bottomCalc: 'sum', tooltip: 'Valore al Costo Medio', bottomCalcParams: { precision: 2 },
     };
     table.addColumn(inventoryValueColumns);
+
+    let quantityColumns = {
+        title: "Quantity Effettiva Contata", field: "quantity", editor: "textarea", validator: '', editable: true, width: 130, minWidth: 80, maxWidth: 140, formatter: stdFormatter,
+        tooltip: 'Quantità',
+    };
+    table.addColumn(quantityColumns);
 
     const loadingIcon = createLoadingIcon();
     const reportWIP = document.getElementById('report-wip');
@@ -255,40 +247,19 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     reportWIP.style.display = 'none';
     tableTitle.style.display = 'none';
 
-    document.addEventListener("DOMContentLoaded", () => { setDefaultDates(); });
-    let params = { endDate: formatDate(new Date()), startDate: formatDate(new Date()) };
-
-    https.get.promise({ url: resourcesUrl, body: JSON.stringify(params), headers: { 'Content-Type': 'application/json' } })
-        .then((response) => {
-            let data = JSON.parse(response.body);
-            table.setData(data.data);
-        }).catch((error) => {
-            console.error(error);
-        }).finally(() => {
-            loadingIcon.style.display = 'none';
-            reportWIP.style.display = 'block';
-            tableTitle.style.display = 'block';
-        });
 });
 
 //---------------------------------------------------APPLY FILTER EVENT DATA---------------------------------------------------
-document.getElementById('apply-filters-data').addEventListener('click', (event) => {
+document.getElementById('apply-load-inventorycount').addEventListener('click', (event) => {
     event.preventDefault();
 
-    let startDateInput = document.getElementById('start-date');
-    let endDateInput = document.getElementById('end-date');
-    let startDate = startDateInput.value;
-    let endDate = endDateInput.value;
+    let sessione = document.getElementById('start-invcount-header');
+    let sessionevalue = sessione.value;
 
-    if (!startDate) {
-        startDate = formatDate(new Date());
-        startDateInput.value = startDate;
+    if (!sessionevalue) {
+        //------errore
     }
-    if (!endDate) {
-        endDate = formatDate(new Date());
-        endDateInput.value = endDate;
-    }
-
+    
     const loadingIcon = createLoadingIcon();
     loadingIcon.style.display = 'block';
     document.getElementById('report-wip').style.display = 'none';
@@ -301,8 +272,6 @@ document.getElementById('apply-filters-data').addEventListener('click', (event) 
             params: {}
         });
         let params = {};
-        params.startDate = '';
-        params.endDate = '';
 
         https.get.promise({
             url: resourcesUrl,
@@ -320,55 +289,6 @@ document.getElementById('apply-filters-data').addEventListener('click', (event) 
         });
     });
 });
-
-//---------------------------------------------------EMPTY FILTER EVENT DATA---------------------------------------------------
-
-document.getElementById('apply-filters-data-empty').addEventListener('click', (event) => {
-    event.preventDefault();
-    document.getElementById('start-date').value = '';
-    document.getElementById('end-date').value = '';
-
-    const loadingIcon = createLoadingIcon();
-    loadingIcon.style.display = 'block';
-    document.getElementById('report-wip').style.display = 'none';
-    document.getElementById('table-title').style.display = 'none';
-
-    require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
-        let resourcesUrl = url.resolveScript({
-            scriptId: 'customscript_gn_rl_inventory_count_data',
-            deploymentId: 'customdeploy_gn_rl_inventory_count_data',
-            params: {}
-        });
-        let params = {};
-        params.startDate = '';
-        params.endDate = '';
-
-        https.get.promise({
-            url: resourcesUrl,
-            body: JSON.stringify(params),
-            headers: { 'Content-Type': 'application/json' }
-        }).then((response) => {
-            let data = JSON.parse(response.body);
-            table.setData(data.data);
-        }).catch((error) => {
-            console.error(error);
-        }).finally(() => {
-            loadingIcon.style.display = 'none';
-            document.getElementById('report-wip').style.display = 'block';
-            document.getElementById('table-title').style.display = 'block';
-        });
-    });
-});
-//----------------------------------------------------ADD SELECT VALUES------------------------------------------------------
-const sessions = ['Session 1', 'Session 2', 'Session 3', 'Session 4'];
-const selectElement = document.getElementById('invcount-header');
-for (let i = 0; i < sessions.length; i++) {
-    const option = document.createElement('option');
-    option.value = `session${i + 1}`;
-    option.textContent = sessions[i];
-
-    selectElement.appendChild(option);
-}
 
 //-----------------------------------------------------------------PRINT PDF-------------------------------------------------------------------------------
 
