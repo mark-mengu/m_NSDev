@@ -188,7 +188,7 @@ let quantityColumns = {
 };
 table.addColumn(quantityColumns);
 
-//---------------------------------------------------APPLY FILTER EVENT DATA---------------------------------------------------
+//---------------------------------------------------APPLY LOAD EVENT DATA---------------------------------------------------
 document.getElementById('apply-load-inventorycount').addEventListener('click', (event) => {
     event.preventDefault();
 
@@ -228,19 +228,5 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
     });
 });
 
-//---------------------------------------------------------MOUSE OVER---------------------------------------------------------------------------
-
-const button = document.getElementById('apply-filters-data-empty');
-const tooltip = document.getElementById('tooltip');
-button.addEventListener('mouseover', (e) => {
-    tooltip.style.display = 'block';
-    tooltip.style.left = e.pageX + 'px';
-    tooltip.style.top = (e.pageY - 3) + 'px';
-});
-button.addEventListener('mouseout', () => { tooltip.style.display = 'none'; });
-button.addEventListener('mousemove', (e) => {
-    tooltip.style.left = e.pageX + 'px';
-    tooltip.style.top = (e.pageY - 3) + 'px';
-});
 
 
