@@ -147,6 +147,9 @@ const table = new Tabulator("#report-inventorycount", {
     }
 });
 
+document.getElementById('report-inventorycount').style.display = 'none';
+document.getElementById('table-title').style.display = 'none';
+
 let accountColumns = {
     title: "Bin", field: "bin", editor: "textarea", headerFilterPlaceholder: "Filtra per BIN...", validator: '', width: 130, minWidth: 100, maxWidth: 150, editable: false, headerFilter: "input", formatter: stdBoldFormatter, tooltip: ''
 };
@@ -184,9 +187,6 @@ let quantityColumns = {
     tooltip: 'Quantità',
 };
 table.addColumn(quantityColumns);
-
-document.getElementById('report-inventorycount').style.display = 'none';
-document.getElementById('table-title').style.display = 'none';
 
 //---------------------------------------------------APPLY FILTER EVENT DATA---------------------------------------------------
 document.getElementById('apply-load-inventorycount').addEventListener('click', (event) => {
@@ -228,13 +228,6 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
     });
 });
 
-//-----------------------------------------------------------------PRINT PDF-------------------------------------------------------------------------------
-
-document.getElementById('print-pdf').addEventListener('click', (event) => {
-    table.download("pdf", "report_wip.pdf", { title: "Report WIP" });
-    event.preventDefault();
-}, false);
-
 //---------------------------------------------------------MOUSE OVER---------------------------------------------------------------------------
 
 const button = document.getElementById('apply-filters-data-empty');
@@ -249,33 +242,5 @@ button.addEventListener('mousemove', (e) => {
     tooltip.style.left = e.pageX + 'px';
     tooltip.style.top = (e.pageY - 3) + 'px';
 });
-//-----------------------------------------------------------------PRINT XLS-------------------------------------------------------------------------------
 
-document.getElementById('print-xls').addEventListener('click', (event) => {
-    const columnsToHide = ["to"];
-    columnsToHide.forEach(column => table.hideColumn(column));
-    table.download("xlsx", "report_WIP.xlsx", { sheetName: "Report WIP", bom: true });
-
-    columnsToHide.forEach(column => table.showColumn(column));
-    event.preventDefault();
-}, false);
-
-//-----------------------------------------------------------------EXPAND-------------------------------------------------------------------------------
-
-document.getElementById('expande-groups').addEventListener('click', (event) => {
-    event.preventDefault();
-    table.blockRedraw();
-    table.getGroups().forEach((g) => { g.show(); });
-    table.restoreRedraw();
-
-}, false);
-//-----------------------------------------------------------------COLLAPSE-------------------------------------------------------------------------------
-
-document.getElementById('collapse-groups').addEventListener('click', (event) => {
-    event.preventDefault();
-    table.blockRedraw();
-    table.getGroups().forEach((g) => { g.hide(); });
-    table.restoreRedraw();
-
-}, false);
 
