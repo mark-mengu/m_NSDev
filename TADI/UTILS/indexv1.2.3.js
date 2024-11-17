@@ -86,7 +86,7 @@ var customerFormatter = (cell, formatterParams) => {
 };
 
 
-const salesOrderFormatter = (cell, formatterParams) => {
+const salesOrderFormatterList = (cell, formatterParams) => {
     let so_consegna_link = cell.getValue();
     let parts = so_consegna_link.split('|').map(value => value || "");
     let listIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>`;
@@ -96,9 +96,21 @@ const salesOrderFormatter = (cell, formatterParams) => {
         >
         ${listIcon}
     </a>`;
-
     cell.getElement().classList.add('custom-so-cell');
-    return `<p>${parts[1]} ${link}</p>`;
+    return `${parts[1]} ${link}`;
+};
+
+const salesOrderFormatter = (cell, formatterParams) => {
+    let so_consegna_link = cell.getValue();    
+    let parts = so_consegna_link.split('|').map(value => value || "");    
+    let link = `<a href="https://6518658.app.netsuite.com/app/common/search/searchresults.nl?searchtype=Transaction&IT_Item_NAME=&CU_Entity_ENTITYID=&AFC_Transaction_NUMBERTEXT=${parts[2]}&Transaction_NUMBERTEXT=&style=NORMAL&IT_Item_NAMEtype=CONTAINS&CU_Entity_ENTITYIDtype=CONTAINS&AFC_Transaction_NUMBERTEXTtype=CONTAINS&Transaction_NUMBERTEXTtype=CONTAINS&report=&grid=&searchid=2435&dle=T&sortcol=Transction_DATATED11_raw&sortdir=DESC&csv=HTML&OfficeXML=F&pdf=&size=1000&_csrf=nRz36NGWjWsvP7GzsEiTlgPOWs0ch0TQ6oRNqk9S4nnJHBgZd3NMuSQsJFgKf33phq1f7N9dpkE2KC20mt1IqfIIoLZD5V_MX8Euk8k384S6lIbklLz8sORggkYkhTGTo6zgkkzfQ2jFOlpvDY0eyIdnXHNHcjMhPCP7EMUIJLs%3D&twbx=F" 
+        target="_blank" 
+        class="custom-so-link">
+        ${parts[0]}
+    </a>`;    
+    cell.getElement().classList.add('custom-so-cell');
+    
+    return link;
 };
 
 var invoiceDateFormatter = (cell, formatterParams) => {
@@ -120,6 +132,7 @@ var openWind = (event, url) => {
 var dataFilter = (headerValue, rowValue, rowData, filterParams) => {
     return rowData.name == filterParams.name && rowValue < headerValue;
 }
+
 var agentBusinessFilter = (agent, agentsMap) => {
     return function (data) {
         if (!agent) { return true; }
