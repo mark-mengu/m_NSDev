@@ -128,8 +128,9 @@ var agentBusinessFilter = (agent, agentsMap) => {
         if (!customerAgents) { return false; }
         let isPrintingAgent = customerAgents.printingagent === agent;
         let isMonitorAgent = customerAgents.monitoragent === agent;
-        if (isPrintingAgent && data.itemclass.toLowerCase().includes("printing")) { return true; }
-        if (isMonitorAgent && data.itemclass.toLowerCase().includes("monitor")) { return true; }
+        console.log(isPrintingAgent, isMonitorAgent);
+        if (isPrintingAgent && data.item_class.toLowerCase().includes("printing")) { return true; }
+        if (isMonitorAgent && data.item_class.toLowerCase().includes("monitor")) { return true; }
         return false;
     };
 }
