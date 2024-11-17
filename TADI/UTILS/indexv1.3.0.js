@@ -288,7 +288,7 @@ require(['N/https', 'N/url', 'N/currentRecord', "N/runtime"], (https, url, cr, r
     };
     table.addColumn(invValueColumns);
     let invDateColumns = {
-        title: "Data Fattura", field: "inv_date", editor: "textarea", validator: '', width: 180, minWidth: 170, maxWidth: 220, editable: false, headerFilter: "input",
+        title: "Data Fattura", field: "inv_date", editor: "textarea", validator: '', width: 165, minWidth: 150, maxWidth: 200, editable: false, headerFilter: "input",
         formatter: invoiceDateFormatter,
         tooltip: 'Data Fattura',
     };
