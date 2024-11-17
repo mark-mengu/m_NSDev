@@ -126,6 +126,7 @@ const salesOrderFormatterList = (cell, formatterParams) => {
         ${listIcon}
     </a>`;
     cell.getElement().classList.add('style-hoover-so');
+    cell.getElement().style.backgroundColor = "#CACAEE";
     return `${parts[1]} ${link}`;
 };
 
