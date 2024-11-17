@@ -148,11 +148,9 @@ var createLoadingIcon = () => {
     return loadingIcon;
 };
 //----------------------------------------------------------------TABULATOR-----------------------------------------------------
-const table = new Tabulator("#report-wip", {
+const table = new Tabulator("#inventorycount-table", {
     movableRows: false,
     dataTree: true,
-    //dataTreeCollapseElement: `<i class='fas fa-minus-square' style='font-size: 30px; color: #ff0000;'></i>`,
-    //dataTreeExpandElement: `<i class="fa fa-plus-square" aria-hidden="true" style='font-size: 30px; color: #00ff00;'></i>`,
     groupBy: "account",
     groupStartOpen: false,
     groupToggleElement: "header",
@@ -166,7 +164,7 @@ const table = new Tabulator("#report-wip", {
                 maximumFractionDigits: 2
             }) + ` </span>`;
     },
-    tabulatorId: "report-wip-table",
+    tabulatorId: "inventorycount-table",
     ajaxURL: '',
     ajaxParams: {},
     ajaxFiltering: false,
@@ -181,7 +179,7 @@ const table = new Tabulator("#report-wip", {
     dataLoaderLoading: "Loading data...",
     placeholder: "No DATA Found...",
     pagination: "local",
-    paginationSize: 150,
+    paginationSize: 500,
     ajaxProgressiveLoad: "scroll",
     rowFormatter: (row) => {
         let data = row.getData();
@@ -195,12 +193,12 @@ const table = new Tabulator("#report-wip", {
     }
 });
 
-document.getElementById('report-wip').style.display = 'none';
+document.getElementById('report-inventorycount').style.display = 'none';
 document.getElementById('table-title').style.display = 'none';
 require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     let resourcesUrl = url.resolveScript({
-        scriptId: 'customscript_gn_rl_reportwip_data',
-        deploymentId: 'customdeploy_gn_rl_reportwip_data',
+        scriptId: 'customscript_gn_rl_inventory_count_data',
+        deploymentId: 'customdeploy_gn_rl_inventory_count_data',
         params: {}
     });
 
@@ -224,6 +222,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         title: "Articolo", field: "item", editor: "textarea", headerFilterPlaceholder: "Filtra un articolo...", validator: '', editable: false, width: 500, minWidth: 300, maxWidth: 600, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
     };
     table.addColumn(itemColumns);
+
     let locationColumns = {
         title: "Location", field: "location", editor: "textarea", headerFilterPlaceholder: "...", validator: '', editable: false, width: 120, minWidth: 80, maxWidth: 150, headerFilter: "input", formatter: stdFormatter, tooltip: 'Magazzino/Location'
     };
@@ -237,11 +236,6 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         maxWidth: 150,
         headerFilterPlaceholder: "...",
         headerFilter: "input",
-        //headerFilterFunc: binFilter,
-        //headerFilter: multiSelectHeaderFilter,
-        // headerFilterParams: {
-        //     values: binTypes,
-        // },
         validator: '',
         formatter: stdFormatter,
         tooltip: 'Bin',
@@ -264,15 +258,13 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     document.addEventListener("DOMContentLoaded", () => { setDefaultDates(); });
     let params = { endDate: formatDate(new Date()), startDate: formatDate(new Date()) };
 
-    https.post.promise({ url: resourcesUrl, body: JSON.stringify(params), headers: { 'Content-Type': 'application/json' } })
+    https.get.promise({ url: resourcesUrl, body: JSON.stringify(params), headers: { 'Content-Type': 'application/json' } })
         .then((response) => {
             let data = JSON.parse(response.body);
             table.setData(data.data);
-        })
-        .catch((error) => {
+        }).catch((error) => {
             console.error(error);
-        })
-        .finally(() => {
+        }).finally(() => {
             loadingIcon.style.display = 'none';
             reportWIP.style.display = 'block';
             tableTitle.style.display = 'block';
@@ -288,7 +280,6 @@ document.getElementById('apply-filters-data').addEventListener('click', (event) 
     let startDate = startDateInput.value;
     let endDate = endDateInput.value;
 
-    let params = {};
     if (!startDate) {
         startDate = formatDate(new Date());
         startDateInput.value = startDate;
@@ -305,35 +296,33 @@ document.getElementById('apply-filters-data').addEventListener('click', (event) 
 
     require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         let resourcesUrl = url.resolveScript({
-            scriptId: 'customscript_gn_rl_reportwip_data',
-            deploymentId: 'customdeploy_gn_rl_reportwip_data',
+            scriptId: 'customscript_gn_rl_inventory_count_data',
+            deploymentId: 'customdeploy_gn_rl_inventory_count_data',
             params: {}
         });
+        let params = {};
+        params.startDate = '';
+        params.endDate = '';
 
-        params.startDate = startDate;
-        params.endDate = endDate;
-
-        https.post.promise({
+        https.get.promise({
             url: resourcesUrl,
             body: JSON.stringify(params),
             headers: { 'Content-Type': 'application/json' }
-        })
-            .then((response) => {
-                let data = JSON.parse(response.body);
-                table.setData(data.data);
-            })
-            .catch((error) => {
-                console.error(error);
-            })
-            .finally(() => {
-                loadingIcon.style.display = 'none';
-                document.getElementById('report-wip').style.display = 'block';
-                document.getElementById('table-title').style.display = 'block';
-            });
+        }).then((response) => {
+            let data = JSON.parse(response.body);
+            table.setData(data.data);
+        }).catch((error) => {
+            console.error(error);
+        }).finally(() => {
+            loadingIcon.style.display = 'none';
+            document.getElementById('report-wip').style.display = 'block';
+            document.getElementById('table-title').style.display = 'block';
+        });
     });
 });
 
 //---------------------------------------------------EMPTY FILTER EVENT DATA---------------------------------------------------
+
 document.getElementById('apply-filters-data-empty').addEventListener('click', (event) => {
     event.preventDefault();
     document.getElementById('start-date').value = '';
@@ -346,31 +335,28 @@ document.getElementById('apply-filters-data-empty').addEventListener('click', (e
 
     require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         let resourcesUrl = url.resolveScript({
-            scriptId: 'customscript_gn_rl_reportwip_data',
-            deploymentId: 'customdeploy_gn_rl_reportwip_data',
+            scriptId: 'customscript_gn_rl_inventory_count_data',
+            deploymentId: 'customdeploy_gn_rl_inventory_count_data',
             params: {}
         });
         let params = {};
         params.startDate = '';
         params.endDate = '';
 
-        https.post.promise({
+        https.get.promise({
             url: resourcesUrl,
             body: JSON.stringify(params),
             headers: { 'Content-Type': 'application/json' }
-        })
-            .then((response) => {
-                let data = JSON.parse(response.body);
-                table.setData(data.data);
-            })
-            .catch((error) => {
-                console.error(error);
-            })
-            .finally(() => {
-                loadingIcon.style.display = 'none';
-                document.getElementById('report-wip').style.display = 'block';
-                document.getElementById('table-title').style.display = 'block';
-            });
+        }).then((response) => {
+            let data = JSON.parse(response.body);
+            table.setData(data.data);
+        }).catch((error) => {
+            console.error(error);
+        }).finally(() => {
+            loadingIcon.style.display = 'none';
+            document.getElementById('report-wip').style.display = 'block';
+            document.getElementById('table-title').style.display = 'block';
+        });
     });
 });
 
@@ -380,6 +366,7 @@ document.getElementById('print-pdf').addEventListener('click', (event) => {
     table.download("pdf", "report_wip.pdf", { title: "Report WIP" });
     event.preventDefault();
 }, false);
+
 //---------------------------------------------------------MOUSE OVER---------------------------------------------------------------------------
 
 const button = document.getElementById('apply-filters-data-empty');
