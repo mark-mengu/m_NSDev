@@ -148,7 +148,7 @@ var createLoadingIcon = () => {
     return loadingIcon;
 };
 //----------------------------------------------------------------TABULATOR-----------------------------------------------------
-const table = new Tabulator("#inventorycount-table", {
+const table = new Tabulator("#report-inventorycount", {
     movableRows: false,
     dataTree: true,
     groupBy: "account",
@@ -259,7 +259,7 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
     if (!sessionevalue) {
         //------errore
     }
-    
+
     const loadingIcon = createLoadingIcon();
     loadingIcon.style.display = 'block';
     document.getElementById('report-wip').style.display = 'none';
