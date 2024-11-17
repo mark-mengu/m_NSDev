@@ -359,6 +359,16 @@ document.getElementById('apply-filters-data-empty').addEventListener('click', (e
         });
     });
 });
+//----------------------------------------------------ADD SELECT VALUES------------------------------------------------------
+const sessions = ['Session 1', 'Session 2', 'Session 3', 'Session 4'];
+const selectElement = document.getElementById('invcount-header');
+for (let i = 0; i < sessions.length; i++) {
+    const option = document.createElement('option');
+    option.value = `session${i + 1}`;
+    option.textContent = sessions[i];
+
+    selectElement.appendChild(option);
+}
 
 //-----------------------------------------------------------------PRINT PDF-------------------------------------------------------------------------------
 
