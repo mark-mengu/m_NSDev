@@ -284,7 +284,7 @@ require(['N/https', 'N/url', 'N/currentRecord', "N/runtime"], (https, url, cr, r
     table.addColumn(unitsColumn);
 
     if (runtime.getCurrentUser().role == 3) {
-        table.setFilter("agent", "=", 1517); //runtime.getCurrentUser().id);
+        table.setFilter("agent", "=", "1517"); //runtime.getCurrentUser().id);
     };
 
     const loadingIcon = createLoadingIcon();
