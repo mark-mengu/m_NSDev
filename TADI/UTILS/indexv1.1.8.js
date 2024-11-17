@@ -284,6 +284,7 @@ require(['N/https', 'N/url', 'N/currentRecord', "N/search", "N/runtime"], (https
 
     if (runtime.getCurrentUser().role == 3) {
         let customers = getSales(search);
+        console.log(customers);
         table.setFilter(agentBusinessFilter(1517, customers))
     };
 
