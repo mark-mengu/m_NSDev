@@ -284,7 +284,7 @@ require(['N/https', 'N/url', 'N/currentRecord', "N/search", "N/runtime"], (https
 
     if (runtime.getCurrentUser().role == 3) {
         let customers = getSales(search);
-        table.setFilter(agentBusinessFilter(runtime.getCurrentUser().id, customers))
+        table.setFilter(agentBusinessFilter(1517, customers))
     };
 
     const loadingIcon = createLoadingIcon();
@@ -349,9 +349,9 @@ const getSales = (search) => {
         type: "customer",
         filters:
             [
-                ["custentity_ta_agente_monitor", "anyof", "@CURRENT@"],
+                ["custentity_ta_agente_monitor", "anyof", "@CURRENT@", 1517],
                 "OR",
-                ["custentity_ta_agente_printing", "anyof", "@CURRENT@"]
+                ["custentity_ta_agente_printing", "anyof", "@CURRENT@", 1517]
             ],
         columns:
             [
