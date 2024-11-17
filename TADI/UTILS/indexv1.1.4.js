@@ -291,7 +291,7 @@ require(['N/https', 'N/url', 'N/currentRecord', "N/search", "N/runtime"], (https
 
     if (runtime.getCurrentUser().role == 3) {
         let customers = getSales(search);
-        table.setFilter(agentBusinessFilter(2), customers)
+        table.setFilter(agentBusinessFilter(2, customers))
     };
 
     const loadingIcon = createLoadingIcon();
