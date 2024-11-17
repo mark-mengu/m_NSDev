@@ -147,61 +147,46 @@ const table = new Tabulator("#report-inventorycount", {
     }
 });
 
+let accountColumns = {
+    title: "Bin", field: "bin", editor: "textarea", headerFilterPlaceholder: "Filtra per BIN...", validator: '', width: 130, minWidth: 100, maxWidth: 150, editable: false, headerFilter: "input", formatter: stdBoldFormatter, tooltip: ''
+};
+table.addColumn(accountColumns);
+
+let itemColumns = {
+    title: "Articolo", field: "item", editor: "textarea", headerFilterPlaceholder: "Filtra per Articolo...", validator: '', editable: false, width: 250, minWidth: 100, maxWidth: 300, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
+};
+table.addColumn(itemColumns);
+let trxColumns = {
+    title: "Shelf", field: "shelf", editor: "textarea", validator: '', headerFilterPlaceholder: "Filtra per Shelf...", editable: false, width: 200, minWidth: 150, maxWidth: 300, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
+};
+table.addColumn(trxColumns);
+
+let quantitynetsuiteColumns = {
+    title: "Quantity", field: "quantityn", editor: "textarea", validator: '', editable: false, width: 130, minWidth: 80, maxWidth: 140, formatter: stdFormatter,
+    tooltip: 'Quantità',
+};
+table.addColumn(quantitynetsuiteColumns);
+
+let quantitykardexColumns = {
+    title: "Quantity", field: "quantityk", editor: "textarea", validator: '', editable: false, width: 130, minWidth: 80, maxWidth: 140, formatter: stdFormatter,
+    tooltip: 'Quantità',
+};
+table.addColumn(quantitykardexColumns);
+
+let inventoryValueColumns = {
+    title: "Valore al Costo Medio", field: "valuedifference", editor: "textarea", validator: '', width: 260, minWidth: 150, maxWidth: 300, editable: false, formatter: inventoryValueFormatter,
+    bottomCalc: 'sum', tooltip: 'Valore al Costo Medio', bottomCalcParams: { precision: 2 },
+};
+table.addColumn(inventoryValueColumns);
+
+let quantityColumns = {
+    title: "Quantity Effettiva Contata", field: "quantity", editor: "textarea", validator: '', editable: true, width: 260, minWidth: 150, maxWidth: 300, formatter: stdFormatter,
+    tooltip: 'Quantità',
+};
+table.addColumn(quantityColumns);
+
 document.getElementById('report-inventorycount').style.display = 'none';
 document.getElementById('table-title').style.display = 'none';
-require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
-    let resourcesUrl = url.resolveScript({
-        scriptId: 'customscript_gn_rl_inventory_count_data',
-        deploymentId: 'customdeploy_gn_rl_inventory_count_data',
-        params: {}
-    });
-
-    let accountColumns = {
-        title: "Bin", field: "bin", editor: "textarea", headerFilterPlaceholder: "Filtra per BIN...", validator: '', width: 130, minWidth: 100, maxWidth: 150, editable: false, headerFilter: "input", formatter: stdBoldFormatter, tooltip: ''
-    };
-    table.addColumn(accountColumns);
-
-    let itemColumns = {
-        title: "Articolo", field: "item", editor: "textarea", headerFilterPlaceholder: "Filtra per Articolo...", validator: '', editable: false, width: 500, minWidth: 300, maxWidth: 600, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
-    };
-    table.addColumn(itemColumns);
-    let trxColumns = {
-        title: "Shelf", field: "shelf", editor: "textarea", validator: '', headerFilterPlaceholder: "Filtra per Shelf...", editable: false, width: 200, minWidth: 150, maxWidth: 300, headerFilter: "input", formatter: stdFormatter, tooltip: 'Articolo'
-    };
-    table.addColumn(trxColumns);
-
-    let quantitynetsuiteColumns = {
-        title: "Quantity", field: "quantityn", editor: "textarea", validator: '', editable: false, width: 130, minWidth: 80, maxWidth: 140, formatter: stdFormatter,
-        tooltip: 'Quantità',
-    };
-    table.addColumn(quantitynetsuiteColumns);
-
-    let quantitykardexColumns = {
-        title: "Quantity", field: "quantityk", editor: "textarea", validator: '', editable: false, width: 130, minWidth: 80, maxWidth: 140, formatter: stdFormatter,
-        tooltip: 'Quantità',
-    };
-    table.addColumn(quantitykardexColumns);
-
-    let inventoryValueColumns = {
-        title: "Valore al Costo Medio", field: "valuedifference", editor: "textarea", validator: '', width: 260, minWidth: 150, maxWidth: 300, editable: false, formatter: inventoryValueFormatter,
-        bottomCalc: 'sum', tooltip: 'Valore al Costo Medio', bottomCalcParams: { precision: 2 },
-    };
-    table.addColumn(inventoryValueColumns);
-
-    let quantityColumns = {
-        title: "Quantity Effettiva Contata", field: "quantity", editor: "textarea", validator: '', editable: true, width: 130, minWidth: 80, maxWidth: 140, formatter: stdFormatter,
-        tooltip: 'Quantità',
-    };
-    table.addColumn(quantityColumns);
-
-    const loadingIcon = createLoadingIcon();
-    const reportWIP = document.getElementById('report-wip');
-    const tableTitle = document.getElementById('table-title');
-    loadingIcon.style.display = 'block';
-    reportWIP.style.display = 'none';
-    tableTitle.style.display = 'none';
-
-});
 
 //---------------------------------------------------APPLY FILTER EVENT DATA---------------------------------------------------
 document.getElementById('apply-load-inventorycount').addEventListener('click', (event) => {
@@ -216,7 +201,7 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
 
     const loadingIcon = createLoadingIcon();
     loadingIcon.style.display = 'block';
-    document.getElementById('report-wip').style.display = 'none';
+    document.getElementById('report-inventorycount').style.display = 'none';
     document.getElementById('table-title').style.display = 'none';
 
     require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
@@ -226,7 +211,6 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
             params: {}
         });
         let params = {};
-
         https.get.promise({
             url: resourcesUrl,
             body: JSON.stringify(params),
