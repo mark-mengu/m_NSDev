@@ -282,11 +282,9 @@ require(['N/https', 'N/url', 'N/currentRecord', "N/runtime"], (https, url, cr, r
         title: "U.tà", field: "units", editor: "textarea", validator: '', editable: false, formatter: stdFormatter, tooltip: 'U.tà'
     };
     table.addColumn(unitsColumn);
-
-    if (runtime.getCurrentUser().role == 3) {
-        table.setFilter("agent", "=", "1517"); //runtime.getCurrentUser().id);
+    if (runtime.getCurrentUser().role == 1217 || runtime.getCurrentUser().role == 1236) {
+        table.setFilter("agent", "=", (runtime.getCurrentUser().id).toString());
     };
-
     const loadingIcon = createLoadingIcon();
     const reportDeposito = document.getElementById('report-deposito');
     const tableTitle = document.getElementById('table-title');
