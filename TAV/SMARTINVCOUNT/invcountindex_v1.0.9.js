@@ -146,7 +146,6 @@ const table = new Tabulator("#report-inventorycount", {
         }
     }
 });
-
 document.getElementById('report-inventorycount').style.display = 'none';
 document.getElementById('table-title').style.display = 'none';
 
@@ -228,5 +227,11 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
     });
 });
 
-
+//-------------------------------------------JQUERY INIT---------------------------------------
+$(document).ready(() => {
+    $('#invcount-header').select2({
+        placeholder: "Select Inventory Count Session",
+        allowClear: true
+    });
+});
 
