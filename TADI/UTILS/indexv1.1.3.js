@@ -88,7 +88,7 @@ var customerFormatter = (cell, formatterParams) => {
 
 const salesOrderFormatter = (cell, formatterParams) => {
     let so_consegna_link = cell.getValue();
-    let parts = so_consegna_link.split('|').map(value => value || "");    
+    let parts = so_consegna_link.split('|').map(value => value || "");
     let listIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>`;
     let link = `<a href="https://6518658.app.netsuite.com/app/common/search/searchresults.nl?searchtype=Transaction&IT_Item_NAME=&CU_Entity_ENTITYID=&AFC_Transaction_NUMBERTEXT=${parts[2]}&Transaction_NUMBERTEXT=&style=NORMAL&IT_Item_NAMEtype=CONTAINS&CU_Entity_ENTITYIDtype=CONTAINS&AFC_Transaction_NUMBERTEXTtype=CONTAINS&Transaction_NUMBERTEXTtype=CONTAINS&report=&grid=&searchid=2435&dle=T&sortcol=Transction_DATATED11_raw&sortdir=DESC&csv=HTML&OfficeXML=F&pdf=&size=1000&_csrf=nRz36NGWjWsvP7GzsEiTlgPOWs0ch0TQ6oRNqk9S4nnJHBgZd3NMuSQsJFgKf33phq1f7N9dpkE2KC20mt1IqfIIoLZD5V_MX8Euk8k384S6lIbklLz8sORggkYkhTGTo6zgkkzfQ2jFOlpvDY0eyIdnXHNHcjMhPCP7EMUIJLs%3D&twbx=F" 
         target="_blank" 
@@ -96,9 +96,9 @@ const salesOrderFormatter = (cell, formatterParams) => {
         >
         ${listIcon}
     </a>`;
-    
-    cell.getElement().classList.add('custom-so-cell');    
-    return `${parts[1]}   ${link}`;
+
+    cell.getElement().classList.add('custom-so-cell');
+    return `<p>${parts[1]} ${link}</p>`;
 };
 
 var invoiceDateFormatter = (cell, formatterParams) => {
@@ -119,6 +119,26 @@ var openWind = (event, url) => {
 }
 var dataFilter = (headerValue, rowValue, rowData, filterParams) => {
     return rowData.name == filterParams.name && rowValue < headerValue;
+}
+var agentBusinessFilter = (agent, agentsMap) => {
+    return function (data) {
+        if (!agent) { return true; }
+        // Estrai l'ID cliente dalla stringa (es: da "C000335 MAKHYMO SRL" prendi "C000335")
+        let customerCode = data.customer.split(" ")[0].toLowerCase();
+        // Trova il mapping degli agenti per questo cliente
+        let customerAgents = agentsMap.find(item => item.customer.toLowerCase() === customerCode);
+        // Se non troviamo il mapping per questo cliente, non mostrare la riga
+        if (!customerAgents) { return false; }
+        // Controlla se l'agente è presente come printing agent o monitor agent
+        let isPrintingAgent = customerAgents.printingagent === agent;
+        let isMonitorAgent = customerAgents.monitoragent === agent;
+        // Se l'agente è printing agent, mostra solo le righe con itemclass che contiene "printing"
+        if (isPrintingAgent && data.itemclass.toLowerCase().includes("printing")) { return true; }
+        // Se l'agente è monitor agent, mostra solo le righe con itemclass che contiene "monitor"
+        if (isMonitorAgent && data.itemclass.toLowerCase().includes("monitor")) { return true; }
+        // Se l'agente non corrisponde o l'itemclass non corrisponde, non mostrare la riga
+        return false;
+    };
 }
 
 var createLoadingIcon = () => {
@@ -247,7 +267,7 @@ require(['N/https', 'N/url', 'N/currentRecord', "N/search", "N/runtime"], (https
     };
     table.addColumn(machineColumns);
     let machineClassColumns = {
-        title: "Item Class", field: "item_class", editor: "textarea", validator: '', width: 280, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "input", formatter: stdFormatter, tooltip: '', visible: false
+        title: "Item Class", field: "item_class", editor: "textarea", validator: '', width: 280, minWidth: 200, maxWidth: 400, editable: false, headerFilter: "", formatter: stdFormatter, tooltip: '', visible: false
     };
     table.addColumn(machineClassColumns);
     let displaynameColumns = {
@@ -268,6 +288,11 @@ require(['N/https', 'N/url', 'N/currentRecord', "N/search", "N/runtime"], (https
         title: "U.tà", field: "units", editor: "textarea", validator: '', editable: false, formatter: stdFormatter, tooltip: 'U.tà'
     };
     table.addColumn(unitsColumn);
+
+    if (runtime.getCurrentUser().role == 3) {
+        let customers = getSales(search);
+        table.setFilter(agentBusinessFilter(2), customers)
+    };
 
     const loadingIcon = createLoadingIcon();
     const reportDeposito = document.getElementById('report-deposito');
@@ -325,7 +350,33 @@ document.getElementById('print-xls').addEventListener('click', (event) => {
 
 //------------------------------------------------------------------GET SALES-------------------------------------------------------------------
 
-const getSales = (agent) => {
-
+const getSales = (search) => {
+    let customers = [];
+    var customer = search.create({
+        type: "customer",
+        filters:
+            [
+                ["custentity_ta_agente_monitor", "anyof", "@CURRENT@"],
+                "OR",
+                ["custentity_ta_agente_printing", "anyof", "@CURRENT@"]
+            ],
+        columns:
+            [
+                search.createColumn({ name: "entityid", label: "ID" }),
+                search.createColumn({ name: "altname", label: "Name" }),
+                search.createColumn({ name: "custentity_ta_agente_monitor", label: "[TA] SALES REP MONITOR" }),
+                search.createColumn({ name: "custentity_ta_agente_printing", label: "[TA] SALES REP PRINTING" })
+            ]
+    });
+    customer.run().each((result) => {
+        let obj = {
+            customer: result.getValue({ name: "entityid" }),
+            printingagent: result.getValue({ name: "custentity_ta_agente_printing" }),
+            monitoragent: result.getValue({ name: "custentity_ta_agente_monitor" })
+        };
+        customers.push(obj);
+        return true;
+    });
+    return customers;
 }
 
