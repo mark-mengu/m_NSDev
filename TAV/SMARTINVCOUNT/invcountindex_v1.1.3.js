@@ -109,7 +109,7 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
     let sessione = document.getElementById('start-invcount-header');
     let sessionevalue = sessione.value;
 
-    if (!sessionevalue) {     /*------errore*/ }
+    if (!sessionevalue) { }
 
     const loadingIcon = createLoadingIcon();
     loadingIcon.style.display = 'block';
@@ -168,8 +168,6 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
                 }
             }
         });
-        //document.getElementById('report-inventorycount').style.display = 'none';
-        //document.getElementById('table-title').style.display = 'none';
 
         let accountColumns = {
             title: "Bin", field: "bin", editor: "textarea", headerFilterPlaceholder: "Filtra per BIN...", validator: '', width: 130, minWidth: 100, maxWidth: 150, editable: false, headerFilter: "input", formatter: stdBoldFormatter, tooltip: ''
@@ -229,10 +227,4 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
 
 //-------------------------------------------JQUERY INIT---------------------------------------
 
-$(document).ready(() => {
-    $('#invcount-header').select2({
-        placeholder: "Select Inventory Count Session",
-        allowClear: true
-    });
-});
 
