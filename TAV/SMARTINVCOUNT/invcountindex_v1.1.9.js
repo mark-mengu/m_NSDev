@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     deploymentId: 'customdeploy_gn_rl_inventory_count_data',
                     params: {}
                 });
-
+                let params = {};
                 https.get.promise({
                     url: resourcesUrl,
                     body: JSON.stringify(params),
