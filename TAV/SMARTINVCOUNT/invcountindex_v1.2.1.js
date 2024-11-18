@@ -55,61 +55,8 @@ const createLoadingIcon = () => {
 };
 
 // ------------------------------------------------------------------TABULATOR---------------------------------------------------------------
-const initializeTable = () => {
-    return new Tabulator("#report-inventorycount", {
-        movableRows: false,
-        dataTree: true,
-        groupBy: "account",
-        groupStartOpen: false,
-        groupToggleElement: "header",
-        groupHeader: (value, count, data) => {
-            const totalValue = data.reduce((sum, row) => sum + (Number(row.item_value) || 0), 0);
-            return `${value}
-                <span class="group-header-count">${count} risultati</span>
-                <span class="group-header-total">
-                    TOTALE CONTO: ${totalValue.toLocaleString('it-IT', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            })}
-                </span>`;
-        },
-        pagination: "local",
-        paginationSize: 500,
-        placeholder: "No Data Found",
-        rowFormatter: (row) => {
-            const data = row.getData();
-            if (data.item_value === 0) {
-                row.getCells().forEach(cell => {
-                    cell.getElement().style.color = "red";
-                    cell.getElement().style.fontWeight = "bold";
-                });
-            }
-        }
-    });
-};
-
-const fetchInventoryCountData = async () => {
-    const resourcesUrl = '/app/site/hosting/restlet.nl?script=3622&deploy=1';
-    const response = await fetch(resourcesUrl, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        }
-    });
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
-    }
-    return response.json();
-};
-
-document.addEventListener('DOMContentLoaded', () => {
-    $('#invcount-header').select2({
-        placeholder: "Select Inventory Count Session",
-        allowClear: true
-    });
-
-    const table = initializeTable();
-    const columns = [
+const createTableColumns = () => {
+    return [
         {
             title: "Bin",
             field: "bin",
@@ -159,7 +106,70 @@ document.addEventListener('DOMContentLoaded', () => {
             width: 260
         }
     ];
-    columns.forEach(column => table.addColumn(column));
+};
+
+const initializeTable = () => {
+    return new Tabulator("#report-inventorycount", {
+        movableRows: false,
+        dataTree: true,
+        groupBy: "account",
+        groupStartOpen: false,
+        groupToggleElement: "header",
+        groupHeader: (value, count, data) => {
+            const totalValue = data.reduce((sum, row) => sum + (Number(row.item_value) || 0), 0);
+            return `${value}
+                <span class="group-header-count">${count} risultati</span>
+                <span class="group-header-total">
+                    TOTALE CONTO: ${totalValue.toLocaleString('it-IT', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })}
+                </span>`;
+        },
+        pagination: "local",
+        paginationSize: 500,
+        placeholder: "No Data Found",
+        rowFormatter: (row) => {
+            const data = row.getData();
+            if (data.item_value === 0) {
+                row.getCells().forEach(cell => {
+                    cell.getElement().style.color = "red";
+                    cell.getElement().style.fontWeight = "bold";
+                });
+            }
+        }
+    });
+};
+
+// FETCHING DATA
+const fetchInventoryCountData = async () => {
+    const resourcesUrl = '/app/site/hosting/restlet.nl?script=3622&deploy=1';
+    const response = await fetch(resourcesUrl, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    });
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return response.json();
+};
+
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+`;
+document.head.appendChild(style);
+
+document.addEventListener('DOMContentLoaded', () => {
+    $('#invcount-header').select2({
+        placeholder: "Select Inventory Count Session",
+        allowClear: true
+    });
 
     document.getElementById('apply-load-inventorycount').addEventListener('click', async (event) => {
         event.preventDefault();
@@ -180,6 +190,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('table-title').style.display = 'none';
 
         try {
+            const table = initializeTable();
+            const columns = createTableColumns();
+            columns.forEach(column => table.addColumn(column));
+
             const response = await fetchInventoryCountData();
             table.setData(response.data);
             document.getElementById('table-title').textContent = 'Inventory Count Report';
@@ -197,12 +211,3 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-`;
-document.head.appendChild(style);
