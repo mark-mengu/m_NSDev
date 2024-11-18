@@ -39,7 +39,7 @@ const createLoadingIcon = () => {
 
     const loadingIcon = document.createElement('div');
     loadingIcon.id = 'loading-icon';
-    
+
     const spinner = document.createElement('div');
     spinner.style.cssText = `
         border: 7px solid #f3f3f3;
@@ -48,7 +48,7 @@ const createLoadingIcon = () => {
         width: 75px;
         height: 75px;
         animation: spin 1s linear infinite;
-    `;    
+    `;
     loadingIcon.appendChild(spinner);
     document.body.appendChild(loadingIcon);
     return loadingIcon;
@@ -68,9 +68,9 @@ const initializeTable = () => {
                 <span class="group-header-count">${count} risultati</span>
                 <span class="group-header-total">
                     TOTALE CONTO: ${totalValue.toLocaleString('it-IT', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    })}
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })}
                 </span>`;
         },
         pagination: "local",
@@ -161,19 +161,34 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('report-inventorycount').style.display = 'none';
         document.getElementById('table-title').style.display = 'none';
         try {
-            const response = await fetch('/api/inventory-count', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+            require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
+                let resourcesUrl = url.resolveScript({
+                    scriptId: 'customscript_gn_rl_inventory_count_data',
+                    deploymentId: 'customdeploy_gn_rl_inventory_count_data',
+                    params: {}
+                });
+
+                https.get.promise({
+                    url: resourcesUrl,
+                    body: JSON.stringify(params),
+                    headers: { 'Content-Type': 'application/json' }
+                }).then((response) => {
+                    let data = JSON.parse(response.body);
+                    table.setData(data.data);
+                    document.getElementById('table-title').textContent = 'Inventory Count Report';
+                }).catch((error) => {
+                    console.error(error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to load inventory count data'
+                    });
+                }).finally(() => {
+                    loadingIcon.style.display = 'none';
+                    document.getElementById('report-inventorycount').style.display = 'block';
+                    document.getElementById('table-title').style.display = 'block';
+                });
             });
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            table.setData(data.data);
-            
-            document.getElementById('table-title').textContent = 'Inventory Count Report';
         } catch (error) {
             console.error('Error:', error);
             Swal.fire({
