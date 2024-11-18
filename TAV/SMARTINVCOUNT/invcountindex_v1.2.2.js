@@ -109,7 +109,7 @@ const createTableColumns = () => {
 };
 
 const initializeTable = () => {
-    return new Tabulator("#report-inventorycount", {
+    const table = new Tabulator("#report-inventorycount", {
         movableRows: false,
         dataTree: true,
         groupBy: "account",
@@ -139,21 +139,33 @@ const initializeTable = () => {
             }
         }
     });
+
+    // Add columns
+    const columns = createTableColumns();
+    columns.forEach(column => table.addColumn(column));
+
+    return table;
 };
 
-// FETCHING DATA
-const fetchInventoryCountData = async () => {
-    const resourcesUrl = '/app/site/hosting/restlet.nl?script=3622&deploy=1';
-    const response = await fetch(resourcesUrl, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        }
+const fetchInventoryCountData = (sessionValue) => {
+    return new Promise((resolve, reject) => {
+        jQuery.ajax({
+            url: '/app/site/hosting/scriptlet.nl',
+            type: 'GET',
+            data: {
+                script: 'customscript_gn_rl_inventory_count_data',
+                deploy: 'customdeploy_gn_rl_inventory_count_data',
+                session: sessionValue
+            },
+            contentType: 'application/json',
+            success: function(response) {
+                resolve(response);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                reject(new Error('Failed to fetch inventory count data: ' + textStatus));
+            }
+        });
     });
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
-    }
-    return response.json();
 };
 
 const style = document.createElement('style');
@@ -171,9 +183,11 @@ document.addEventListener('DOMContentLoaded', () => {
         allowClear: true
     });
 
+    let table = null;
+
     document.getElementById('apply-load-inventorycount').addEventListener('click', async (event) => {
         event.preventDefault();
-
+        
         const sessionValue = document.getElementById('invcount-header').value;
         if (!sessionValue) {
             Swal.fire({
@@ -190,13 +204,17 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('table-title').style.display = 'none';
 
         try {
-            const table = initializeTable();
-            const columns = createTableColumns();
-            columns.forEach(column => table.addColumn(column));
+            if (!table) {
+                table = initializeTable();
+            }
 
-            const response = await fetchInventoryCountData();
-            table.setData(response.data);
-            document.getElementById('table-title').textContent = 'Inventory Count Report';
+            const response = await fetchInventoryCountData(sessionValue);
+            if (response && response.data) {
+                table.setData(response.data);
+                document.getElementById('table-title').textContent = 'Inventory Count Report';
+            } else {
+                throw new Error('Invalid data received from server');
+            }
         } catch (error) {
             console.error('Error:', error);
             Swal.fire({
