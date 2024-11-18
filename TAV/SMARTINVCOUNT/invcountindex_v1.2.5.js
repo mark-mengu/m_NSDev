@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     deploymentId: 'customdeploy_gn_rl_inventory_count_data',
                     params: {}
                 });
-                https.post.promise({ url: resourcesUrl, body: JSON.stringify(params), headers: { 'Content-Type': 'application/json' } })
+                https.get.promise({ url: resourcesUrl, body: JSON.stringify(params), headers: { 'Content-Type': 'application/json' } })
                     .then((response) => {
                         let data = JSON.parse(response.body);
                         table.setData(data.data);
@@ -221,8 +221,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         console.error(error);
                     }).finally(() => {
                         loadingIcon.style.display = 'none';
-                        reportWIP.style.display = 'block';
-                        tableTitle.style.display = 'block';
+                        document.getElementById('report-inventorycount').style.display = 'block';
+                        document.getElementById('table-title').style.display = 'block';
                     });
             });
         } catch (error) {
