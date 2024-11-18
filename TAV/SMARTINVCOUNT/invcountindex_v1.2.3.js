@@ -158,10 +158,10 @@ const fetchInventoryCountData = (sessionValue) => {
                 session: sessionValue
             },
             contentType: 'application/json',
-            success: function(response) {
+            success: function (response) {
                 resolve(response);
             },
-            error: function(jqXHR, textStatus, errorThrown) {
+            error: function (jqXHR, textStatus, errorThrown) {
                 reject(new Error('Failed to fetch inventory count data: ' + textStatus));
             }
         });
@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('apply-load-inventorycount').addEventListener('click', async (event) => {
         event.preventDefault();
-        
+
         const sessionValue = document.getElementById('invcount-header').value;
         if (!sessionValue) {
             Swal.fire({
@@ -204,17 +204,20 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('table-title').style.display = 'none';
 
         try {
-            if (!table) {
-                table = initializeTable();
-            }
-
-            const response = await fetchInventoryCountData(sessionValue);
-            if (response && response.data) {
-                table.setData(response.data);
-                document.getElementById('table-title').textContent = 'Inventory Count Report';
-            } else {
-                throw new Error('Invalid data received from server');
-            }
+            if (!table) { table = initializeTable(); }
+            let params = {};
+            https.post.promise({ url: resourcesUrl, body: JSON.stringify(params), headers: { 'Content-Type': 'application/json' } })
+                .then((response) => {
+                    let data = JSON.parse(response.body);
+                    table.setData(data.data);
+                    document.getElementById('table-title').textContent = 'Inventory Count Report';
+                }).catch((error) => {
+                    console.error(error);
+                }).finally(() => {
+                    loadingIcon.style.display = 'none';
+                    reportWIP.style.display = 'block';
+                    tableTitle.style.display = 'block';
+                });
         } catch (error) {
             console.error('Error:', error);
             Swal.fire({
