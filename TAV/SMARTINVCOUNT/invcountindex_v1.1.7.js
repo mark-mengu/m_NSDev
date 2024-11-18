@@ -1,4 +1,4 @@
-// Utility Functions
+// ----------------------------------------------------------------RAW FUNCTIONS-------------------------------------
 const formatDate = (date) => {
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -15,7 +15,7 @@ const formatNumber = (num) => {
     return `${formattedInteger},${formattedDecimal}`;
 };
 
-// Cell Formatters
+// -------------------------------------------------FORMATTERS------------------------------------------------------
 const stdFormatter = (cell) => {
     cell.getElement().style.backgroundColor = "#ffffbf";
     return cell.getValue() || '';
@@ -32,7 +32,7 @@ const inventoryValueFormatter = (cell) => {
     return value ? parseFloat(value).toFixed(2) : '0.00';
 };
 
-// Loading Icon
+// --------------------------------------------------------ICONS----------------------------------------------------
 const createLoadingIcon = () => {
     const existingIcon = document.getElementById('loading-icon');
     if (existingIcon) return existingIcon;
@@ -48,14 +48,13 @@ const createLoadingIcon = () => {
         width: 75px;
         height: 75px;
         animation: spin 1s linear infinite;
-    `;
-    
+    `;    
     loadingIcon.appendChild(spinner);
     document.body.appendChild(loadingIcon);
     return loadingIcon;
 };
 
-// Initialize Tabulator
+// ------------------------------------------------------------------TABULATOR---------------------------------------------------------------
 const initializeTable = () => {
     return new Tabulator("#report-inventorycount", {
         movableRows: false,
@@ -76,7 +75,6 @@ const initializeTable = () => {
         },
         pagination: "local",
         paginationSize: 500,
-        ajaxProgressiveLoad: "scroll",
         placeholder: "No Data Found",
         rowFormatter: (row) => {
             const data = row.getData();
@@ -89,19 +87,12 @@ const initializeTable = () => {
         }
     });
 };
-
-// Event Handlers
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize Select2
     $('#invcount-header').select2({
         placeholder: "Select Inventory Count Session",
         allowClear: true
     });
-
-    // Initialize Table
     const table = initializeTable();
-    
-    // Add Columns
     const columns = [
         {
             title: "Bin",
@@ -152,12 +143,10 @@ document.addEventListener('DOMContentLoaded', () => {
             width: 260
         }
     ];
-
     columns.forEach(column => table.addColumn(column));
 
     document.getElementById('apply-load-inventorycount').addEventListener('click', async (event) => {
         event.preventDefault();
-
         const sessionValue = document.getElementById('invcount-header').value;
         if (!sessionValue) {
             Swal.fire({
@@ -167,12 +156,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             return;
         }
-
         const loadingIcon = createLoadingIcon();
         loadingIcon.style.display = 'block';
         document.getElementById('report-inventorycount').style.display = 'none';
         document.getElementById('table-title').style.display = 'none';
-
         try {
             const response = await fetch('/api/inventory-count', {
                 method: 'GET',
@@ -180,11 +167,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Content-Type': 'application/json'
                 }
             });
-
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-
             const data = await response.json();
             table.setData(data.data);
             
