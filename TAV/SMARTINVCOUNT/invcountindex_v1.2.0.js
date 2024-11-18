@@ -87,11 +87,27 @@ const initializeTable = () => {
         }
     });
 };
+
+const fetchInventoryCountData = async () => {
+    const resourcesUrl = '/app/site/hosting/restlet.nl?script=3622&deploy=1';
+    const response = await fetch(resourcesUrl, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    });
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return response.json();
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     $('#invcount-header').select2({
         placeholder: "Select Inventory Count Session",
         allowClear: true
     });
+
     const table = initializeTable();
     const columns = [
         {
@@ -147,6 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('apply-load-inventorycount').addEventListener('click', async (event) => {
         event.preventDefault();
+
         const sessionValue = document.getElementById('invcount-header').value;
         if (!sessionValue) {
             Swal.fire({
@@ -156,39 +173,16 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             return;
         }
+
         const loadingIcon = createLoadingIcon();
         loadingIcon.style.display = 'block';
         document.getElementById('report-inventorycount').style.display = 'none';
         document.getElementById('table-title').style.display = 'none';
+
         try {
-            require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
-                let resourcesUrl = url.resolveScript({
-                    scriptId: 'customscript_gn_rl_inventory_count_data',
-                    deploymentId: 'customdeploy_gn_rl_inventory_count_data',
-                    params: {}
-                });
-                let params = {};
-                https.get.promise({
-                    url: resourcesUrl,
-                    body: JSON.stringify(params),
-                    headers: { 'Content-Type': 'application/json' }
-                }).then((response) => {
-                    let data = JSON.parse(response.body);
-                    table.setData(data.data);
-                    document.getElementById('table-title').textContent = 'Inventory Count Report';
-                }).catch((error) => {
-                    console.error(error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Failed to load inventory count data'
-                    });
-                }).finally(() => {
-                    loadingIcon.style.display = 'none';
-                    document.getElementById('report-inventorycount').style.display = 'block';
-                    document.getElementById('table-title').style.display = 'block';
-                });
-            });
+            const response = await fetchInventoryCountData();
+            table.setData(response.data);
+            document.getElementById('table-title').textContent = 'Inventory Count Report';
         } catch (error) {
             console.error('Error:', error);
             Swal.fire({
@@ -203,3 +197,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+`;
+document.head.appendChild(style);
