@@ -107,7 +107,7 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
     event.preventDefault();
 
     let sessione = document.getElementById('start-invcount-header');
-    //let sessionevalue = sessione.value;
+    let sessionevalue = ' ';//sessione.value;
 
     if (!sessionevalue) { }
 
