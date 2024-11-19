@@ -1,4 +1,8 @@
-// ----------------------------------------------------------------RAW FUNCTIONS-------------------------------------
+/**
+ *@Description index
+ *@author Marco Mengucci
+ */
+
 const formatDate = (date) => {
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -15,7 +19,6 @@ const formatNumber = (num) => {
     return `${formattedInteger},${formattedDecimal}`;
 };
 
-// -------------------------------------------------FORMATTERS------------------------------------------------------
 const stdFormatter = (cell) => {
     cell.getElement().style.backgroundColor = "#ffffbf";
     return cell.getValue() || '';
@@ -32,7 +35,6 @@ const inventoryValueFormatter = (cell) => {
     return value ? parseFloat(value).toFixed(2) : '0.00';
 };
 
-// --------------------------------------------------------ICONS----------------------------------------------------
 const createLoadingIcon = () => {
     const existingIcon = document.getElementById('loading-icon');
     if (existingIcon) return existingIcon;
@@ -48,13 +50,17 @@ const createLoadingIcon = () => {
         width: 75px;
         height: 75px;
         animation: spin 1s linear infinite;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
     `;
     loadingIcon.appendChild(spinner);
     document.body.appendChild(loadingIcon);
     return loadingIcon;
 };
 
-// ------------------------------------------------------------------TABULATOR---------------------------------------------------------------
 const createTableColumns = () => {
     return [
         {
@@ -117,14 +123,17 @@ const initializeTable = () => {
         groupToggleElement: "header",
         groupHeader: (value, count, data) => {
             const totalValue = data.reduce((sum, row) => sum + (Number(row.item_value) || 0), 0);
-            return `${value}
-                <span class="group-header-count">${count} risultati</span>
-                <span class="group-header-total">
-                    TOTALE CONTO: ${totalValue.toLocaleString('it-IT', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            })}
-                </span>`;
+            return `
+                <div class="group-header">
+                    ${value}
+                    <span class="group-header-count">${count} risultati</span>
+                    <span class="group-header-total">
+                        TOTALE CONTO: ${totalValue.toLocaleString('it-IT', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        })}
+                    </span>
+                </div>`;
         },
         pagination: "local",
         paginationSize: 500,
@@ -140,7 +149,6 @@ const initializeTable = () => {
         }
     });
 
-    // Add columns
     const columns = createTableColumns();
     columns.forEach(column => table.addColumn(column));
 
@@ -162,7 +170,7 @@ const fetchInventoryCountData = (sessionValue) => {
                 resolve(response);
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                reject(new Error('Failed to fetch inventory count data: ' + textStatus));
+                reject(new Error(`Failed to fetch inventory count data: ${textStatus} - ${errorThrown}`));
             }
         });
     });
@@ -173,6 +181,11 @@ style.textContent = `
     @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
+    }
+    .group-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 `;
 document.head.appendChild(style);
@@ -192,8 +205,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!sessionValue) {
             Swal.fire({
                 icon: 'warning',
-                title: 'Selection Required',
-                text: 'Please select an inventory count session'
+                title: 'Selezione Richiesta',
+                text: 'Si prega di selezionare una sessione di conteggio inventario'
             });
             return;
         }
@@ -204,38 +217,48 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('table-title').style.display = 'none';
 
         try {
-            if (!table) { table = initializeTable(); }
-            let params = {};
+            if (!table) { 
+                table = initializeTable(); 
+            }
+
             require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
                 let resourcesUrl = url.resolveScript({
                     scriptId: 'customscript_gn_rl_inventory_count_data',
                     deploymentId: 'customdeploy_gn_rl_inventory_count_data',
                     params: {}
                 });
-                https.get.promise({ url: resourcesUrl, body: JSON.stringify(params), headers: { 'Content-Type': 'application/json' } })
-                    .then((response) => {
-                        let data = JSON.parse(response.body);
-                        table.setData(data.data);
-                        document.getElementById('table-title').textContent = 'Inventory Count Report';
-                    }).catch((error) => {
-                        console.error(error);
-                    }).finally(() => {
-                        loadingIcon.style.display = 'none';
-                        document.getElementById('report-inventorycount').style.display = 'block';
-                        document.getElementById('table-title').style.display = 'block';
+
+                https.get.promise({ 
+                    url: resourcesUrl, 
+                    body: JSON.stringify({}), 
+                    headers: { 'Content-Type': 'application/json' } 
+                })
+                .then((response) => {
+                    let data = JSON.parse(response.body);
+                    table.setData(data.data);
+                    document.getElementById('table-title').textContent = 'Inventory Count Report';
+                })
+                .catch((error) => {
+                    console.error('Data Fetch Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Errore',
+                        text: 'Impossibile caricare i dati del conteggio inventario'
                     });
+                })
+                .finally(() => {
+                    loadingIcon.style.display = 'none';
+                    document.getElementById('report-inventorycount').style.display = 'block';
+                    document.getElementById('table-title').style.display = 'block';
+                });
             });
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Global Error:', error);
             Swal.fire({
                 icon: 'error',
-                title: 'Error',
-                text: 'Failed to load inventory count data'
+                title: 'Errore Critico',
+                text: 'Si è verificato un errore imprevisto'
             });
-        } finally {
-            loadingIcon.style.display = 'none';
-            document.getElementById('report-inventorycount').style.display = 'block';
-            document.getElementById('table-title').style.display = 'block';
         }
     });
 });
