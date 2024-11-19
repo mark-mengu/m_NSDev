@@ -1,6 +1,6 @@
 /**
  *@Description E
- *@author Marco Mengucci (modified)
+ *@author Marco Mengucci
  */
 
 const formatDate = (date) => {
