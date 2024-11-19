@@ -225,6 +225,13 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
+/**
+ *@Description Enhanced inventory count table with error handling
+ *@author Marco Mengucci (modified)
+ */
+
+// ... (previous code remains the same until the DOMContentLoaded event listener)
+
 document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('report-inventorycount')) {
         document.getElementById('report-inventorycount').style.display = 'none';
@@ -236,6 +243,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     let table = null;
+
+    const hideLoadingState = () => {
+        const loadingIcon = document.getElementById('loading-icon');
+        if (loadingIcon) {
+            loadingIcon.style.display = 'none';
+        }
+        document.getElementById('table-title').style.display = 'none';
+    };
+
+    const showError = (title, message) => {
+        hideLoadingState();
+        Swal.fire({
+            icon: 'error',
+            title: title,
+            text: message,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK'
+        });
+    };
 
     document.getElementById('apply-load-inventorycount').addEventListener('click', async (event) => {
         event.preventDefault();
@@ -273,27 +299,62 @@ document.addEventListener('DOMContentLoaded', () => {
                     headers: { 'Content-Type': 'application/json' }
                 })
                     .then((response) => {
-                        let data = JSON.parse(response.body);
-                        table.setData(data.data);
-                        document.getElementById('table-title').textContent = 'Inventory Count Report';
+                        try {
+                            let data = JSON.parse(response.body);
+
+                            // Check if the response contains an error
+                            if (data.error) {
+                                throw new Error(data.error.message || 'Errore nella risposta del server');
+                            }
+
+                            // Check if data exists and has the expected structure
+                            if (!data.data || !Array.isArray(data.data)) {
+                                throw new Error('Formato dati non valido');
+                            }
+
+                            table.setData(data.data);
+                            document.getElementById('table-title').textContent = 'Inventory Count Report';
+
+                            // If data is empty, the table will show "No Data Found"
+                            if (data.data.length === 0) {
+                                document.getElementById('report-inventorycount').style.display = 'block';
+                            }
+                        } catch (parseError) {
+                            console.error('Data Parse Error:', parseError);
+                            showError(
+                                'Errore di Formato',
+                                'I dati ricevuti non sono nel formato corretto: ' + parseError.message
+                            );
+                        }
                     })
                     .catch((error) => {
                         console.error('Data Fetch Error:', error);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Errore',
-                            text: 'Impossibile caricare i dati del conteggio inventario'
-                        });
+
+                        // Handle different types of errors
+                        let errorMessage = 'Impossibile caricare i dati del conteggio inventario';
+
+                        if (error.type === 'NETWORK_ERROR') {
+                            errorMessage = 'Errore di rete: verificare la connessione';
+                        } else if (error.type === 'SSS_MISSING_REQD_ARGUMENT') {
+                            errorMessage = 'Parametri mancanti nella richiesta';
+                        } else if (error.type === 'RCRD_DOES_NOT_EXIST') {
+                            errorMessage = 'Sessione di conteggio non trovata';
+                        } else if (error.message) {
+                            errorMessage = error.message;
+                        }
+
+                        showError('Errore', errorMessage);
+                    })
+                    .finally(() => {
+                        hideLoadingState();
                     });
             });
         } catch (error) {
             console.error('Global Error:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Errore Critico',
-                text: 'Si è verificato un errore imprevisto'
-            });
-            loadingIcon.style.display = 'none';
+            showError(
+                'Errore Critico',
+                'Si è verificato un errore imprevisto: ' + error.message
+            );
         }
     });
 });
