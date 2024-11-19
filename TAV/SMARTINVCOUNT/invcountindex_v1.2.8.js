@@ -115,10 +115,13 @@ const createTableColumns = () => {
 };
 
 const initializeTable = () => {
+    // Nascondiamo il container della tabella all'inizio
+    document.getElementById('report-inventorycount').style.display = 'none';
+
     const table = new Tabulator("#report-inventorycount", {
         movableRows: false,
         dataTree: true,
-        groupBy: "account",
+        groupBy: "",
         groupStartOpen: false,
         groupToggleElement: "header",
         groupHeader: (value, count, data) => {
@@ -129,9 +132,9 @@ const initializeTable = () => {
                     <span class="group-header-count">${count} risultati</span>
                     <span class="group-header-total">
                         TOTALE CONTO: ${totalValue.toLocaleString('it-IT', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        })}
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })}
                     </span>
                 </div>`;
         },
@@ -146,6 +149,11 @@ const initializeTable = () => {
                     cell.getElement().style.fontWeight = "bold";
                 });
             }
+        },
+        // Aggiungiamo un event handler per il caricamento completato
+        dataLoaded: function (data) {
+            // Mostriamo la tabella solo dopo che i dati sono stati caricati
+            document.getElementById('report-inventorycount').style.display = 'block';
         }
     });
 
@@ -170,6 +178,10 @@ style.textContent = `
 document.head.appendChild(style);
 
 document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('report-inventorycount')) {
+        document.getElementById('report-inventorycount').style.display = 'none';
+    }
+
     $('#invcount-header').select2({
         placeholder: "Select Inventory Count Session",
         allowClear: true
@@ -196,8 +208,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('table-title').style.display = 'none';
 
         try {
-            if (!table) { 
-                table = initializeTable(); 
+            if (!table) {
+                table = initializeTable();
+            } else {
+                // Se la tabella esiste già, la nascondiamo
+                document.getElementById('report-inventorycount').style.display = 'none';
             }
 
             require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
@@ -207,29 +222,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     params: {}
                 });
 
-                https.get.promise({ 
-                    url: resourcesUrl, 
-                    body: JSON.stringify({}), 
-                    headers: { 'Content-Type': 'application/json' } 
+                https.get.promise({
+                    url: resourcesUrl,
+                    body: JSON.stringify({}),
+                    headers: { 'Content-Type': 'application/json' }
                 })
-                .then((response) => {
-                    let data = JSON.parse(response.body);
-                    table.setData(data.data);
-                    document.getElementById('table-title').textContent = 'Inventory Count Report';
-                })
-                .catch((error) => {
-                    console.error('Data Fetch Error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Errore',
-                        text: 'Impossibile caricare i dati del conteggio inventario'
+                    .then((response) => {
+                        let data = JSON.parse(response.body);
+                        table.setData(data.data);
+                        document.getElementById('table-title').textContent = 'Inventory Count Report';
+                    })
+                    .catch((error) => {
+                        console.error('Data Fetch Error:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Errore',
+                            text: 'Impossibile caricare i dati del conteggio inventario'
+                        });
+                    })
+                    .finally(() => {
+                        loadingIcon.style.display = 'none';
+                        document.getElementById('table-title').style.display = 'block';
+                        // La tabella verrà mostrata automaticamente dall'evento dataLoaded di Tabulator
                     });
-                })
-                .finally(() => {
-                    loadingIcon.style.display = 'none';
-                    document.getElementById('report-inventorycount').style.display = 'block';
-                    document.getElementById('table-title').style.display = 'block';
-                });
             });
         } catch (error) {
             console.error('Global Error:', error);
@@ -238,6 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 title: 'Errore Critico',
                 text: 'Si è verificato un errore imprevisto'
             });
+            loadingIcon.style.display = 'none';
         }
     });
 });
