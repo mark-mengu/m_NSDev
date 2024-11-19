@@ -155,27 +155,6 @@ const initializeTable = () => {
     return table;
 };
 
-const fetchInventoryCountData = (sessionValue) => {
-    return new Promise((resolve, reject) => {
-        jQuery.ajax({
-            url: '/app/site/hosting/scriptlet.nl',
-            type: 'GET',
-            data: {
-                script: 'customscript_gn_rl_inventory_count_data',
-                deploy: 'customdeploy_gn_rl_inventory_count_data',
-                session: sessionValue
-            },
-            contentType: 'application/json',
-            success: function (response) {
-                resolve(response);
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                reject(new Error(`Failed to fetch inventory count data: ${textStatus} - ${errorThrown}`));
-            }
-        });
-    });
-};
-
 const style = document.createElement('style');
 style.textContent = `
     @keyframes spin {
