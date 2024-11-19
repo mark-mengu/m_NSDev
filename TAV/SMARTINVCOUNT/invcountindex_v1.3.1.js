@@ -1,9 +1,9 @@
 /**
- *@Description E
- *@author Marco Mengucci
+ *@Description Enhanced inventory count table with sequential loading and yellow-orange theme
+ *@author Marco Mengucci (modified)
  */
 
-const formatDate = (date) => {
+ const formatDate = (date) => {
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
@@ -41,8 +41,8 @@ const createLoadingIcon = () => {
 
     const spinner = document.createElement('div');
     spinner.style.cssText = `
-        border: 7px solid #f3f3f3;
-        border-top: 7px solid #39ff14;
+        border: 7px solid #fef3c7;
+        border-top: 7px solid #f59e0b;
         border-radius: 50%;
         width: 75px;
         height: 75px;
@@ -122,6 +122,7 @@ const initializeTable = () => {
         groupBy: "",
         groupStartOpen: false,
         groupToggleElement: "header",
+        placeholder: "No Data Found",
         groupHeader: (value, count, data) => {
             const totalValue = data.reduce((sum, row) => sum + (Number(row.item_value) || 0), 0);
             return `
@@ -130,29 +131,30 @@ const initializeTable = () => {
                     <span class="group-header-count">${count} risultati</span>
                     <span class="group-header-total">
                         TOTALE CONTO: ${totalValue.toLocaleString('it-IT', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            })}
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        })}
                     </span>
                 </div>`;
         },
         pagination: "local",
         paginationSize: 500,
-        placeholder: "No Data Found",
         rowFormatter: (row) => {
             const data = row.getData();
             if (data.item_value === 0) {
-                row.getElement().style.color = "red";
+                row.getElement().style.color = "#b45309";
                 row.getElement().style.fontWeight = "bold";
             }
         },
         dataLoaded: function (data) {
             const loadingIcon = document.getElementById('loading-icon');
             if (loadingIcon) {
-                loadingIcon.style.display = 'none';
+                loadingIcon.remove();
             }
-            tableElement.style.display = 'block';
-            document.getElementById('table-title').style.display = 'block';
+            if (data && data.length > 0) {
+                tableElement.style.display = 'block';
+                document.getElementById('table-title').style.display = 'block';
+            }
         }
     });
 
@@ -174,43 +176,45 @@ style.textContent = `
         justify-content: space-between;
         align-items: center;
         padding: 10px;
-        background-color: #f0f9ff;
-        border-bottom: 2px solid #93c5fd;
+        background-color: #fef3c7;
+        border-bottom: 2px solid #f59e0b;
     }
 
     .tabulator {
-        background-color: #ffffff;
-        border: 1px solid #e5e7eb;
+        background-color: #fffbeb;
+        border: 1px solid #fcd34d;
         border-radius: 8px;
         overflow: hidden;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        box-shadow: 0 1px 3px 0 rgba(245, 158, 11, 0.1);
     }
 
     .tabulator-header {
-        background-color: #f0f9ff !important;
-        border-bottom: 2px solid #93c5fd !important;
+        background-color: #fef3c7 !important;
+        border-bottom: 2px solid #f59e0b !important;
     }
 
     .tabulator-col {
-        background-color: #f0f9ff !important;
-        border-right: 1px solid #e5e7eb !important;
+        background-color: #fef3c7 !important;
+        border-right: 1px solid #fcd34d !important;
+        color: #92400e !important;
     }
 
     .tabulator-row {
-        border-bottom: 1px solid #e5e7eb !important;
+        border-bottom: 1px solid #fcd34d !important;
+        background-color: #fffbeb !important;
     }
 
     .tabulator-row:nth-child(even) {
-        background-color: #f8fafc !important;
+        background-color: #fef3c7 !important;
     }
 
     .tabulator-row:hover {
-        background-color: #f0f9ff !important;
+        background-color: #fde68a !important;
     }
 
     .tabulator-footer {
-        background-color: #f8fafc !important;
-        border-top: 2px solid #93c5fd !important;
+        background-color: #fef3c7 !important;
+        border-top: 2px solid #f59e0b !important;
     }
 
     #loading-icon {
@@ -219,22 +223,26 @@ style.textContent = `
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(255, 255, 255, 0.8);
+        background-color: rgba(255, 251, 235, 0.8);
         z-index: 9998;
     }
+
+    .tabulator-placeholder {
+        position: relative !important;
+        height: 100px !important;
+        padding-top: 40px !important;
+        text-align: center !important;
+        color: #92400e !important;
+        font-weight: bold !important;
+    }
 `;
+
 document.head.appendChild(style);
 
-/**
- *@Description Enhanced inventory count table with error handling
- *@author Marco Mengucci (modified)
- */
-
-// ... (previous code remains the same until the DOMContentLoaded event listener)
-
 document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('report-inventorycount')) {
-        document.getElementById('report-inventorycount').style.display = 'none';
+    const tableElement = document.getElementById('report-inventorycount');
+    if (tableElement) {
+        tableElement.style.display = 'none';
     }
 
     $('#invcount-header').select2({
@@ -247,9 +255,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const hideLoadingState = () => {
         const loadingIcon = document.getElementById('loading-icon');
         if (loadingIcon) {
-            loadingIcon.style.display = 'none';
+            loadingIcon.remove();
         }
-        document.getElementById('table-title').style.display = 'none';
     };
 
     const showError = (title, message) => {
@@ -258,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
             icon: 'error',
             title: title,
             text: message,
-            confirmButtonColor: '#3085d6',
+            confirmButtonColor: '#f59e0b',
             confirmButtonText: 'OK'
         });
     };
@@ -271,15 +278,21 @@ document.addEventListener('DOMContentLoaded', () => {
             Swal.fire({
                 icon: 'warning',
                 title: 'Selezione Richiesta',
-                text: 'Si prega di selezionare una sessione di conteggio inventario'
+                text: 'Si prega di selezionare una sessione di conteggio inventario',
+                confirmButtonColor: '#f59e0b'
             });
             return;
         }
 
+        // Hide table and title before showing loading icon
+        if (tableElement) {
+            tableElement.style.display = 'none';
+        }
+        document.getElementById('table-title').style.display = 'none';
+
+        // Show loading icon
         const loadingIcon = createLoadingIcon();
         loadingIcon.style.display = 'block';
-        document.getElementById('report-inventorycount').style.display = 'none';
-        document.getElementById('table-title').style.display = 'none';
 
         try {
             if (!table) {
@@ -302,23 +315,24 @@ document.addEventListener('DOMContentLoaded', () => {
                         try {
                             let data = JSON.parse(response.body);
 
-                            // Check if the response contains an error
                             if (data.error) {
                                 throw new Error(data.error.message || 'Errore nella risposta del server');
                             }
 
-                            // Check if data exists and has the expected structure
                             if (!data.data || !Array.isArray(data.data)) {
                                 throw new Error('Formato dati non valido');
                             }
 
-                            table.setData(data.data);
+                            // Set table data after validation
+                            table.setData(data.data).then(() => {
+                                // Update visibility after data is loaded
+                                if (data.data.length === 0) {
+                                    document.getElementById('table-title').style.display = 'block';
+                                    tableElement.style.display = 'block';
+                                }
+                            });
+                            
                             document.getElementById('table-title').textContent = 'Inventory Count Report';
-
-                            // If data is empty, the table will show "No Data Found"
-                            if (data.data.length === 0) {
-                                document.getElementById('report-inventorycount').style.display = 'block';
-                            }
                         } catch (parseError) {
                             console.error('Data Parse Error:', parseError);
                             showError(
@@ -330,7 +344,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     .catch((error) => {
                         console.error('Data Fetch Error:', error);
 
-                        // Handle different types of errors
                         let errorMessage = 'Impossibile caricare i dati del conteggio inventario';
 
                         if (error.type === 'NETWORK_ERROR') {
@@ -344,9 +357,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
 
                         showError('Errore', errorMessage);
-                    })
-                    .finally(() => {
-                        hideLoadingState();
                     });
             });
         } catch (error) {
