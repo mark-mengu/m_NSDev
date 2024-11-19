@@ -1,6 +1,6 @@
 /**
- *@Description index
- *@author Marco Mengucci
+ *@Description E
+ *@author Marco Mengucci (modified)
  */
 
 const formatDate = (date) => {
@@ -20,17 +20,14 @@ const formatNumber = (num) => {
 };
 
 const stdFormatter = (cell) => {
-    cell.getElement().style.backgroundColor = "#ffffbf";
     return cell.getValue() || '';
 };
 
 const stdBoldFormatter = (cell) => {
-    cell.getElement().style.backgroundColor = "#ffffbf";
     return `<strong>${cell.getValue() || ''}</strong>`;
 };
 
 const inventoryValueFormatter = (cell) => {
-    cell.getElement().style.backgroundColor = "#ffffbf";
     const value = cell.getValue();
     return value ? parseFloat(value).toFixed(2) : '0.00';
 };
@@ -54,7 +51,7 @@ const createLoadingIcon = () => {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        z-index: 1000;
+        z-index: 9999;
     `;
     loadingIcon.appendChild(spinner);
     document.body.appendChild(loadingIcon);
@@ -115,10 +112,11 @@ const createTableColumns = () => {
 };
 
 const initializeTable = () => {
-    // Nascondiamo il container della tabella all'inizio
-    document.getElementById('report-inventorycount').style.display = 'none';
+    const tableElement = document.getElementById('report-inventorycount');
+    tableElement.style.display = 'none';
 
     const table = new Tabulator("#report-inventorycount", {
+        layout: "fitDataFill",
         movableRows: false,
         dataTree: true,
         groupBy: "",
@@ -144,16 +142,17 @@ const initializeTable = () => {
         rowFormatter: (row) => {
             const data = row.getData();
             if (data.item_value === 0) {
-                row.getCells().forEach(cell => {
-                    cell.getElement().style.color = "red";
-                    cell.getElement().style.fontWeight = "bold";
-                });
+                row.getElement().style.color = "red";
+                row.getElement().style.fontWeight = "bold";
             }
         },
-        // Aggiungiamo un event handler per il caricamento completato
         dataLoaded: function (data) {
-            // Mostriamo la tabella solo dopo che i dati sono stati caricati
-            document.getElementById('report-inventorycount').style.display = 'block';
+            const loadingIcon = document.getElementById('loading-icon');
+            if (loadingIcon) {
+                loadingIcon.style.display = 'none';
+            }
+            tableElement.style.display = 'block';
+            document.getElementById('table-title').style.display = 'block';
         }
     });
 
@@ -169,10 +168,59 @@ style.textContent = `
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
     }
+    
     .group-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        padding: 10px;
+        background-color: #f0f9ff;
+        border-bottom: 2px solid #93c5fd;
+    }
+
+    .tabulator {
+        background-color: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    .tabulator-header {
+        background-color: #f0f9ff !important;
+        border-bottom: 2px solid #93c5fd !important;
+    }
+
+    .tabulator-col {
+        background-color: #f0f9ff !important;
+        border-right: 1px solid #e5e7eb !important;
+    }
+
+    .tabulator-row {
+        border-bottom: 1px solid #e5e7eb !important;
+    }
+
+    .tabulator-row:nth-child(even) {
+        background-color: #f8fafc !important;
+    }
+
+    .tabulator-row:hover {
+        background-color: #f0f9ff !important;
+    }
+
+    .tabulator-footer {
+        background-color: #f8fafc !important;
+        border-top: 2px solid #93c5fd !important;
+    }
+
+    #loading-icon {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.8);
+        z-index: 9998;
     }
 `;
 document.head.appendChild(style);
@@ -210,9 +258,6 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             if (!table) {
                 table = initializeTable();
-            } else {
-                // Se la tabella esiste già, la nascondiamo
-                document.getElementById('report-inventorycount').style.display = 'none';
             }
 
             require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
@@ -239,11 +284,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             title: 'Errore',
                             text: 'Impossibile caricare i dati del conteggio inventario'
                         });
-                    })
-                    .finally(() => {
-                        loadingIcon.style.display = 'none';
-                        document.getElementById('table-title').style.display = 'block';
-                        // La tabella verrà mostrata automaticamente dall'evento dataLoaded di Tabulator
                     });
             });
         } catch (error) {
