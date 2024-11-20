@@ -135,7 +135,7 @@ var createLoadingIcon = () => {
     const spinner = document.createElement('div');
     spinner.style.cssText = `
     border: 7px solid #f3f3f3;
-    border-top: 7px solid #39ff14; 
+    border-top: 7px solid #ff6600; 
     border-radius: 50%;
     width: 75px;
     height: 75px;
