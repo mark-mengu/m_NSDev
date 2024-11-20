@@ -231,11 +231,8 @@ const table = new Tabulator("#report-report-inventorycount", {
 document.getElementById('report-inventorycount').style.display = 'none';
 document.getElementById('table-title').style.display = 'none';
 
-
-const loadingIcon = createLoadingIcon();
 const reportInvCount = document.getElementById('report-inventorycount');
 const tableTitle = document.getElementById('table-title');
-loadingIcon.style.display = 'block';
 reportInvCount.style.display = 'none';
 tableTitle.style.display = 'none';
 
