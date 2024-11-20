@@ -382,7 +382,7 @@ const handleLoadButtonClick = async (event) => {
 
     createLoadingIcon();
     try {
-        const table = await initializeTable(); // Use await here
+        const table = initializeTable();
         loadTableData(table, sessionValue);
     } catch (error) {
         showError('Critical Error', error.message);
