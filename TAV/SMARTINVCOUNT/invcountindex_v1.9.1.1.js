@@ -154,7 +154,6 @@ var createLoadingIcon = () => {
     return loadingIcon;
 };
 
-
 const reportInvCount = document.getElementById('report-inventorycount').style.display = 'none';
 const tableTitle = document.getElementById('table-title').style.display = 'none';
 
@@ -261,7 +260,19 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
     document.getElementById('table-title').style.display = 'none';
 
     let session = document.getElementById('invcount-header').value;
-
+    if (!session) {
+        Swal.fire({
+            title: 'Attenzione!',
+            text: 'Selezionare prima una Sessione di invetario valida...',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+        loadingIcon.style.display = 'none';
+        document.body.removeChild(overlay);
+        document.getElementById('report-inventorycount').style.display = 'block';
+        document.getElementById('table-title').style.display = 'block';
+        return;
+    }
     require(['N/https', 'N/url'], (https, url) => {
         let resourcesUrl = url.resolveScript({
             scriptId: 'customscript_gn_rl_inventory_count_data',
