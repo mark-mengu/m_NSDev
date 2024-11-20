@@ -368,20 +368,27 @@ const initializeApp = async () => {
 const handleLoadButtonClick = async (event) => {
     event.preventDefault();
     const sessionValue = document.getElementById('invcount-header').value;
+
     if (!sessionValue) {
         showError('Selection Required', 'Please select an inventory count session');
         return;
     }
+
     const tableElement = document.getElementById('report-inventorycount');
     if (tableElement) tableElement.style.display = 'none';
 
     createLoadingIcon();
+
     try {
-        const table = initializeTable();
-        console.log("TABLE CHECK 1", table)
+        const table = await initializeTable();
+        console.log("TABLE CHECK 1 (resolved):", table); 
         loadTableData(table, sessionValue);
     } catch (error) {
+        console.error('Critical Error:', error);
         showError('Critical Error', error.message);
+    } finally {
+        const loadingIcon = document.getElementById('loading-icon');
+        if (loadingIcon) loadingIcon.remove();
     }
 };
 
