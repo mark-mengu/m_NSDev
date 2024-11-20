@@ -198,25 +198,25 @@ let table = new Tabulator("#report-inventorycount", {
             headerFilterPlaceholder: "Filtra per Kardex shelf..."
         },
         {
-            title: "Quantity NetSuite",
+            title: "Qtà NetSuite",
             field: "qtynetsuite",
             formatter: stdFormatter,
-            width: 200,
+            width: 160,
             validator: ["numeric", "min:0"]
         },
         {
-            title: "Quantity Kardex",
+            title: "Qtà Kardex",
             field: "qtykardex",
             formatter: stdFormatter,
-            width: 200,
+            width: 160,
             validator: ["numeric", "min:0"]
         },
         {
-            title: "Quantity Contata",
+            title: "Qtà Contata",
             field: "qty",
             editor: "input",
             formatter: qtyconfirmedFormatted,
-            width: 200,
+            width: 160,
             validator: ["numeric", "min:0"],
             editorParams: {
                 selectContents: true
