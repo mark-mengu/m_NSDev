@@ -430,6 +430,7 @@ const editqtyData = (table, session) => {
         })
             .then((response) => {
                 let data = JSON.parse(response.body);
+                console.log(table);
                 table.setData(data.data);
             })
             .catch((error) => {
