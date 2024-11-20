@@ -347,7 +347,7 @@ const initializeTable = () => {
     });
 };
 
-const initializeApp = async () => {
+const initializeApp = () => {
     try {
         const tableElement = document.getElementById('report-inventorycount');
         if (tableElement) {
@@ -370,7 +370,7 @@ const initializeApp = async () => {
     }
 };
 
-const handleLoadButtonClick = async (event) => {
+const handleLoadButtonClick = (event) => {
     event.preventDefault();
     const sessionValue = document.getElementById('invcount-header').value;
     if (!sessionValue) {
@@ -382,10 +382,10 @@ const handleLoadButtonClick = async (event) => {
 
     createLoadingIcon();
     initializeTable()
-        .then(table => {
+        .then(function (table) {
             loadTableData(table, sessionValue);
         })
-        .catch(error => {
+        .catch(function (error) {
             showError('Critical Error', error.message);
         });
 };
