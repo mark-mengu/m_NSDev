@@ -140,39 +140,69 @@ const loadTableData = async (table, sessionValue) => {
     }
 
     return new Promise((resolve, reject) => {
-        require(['N/https', 'N/url'], (https, url) => {
-            try {
-                const resourcesUrl = url.resolveScript({
-                    scriptId: 'customscript_gn_rl_inventory_count_data',
-                    deploymentId: 'customdeploy_gn_rl_inventory_count_data',
-                    params: {
-                        sessionId: sessionValue
-                    }
-                });
-                https.get.promise({
-                    url: resourcesUrl,
-                    headers: { 'Content-Type': 'application/json' }
-                }).then((response) => {
-                    try {
-                        let data = JSON.parse(response.body);
-                        if (data.error) {
-                            throw new Error(data.error.message || 'Server response error');
-                        }
-                        if (!data.data || !Array.isArray(data.data)) {
-                            throw new Error('Invalid data format received');
-                        }
-                        table.setData(data.data)
-                            .then(() => resolve(data.data))
-                            .catch(error => reject(new Error(`Failed to set table data: ${error.message}`)));
-                    } catch (parseError) {
-                        reject(new Error(`Data parsing error: ${parseError.message}`));
-                    }
-                })
-                    .catch(reject);
-            } catch (urlError) {
-                reject(new Error(`Failed to resolve script URL: ${urlError.message}`));
+        try {
+            // Check if NetSuite module loading is available
+            if (typeof require === 'undefined') {
+                reject(new Error('NetSuite module loading is not available'));
+                return;
             }
-        });
+
+            require(['N/https', 'N/url'], (https, url) => {
+                try {
+                    // Detailed logging for debugging
+                    console.log('Session Value:', sessionValue);
+
+                    const resourcesUrl = url.resolveScript({
+                        scriptId: 'customscript_gn_rl_inventory_count_data',
+                        deploymentId: 'customdeploy_gn_rl_inventory_count_data',
+                        params: {
+                            sessionId: sessionValue
+                        }
+                    });
+
+                    console.log('Resolved Script URL:', resourcesUrl);
+
+                    https.get.promise({
+                        url: resourcesUrl,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        }
+                    }).then((response) => {
+                        console.log('Response Status:', response.status);
+                        console.log('Response Body:', response.body);
+
+                        try {
+                            let data = JSON.parse(response.body);
+
+                            if (data.error) {
+                                throw new Error(data.error.message || 'Server response error');
+                            }
+
+                            if (!data.data || !Array.isArray(data.data)) {
+                                throw new Error('Invalid data format received');
+                            }
+
+                            table.setData(data.data)
+                                .then(() => resolve(data.data))
+                                .catch(error => reject(new Error(`Failed to set table data: ${error.message}`)));
+                        } catch (parseError) {
+                            console.error('Data parsing error:', parseError);
+                            reject(new Error(`Data parsing error: ${parseError.message}`));
+                        }
+                    }).catch(error => {
+                        console.error('HTTPS GET Error:', error);
+                        reject(error);
+                    });
+                } catch (urlError) {
+                    console.error('URL Resolution Error:', urlError);
+                    reject(new Error(`Failed to resolve script URL: ${urlError.message}`));
+                }
+            });
+        } catch (requireError) {
+            console.error('Require Module Error:', requireError);
+            reject(new Error(`Module loading error: ${requireError.message}`));
+        }
     });
 };
 
