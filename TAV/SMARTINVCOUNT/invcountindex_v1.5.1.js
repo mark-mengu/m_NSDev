@@ -131,7 +131,6 @@ const handleDataLoaded = (data, tableElement) => {
     }
 };
 
-
 const customAjaxRequest = async (url, config, params) => {
     const maxRetries = 3;
     let retryCount = 0;
@@ -159,9 +158,7 @@ const customAjaxRequest = async (url, config, params) => {
     }
 };
 
-/**
- * Enhanced Inventory Count Data Loader with Robust Error Tracing
- */
+
 const loadTableData = (table, sessionValue) => {
     console.log('DATA LOAD STARTED', { sessionValue });
 
@@ -201,14 +198,14 @@ const loadTableData = (table, sessionValue) => {
                             'Accept': 'application/json'
                         }
                     }).then(response => {
-                        logStep('HTTP Response Received', { 
+                        logStep('HTTP Response Received', {
                             status: response.status,
-                            bodyLength: response.body ? response.body.length : 'No Body' 
+                            bodyLength: response.body ? response.body.length : 'No Body'
                         });
 
                         try {
                             const data = JSON.parse(response.body);
-                            
+
                             if (data.error) {
                                 logStep('Server Error', { errorMessage: data.error.message });
                                 throw new Error(data.error.message || 'Server response error');
@@ -221,22 +218,21 @@ const loadTableData = (table, sessionValue) => {
 
                             resolve(data.data);
                         } catch (parseError) {
-                            logStep('Data Parsing Error', { 
+                            logStep('Data Parsing Error', {
                                 originalError: parseError.message,
-                                responseBody: response.body 
+                                responseBody: response.body
                             });
                             reject(parseError);
                         }
                     }).catch(httpError => {
-                        logStep('HTTPS Request Error', { 
+                        logStep('HTTPS Request Error', {
                             errorMessage: httpError.message,
-                            scriptContext: runtime.getCurrentScript().id 
+                            scriptContext: runtime.getCurrentScript().id
                         });
                         reject(httpError);
                     });
                 });
             };
-
             // Execute request with comprehensive error handling
             executeRequest()
                 .then(processedData => {
@@ -249,17 +245,17 @@ const loadTableData = (table, sessionValue) => {
                     if (tableElement) tableElement.style.display = 'block';
                 })
                 .catch(error => {
-                    logStep('Critical Failure', { 
+                    logStep('Critical Failure', {
                         errorMessage: error.message,
-                        stack: error.stack 
+                        stack: error.stack
                     });
                     showError('Data Loading Error', error.message);
                 });
 
         } catch (urlResolutionError) {
-            logStep('URL Resolution Error', { 
+            logStep('URL Resolution Error', {
                 errorMessage: urlResolutionError.message,
-                scriptContext: runtime.getCurrentScript().id 
+                scriptContext: runtime.getCurrentScript().id
             });
             showError('URL Resolution Error', urlResolutionError.message);
         }
@@ -386,21 +382,18 @@ const initializeApp = async () => {
 
 const handleLoadButtonClick = async (event) => {
     event.preventDefault();
-
     const sessionValue = document.getElementById('invcount-header').value;
     if (!sessionValue) {
         showError('Selection Required', 'Please select an inventory count session');
         return;
     }
-
     const tableElement = document.getElementById('report-inventorycount');
     if (tableElement) tableElement.style.display = 'none';
 
     createLoadingIcon();
-
     try {
-        const table = await initializeTable();
-        await loadTableData(table, sessionValue);
+        const table = initializeTable();
+        loadTableData(table, sessionValue);
     } catch (error) {
         showError('Critical Error', error.message);
     }
@@ -412,7 +405,6 @@ document.addEventListener('DOMContentLoaded', () => {
         allowClear: true
     });
 
-    document.getElementById('apply-load-inventorycount')
-        .addEventListener('click', handleLoadButtonClick);
+    document.getElementById('apply-load-inventorycount').addEventListener('click', handleLoadButtonClick);
 });
 
