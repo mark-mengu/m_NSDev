@@ -276,16 +276,17 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
 
         return;
     }
-    if (session === "null" || session.trim() === "") {
-        validationIcon.style.display = 'inline';
-        validationIcon.innerHTML = 'Sessione di Inventario chiusa ❌';
-        validationIcon.style.color = 'red';
-    } else {
-        validationIcon.style.display = 'inline';
-        validationIcon.innerHTML = 'Sessione di Inventario aperta ✅';
-        validationIcon.style.color = 'green';
-    }
-    require(['N/https', 'N/url'], (https, url) => {
+    require(['N/https', 'N/url', "N/search"], (https, url, search) => {
+        const sessionRecord = session !== "null" && session ? search.lookupFields({ type: "customrecord_gn_tav_inv_count_header", id: session, columns: ["custrecord_gn_tav_invcount_head_status"] }) : false;
+        if (sessionRecord.custrecord_gn_tav_invcount_head_status == "2") {
+            validationIcon.style.display = 'inline';
+            validationIcon.innerHTML = '<b>Sessione di Inventario chiusa</b> ❌';
+            validationIcon.style.color = 'red';
+        } else {
+            validationIcon.style.display = 'inline';
+            validationIcon.innerHTML = '<b>Sessione di Inventario aperta</b> ✅';
+            validationIcon.style.color = 'green';
+        }
         let resourcesUrl = url.resolveScript({
             scriptId: 'customscript_gn_rl_inventory_count_data',
             deploymentId: 'customdeploy_gn_rl_inventory_count_data',
