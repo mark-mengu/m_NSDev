@@ -192,7 +192,7 @@ let table = new Tabulator("#report-inventorycount", {
             field: "shelfnetsuite",
             headerFilter: "input",
             formatter: stdFormatter,
-            width: 10,
+            width: 180,
             headerFilterPlaceholder: "Filtra per NetSuite shelf..."
         },
         {
@@ -238,7 +238,7 @@ let table = new Tabulator("#report-inventorycount", {
             formatter: inventoryValueFormatter,
             bottomCalc: 'sum',
             bottomCalcParams: { precision: 2 },
-            width: 200,
+            width: 150,
             validator: "numeric"
         }
     ]
