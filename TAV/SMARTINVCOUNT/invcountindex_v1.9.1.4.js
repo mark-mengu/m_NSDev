@@ -1,10 +1,8 @@
-//--------------------------------------------------------------RAWss FUNCTIONS-----------------------------------------
+
 var validate = (cell) => {
     console.log('cell.getData()', cell.getData());
     return true;
 }
-
-//------------------------------------------------FORMAT DATES CALCULATED--------------------------------------------------------
 
 const formatDate = (date) => {
     let day = String(date.getDate()).padStart(2, '0');
@@ -12,7 +10,6 @@ const formatDate = (date) => {
     let year = date.getFullYear();
     return `${year}-${month}-${day}`;
 }
-//------------------------------------------------FORMAT NUMBERS CALCULATED--------------------------------------------------------
 
 const formatNumber = (num) => {
     const roundedNum = Math.round(num * 100) / 100;
@@ -22,7 +19,6 @@ const formatNumber = (num) => {
     return `${formattedInteger},${formattedDecimal}`;
 }
 
-//----------------------------------------------DEFAULT DATES------------------------------------------------
 const setDefaultDates = () => {
     let today = new Date();
     let startDateInput = document.getElementById('start-date');
@@ -120,6 +116,7 @@ var openWind = (event, url) => {
     event.preventDefault();
     window.open(url, '_blank');
 }
+
 var dataFilter = (headerValue, rowValue, rowData, filterParams) => { return rowData.name == filterParams.name && rowValue < headerValue; }
 var createLoadingIcon = () => {
     const loadingIcon = document.createElement('div');
@@ -259,7 +256,7 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
     document.getElementById('table-title').style.display = 'none';
 
     let session = document.getElementById('invcount-header').value;
-    if (!session || session.trim() === '') {
+    if (!session || session.trim() === 'null') {
         Swal.fire({
             title: 'Attenzione!',
             text: 'Selezionare prima una Sessione di inventario valida...',
