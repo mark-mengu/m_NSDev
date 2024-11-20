@@ -228,18 +228,9 @@ const loadTableData = (table, sessionValue) => {
             };
             executeRequest()
                 .then(processedData => {
-                    logStep('Setting Table Data', { dataLength: processedData.length });
                     logStep('Data', { data: processedData });
-                    return new Promise((resolve, reject) => {
-                        table.setData(processedData, () => {
-                            logStep('Table Data Set Successfully');
-                            const tableElement = document.getElementById('report-inventorycount');
-                            if (tableElement) tableElement.style.display = 'block';
-                            resolve();
-                        }, (error) => {
-                            reject(error);
-                        });
-                    });
+
+                    table.setData(processedData)
                 }).catch(error => {
                     logStep('Critical Failure', {
                         errorMessage: error.message,
@@ -247,7 +238,6 @@ const loadTableData = (table, sessionValue) => {
                     });
                     showError('Data Loading Error', error.message);
                 });
-
         } catch (urlResolutionError) {
             logStep('URL Resolution Error', {
                 errorMessage: urlResolutionError.message,
