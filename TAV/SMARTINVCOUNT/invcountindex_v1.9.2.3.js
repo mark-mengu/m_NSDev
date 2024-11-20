@@ -170,14 +170,14 @@ let table = new Tabulator("#report-inventorycount", {
             field: "location",
             headerFilter: "input",
             formatter: stdBoldFormatter,
-            width: 130
+            width: 110
         },
         {
             title: "Bin",
             field: "bin",
             headerFilter: "input",
             formatter: stdBoldFormatter,
-            width: 130,
+            width: 110,
             headerFilterPlaceholder: "Filtra per bin..."
         },
         {
@@ -237,8 +237,8 @@ let table = new Tabulator("#report-inventorycount", {
             title: "Valore Differenza",
             field: "valuedifference",
             formatter: inventoryValueFormatter,
-            topCalc: 'sum',
-            topCalcParams: { precision: 2 },
+            bottomCalc: 'sum',
+            bottomCalcParams: { precision: 2 },
             width: 200,
             validator: "numeric"
         }
