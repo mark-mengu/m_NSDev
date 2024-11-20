@@ -158,6 +158,7 @@ const customAjaxRequest = async (url, config, params) => {
 };
 
 const loadTableData = (table, sessionValue) => {
+    console.log('TABLE CHECK', table)
     const tableTitle = document.getElementById('table-title');
     if (tableTitle) {
         tableTitle.textContent = `Inventory Count - ${sessionValue}`;
