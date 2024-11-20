@@ -149,9 +149,6 @@ var createLoadingIcon = () => {
 };
 
 
-document.getElementById('report-inventorycount').style.display = 'none';
-document.getElementById('table-title').style.display = 'none';
-
 const reportInvCount = document.getElementById('report-inventorycount').style.display = 'none';
 const tableTitle = document.getElementById('table-title').style.display = 'none';
 
@@ -234,6 +231,8 @@ let table = new Tabulator("#report-inventorycount", {
         }
     ]
 });
+document.getElementById('report-inventorycount').style.display = 'none';
+document.getElementById('table-title').style.display = 'none';
 
 document.getElementById('apply-load-inventorycount').addEventListener('click', (event) => {
     event.preventDefault();
