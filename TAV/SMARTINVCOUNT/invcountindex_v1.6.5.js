@@ -378,6 +378,7 @@ const handleLoadButtonClick = async (event) => {
     createLoadingIcon();
     try {
         const table = initializeTable();
+        console.log("TABLE CHECK 1", table)
         loadTableData(table, sessionValue);
     } catch (error) {
         showError('Critical Error', error.message);
