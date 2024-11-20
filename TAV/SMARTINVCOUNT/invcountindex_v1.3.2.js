@@ -3,7 +3,7 @@
  *@author Marco Mengucci (modified)
  */
 
- const formatDate = (date) => {
+const formatDate = (date) => {
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
@@ -131,9 +131,9 @@ const initializeTable = () => {
                     <span class="group-header-count">${count} risultati</span>
                     <span class="group-header-total">
                         TOTALE CONTO: ${totalValue.toLocaleString('it-IT', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        })}
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })}
                     </span>
                 </div>`;
         },
@@ -308,7 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 https.get.promise({
                     url: resourcesUrl,
-                    body: JSON.stringify({}),
+                    body: {},
                     headers: { 'Content-Type': 'application/json' }
                 })
                     .then((response) => {
@@ -331,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     tableElement.style.display = 'block';
                                 }
                             });
-                            
+
                             document.getElementById('table-title').textContent = 'Inventory Count Report';
                         } catch (parseError) {
                             console.error('Data Parse Error:', parseError);
