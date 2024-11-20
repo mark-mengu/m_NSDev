@@ -260,11 +260,13 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
     document.getElementById('report-inventorycount').style.display = 'none';
     document.getElementById('table-title').style.display = 'none';
 
+    let session = document.getElementById('invcount-header').value;
+
     require(['N/https', 'N/url'], (https, url) => {
         let resourcesUrl = url.resolveScript({
             scriptId: 'customscript_gn_rl_inventory_count_data',
             deploymentId: 'customdeploy_gn_rl_inventory_count_data',
-            params: {}
+            params: { session: session }
         });
         https.get.promise({
             url: resourcesUrl,
