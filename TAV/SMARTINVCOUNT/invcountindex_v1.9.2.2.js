@@ -166,6 +166,13 @@ let table = new Tabulator("#report-inventorycount", {
     data: initialData,
     columns: [
         {
+            title: "Location",
+            field: "location",
+            headerFilter: "input",
+            formatter: stdBoldFormatter,
+            width: 130
+        },
+        {
             title: "Bin",
             field: "bin",
             headerFilter: "input",
@@ -178,7 +185,7 @@ let table = new Tabulator("#report-inventorycount", {
             field: "item",
             headerFilter: "input",
             formatter: stdFormatter,
-            width: 350,
+            width: 420,
             headerFilterPlaceholder: "Filtra per articolo..."
         },
         {
@@ -198,25 +205,25 @@ let table = new Tabulator("#report-inventorycount", {
             headerFilterPlaceholder: "Filtra per Kardex shelf..."
         },
         {
-            title: "Qtà NetSuite",
+            title: "Q.tà <br>NetSuite",
             field: "qtynetsuite",
             formatter: stdFormatter,
-            width: 160,
+            width: 150,
             validator: ["numeric", "min:0"]
         },
         {
-            title: "Qtà Kardex",
+            title: "Q.tà <br>Kardex",
             field: "qtykardex",
             formatter: stdFormatter,
-            width: 160,
+            width: 150,
             validator: ["numeric", "min:0"]
         },
         {
-            title: "Qtà Contata",
+            title: "Q.tà <br>Contata",
             field: "qty",
             editor: "input",
             formatter: qtyconfirmedFormatted,
-            width: 160,
+            width: 150,
             validator: ["numeric", "min:0"],
             editorParams: {
                 selectContents: true
@@ -230,8 +237,8 @@ let table = new Tabulator("#report-inventorycount", {
             title: "Valore Differenza",
             field: "valuedifference",
             formatter: inventoryValueFormatter,
-            bottomCalc: 'sum',
-            bottomCalcParams: { precision: 2 },
+            topCalc: 'sum',
+            topCalcParams: { precision: 2 },
             width: 200,
             validator: "numeric"
         }
