@@ -416,11 +416,11 @@ table.on("cellEdited", (cell) => {
         let resourcesUrl = url.resolveScript({
             scriptId: 'customscript_gn_rl_inventory_count_data',
             deploymentId: 'customdeploy_gn_rl_inventory_count_data',
-            params: { session: session }
+            params: {}
         });
         https.post.promise({
             url: resourcesUrl,
-            body: "",//JSON.stringify({}),
+            body: { session: session },
             headers: { 'Content-Type': 'application/json' }
         })
             .then((response) => {
