@@ -148,134 +148,94 @@ var createLoadingIcon = () => {
     return loadingIcon;
 };
 //----------------------------------------------------------------TABULATOR-----------------------------------------------------
-const table = new Tabulator("#report-wip", {
+const table = new Tabulator("#report-wip", { ...TABLE_CONFIG });
+document.getElementById('report-inventorycount').style.display = 'none';
+document.getElementById('table-title').style.display = 'none';
+const TABLE_CONFIG = {
+    columns: [
+        {
+            title: "Bin",
+            field: "bin",
+            headerFilter: "input",
+            formatter: stdBoldFormatter,
+            width: 130,
+            headerFilterPlaceholder: "Filter Bin"
+        },
+        {
+            title: "Articolo",
+            field: "item",
+            headerFilter: "input",
+            formatter: stdFormatter,
+            width: 250,
+            headerFilterPlaceholder: "Filter Article"
+        },
+        {
+            title: "Shelf NetSuite",
+            field: "shelfnetsuite",
+            headerFilter: "input",
+            formatter: stdFormatter,
+            width: 200,
+            headerFilterPlaceholder: "Filter Shelf"
+        },
+        {
+            title: "Shelf NetSuite",
+            field: "shelfkardex",
+            headerFilter: "input",
+            formatter: stdFormatter,
+            width: 200,
+            headerFilterPlaceholder: "Filter Shelf"
+        },
+        {
+            title: "Quantity NetSuite",
+            field: "qtynetsuite",
+            formatter: stdFormatter,
+            width: 200,
+            validator: ["numeric", "min:0"]
+        },
+        {
+            title: "Quantity Kardex",
+            field: "qtykardex",
+            formatter: stdFormatter,
+            width: 200,
+            validator: ["numeric", "min:0"]
+        },
+        {
+            title: "Quantity Contata",
+            field: "qty",
+            editor: "input",
+            formatter: stdFormatter,
+            width: 200,
+            validator: ["numeric", "min:0"],
+            editorParams: {
+                selectContents: true
+            }
+        },
+        {
+            title: "Valore Differenza",
+            field: "valuedifference",
+            formatter: inventoryValueFormatter,
+            bottomCalc: 'sum',
+            bottomCalcParams: { precision: 2 },
+            width: 260,
+            validator: "numeric"
+        }
+    ],
+    layout: "fitDataFill",
     movableRows: false,
     dataTree: true,
-    groupBy: "account",
+    groupBy: "",
     groupStartOpen: false,
     groupToggleElement: "header",
-    groupHeader: "",
-    tabulatorId: "report-wip-table",
-    ajaxURL: '',
-    ajaxParams: {},
-    ajaxFiltering: false,
-    rowHeader: {
-        resizable: true,
-        frozen: true,
-        width: 70,
-        formatter: (cell) => { cell.getRow().getPosition(); },
-        hozAlign: "center"
-    },
-    columnDefaults: { headerSort: true, resizable: "header" },
-    dataLoaderLoading: "Loading data...",
-    placeholder: "No DATA Found...",
+    placeholder: "No Data Found",
     pagination: "local",
-    paginationSize: 150,
-    ajaxProgressiveLoad: "scroll",
-    rowFormatter: (row) => {
-        let data = row.getData();
-        if (data.item_value == 0) {
-            let cells = row.getCells();
-            cells.forEach(cell => {
-                cell.getElement().style.color = "red";
-                cell.getElement().style.fontWeight = "bold";
-            });
-        }
-    }
-});
-document.getElementById('report-wip').style.display = 'none';
-document.getElementById('table-title').style.display = 'none';
-let bin = {
-    title: "Bin",
-    field: "bin",
-    headerFilter: "input",
-    formatter: stdBoldFormatter,
-    width: 130,
-    headerFilterPlaceholder: "Filter Bin"
+    paginationSize: 500
 };
-table.addColumn(bin);
-let item = {
-    title: "Articolo",
-    field: "item",
-    headerFilter: "input",
-    formatter: stdFormatter,
-    width: 250,
-    headerFilterPlaceholder: "Filter Article"
-};
-table.addColumn(item);
-
-let shelfnetsuite = {
-    title: "Shelf NetSuite",
-    field: "shelfnetsuite",
-    headerFilter: "input",
-    formatter: stdFormatter,
-    width: 200,
-    headerFilterPlaceholder: "Filter Shelf"
-};
-table.addColumn(shelfnetsuite);
-
-let shelfkardex = {
-    title: "Shelf Kardex",
-    field: "shelfkardex",
-    headerFilter: "input",
-    formatter: stdFormatter,
-    width: 200,
-    headerFilterPlaceholder: "Filter Shelf"
-};
-table.addColumn(shelfkardex);
-
-let qtynetsuite = {
-    title: "Quantity NetSuite",
-    field: "qtynetsuite",
-    formatter: stdFormatter,
-    width: 200,
-    validator: ["numeric", "min:0"]
-};
-table.addColumn(qtynetsuite);
-
-let qtykardex = {
-    title: "Quantity Kardex",
-    field: "qtykardex",
-    formatter: stdFormatter,
-    width: 200,
-    validator: ["numeric", "min:0"]
-};
-table.addColumn(qtykardex);
-let quantity = {
-    title: "Quantity Contata",
-    field: "qty",
-    editor: "input",
-    formatter: stdFormatter,
-    width: 200,
-    validator: ["numeric", "min:0"],
-    editorParams: {
-        selectContents: true
-    }
-};
-table.addColumn(quantity);
-
-let binColumns = {
-    title: "Valore Differenza",
-    field: "valuedifference",
-    formatter: inventoryValueFormatter,
-    bottomCalc: 'sum',
-    bottomCalcParams: { precision: 2 },
-    width: 260,
-    validator: "numeric"
-}
-table.addColumn(binColumns);
-
-let inventoryValueColumns = {
-    title: "Valore al Costo Medio", field: "item_value", editor: "textarea", validator: '', width: 260, minWidth: 150, maxWidth: 300, editable: false, formatter: inventoryValueFormatter,
-    bottomCalc: 'sum', tooltip: 'Valore al Costo Medio', bottomCalcParams: { precision: 2 },
-};
-table.addColumn(inventoryValueColumns);
 
 const loadingIcon = createLoadingIcon();
-const reportWIP = document.getElementById('report-wip');
+const reportInvCount = document.getElementById('report-inventorycount');
 const tableTitle = document.getElementById('table-title');
 loadingIcon.style.display = 'block';
-reportWIP.style.display = 'none';
+reportInvCount.style.display = 'none';
 tableTitle.style.display = 'none';
 
 
