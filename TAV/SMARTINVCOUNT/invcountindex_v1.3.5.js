@@ -164,7 +164,7 @@ const initializeTable = () => {
             groupToggleElement: "header",
             placeholder: "No Data Found",
             ajaxRequestFunc: customAjaxRequest,
-            ajaxError: function(error) {
+            ajaxError: function (error) {
                 handleAjaxError(error);
             },
             groupHeader: (value, count, data) => {
@@ -176,9 +176,9 @@ const initializeTable = () => {
                             <span class="group-header-count">${count} risultati</span>
                             <span class="group-header-total">
                                 TOTALE CONTO: ${totalValue.toLocaleString('it-IT', {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2
-                                })}
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    })}
                             </span>
                         </div>`;
                 } catch (error) {
@@ -199,7 +199,7 @@ const initializeTable = () => {
                     console.error('Row formatter error:', error);
                 }
             },
-            dataLoaded: function(data) {
+            dataLoaded: function (data) {
                 try {
                     const loadingIcon = document.getElementById('loading-icon');
                     if (loadingIcon) {
@@ -226,18 +226,16 @@ const initializeTable = () => {
     }
 };
 
-// Custom AJAX request function with retry mechanism
 const customAjaxRequest = async (url, config, params) => {
     const maxRetries = 3;
     let retryCount = 0;
-    
+
     while (retryCount < maxRetries) {
         try {
             const response = await fetch(url, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    // Add any required NetSuite authentication headers here
                 },
                 credentials: 'include' // Important for NetSuite authentication
             });
@@ -253,16 +251,14 @@ const customAjaxRequest = async (url, config, params) => {
             if (retryCount === maxRetries) {
                 throw new Error(`Failed after ${maxRetries} attempts: ${error.message}`);
             }
-            // Exponential backoff
             await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
         }
     }
 };
 
-// Error handling
 const handleAjaxError = (error) => {
     console.error('AJAX Error:', error);
-    showError('Data Loading Error', 
+    showError('Data Loading Error',
         `Unable to load inventory data. Please check your connection and try again. 
         Error: ${error.message}`
     );
@@ -287,25 +283,19 @@ const showError = (title, message) => {
     }
 };
 
-// Initialize everything when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     try {
         const tableElement = document.getElementById('report-inventorycount');
         if (tableElement) {
             tableElement.style.display = 'none';
         }
-
-        // Initialize Select2 if available
         if (typeof $ !== 'undefined' && typeof $.fn.select2 !== 'undefined') {
             $('#invcount-header').select2({
                 placeholder: "Select Inventory Count Session",
                 allowClear: true
             });
         }
-
         let table = null;
-
-        // Event listener for the load button
         const loadButton = document.getElementById('apply-load-inventorycount');
         if (loadButton) {
             loadButton.addEventListener('click', async (event) => {
@@ -320,7 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (tableElement) {
                     tableElement.style.display = 'none';
                 }
-                
+
                 const titleElement = document.getElementById('table-title');
                 if (titleElement) {
                     titleElement.style.display = 'none';
@@ -341,15 +331,192 @@ document.addEventListener('DOMContentLoaded', () => {
                     await loadTableData(table, sessionValue);
                 } catch (error) {
                     console.error('Table loading error:', error);
-                    showError('Critical Error', 
+                    showError('Critical Error',
                         'An unexpected error occurred while loading the table: ' + error.message
                     );
                 }
             });
         }
+        const loadTableData = async (table, sessionValue) => {
+            if (!table) {
+                throw new Error('Table instance is required');
+            }
+
+            try {
+                // Check if we're in NetSuite environment
+                if (typeof require === 'undefined') {
+                    throw new Error('NetSuite environment not detected');
+                }
+
+                return new Promise((resolve, reject) => {
+                    require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
+                        try {
+                            const resourcesUrl = url.resolveScript({
+                                scriptId: 'customscript_gn_rl_inventory_count_data',
+                                deploymentId: 'customdeploy_gn_rl_inventory_count_data',
+                                params: {
+                                    sessionId: sessionValue
+                                }
+                            });
+
+                            https.get.promise({
+                                url: resourcesUrl,
+                                body: {},
+                                headers: { 'Content-Type': 'application/json' }
+                            })
+                                .then((response) => {
+                                    try {
+                                        let data = JSON.parse(response.body);
+
+                                        if (data.error) {
+                                            throw new Error(data.error.message || 'Server response error');
+                                        }
+
+                                        if (!data.data || !Array.isArray(data.data)) {
+                                            throw new Error('Invalid data format received');
+                                        }
+
+                                        // Set table data
+                                        table.setData(data.data)
+                                            .then(() => {
+                                                const titleElement = document.getElementById('table-title');
+                                                if (titleElement) {
+                                                    titleElement.textContent = 'Inventory Count Report';
+                                                    titleElement.style.display = 'block';
+                                                }
+                                                resolve(data.data);
+                                            })
+                                            .catch(error => {
+                                                reject(new Error(`Failed to set table data: ${error.message}`));
+                                            });
+
+                                    } catch (parseError) {
+                                        reject(new Error(`Data parsing error: ${parseError.message}`));
+                                    }
+                                })
+                                .catch((error) => {
+                                    let errorMessage = 'Failed to load inventory count data';
+
+                                    switch (error.type) {
+                                        case 'NETWORK_ERROR':
+                                            errorMessage = 'Network error: Please check your connection';
+                                            break;
+                                        case 'SSS_MISSING_REQD_ARGUMENT':
+                                            errorMessage = 'Missing required parameters';
+                                            break;
+                                        case 'RCRD_DOES_NOT_EXIST':
+                                            errorMessage = 'Count session not found';
+                                            break;
+                                        default:
+                                            errorMessage = error.message || errorMessage;
+                                    }
+
+                                    reject(new Error(errorMessage));
+                                });
+
+                        } catch (urlError) {
+                            reject(new Error(`Failed to resolve script URL: ${urlError.message}`));
+                        }
+                    });
+                });
+
+            } catch (error) {
+                // Fallback to local/mock data if in development environment
+                if (process.env.NODE_ENV === 'development') {
+                    console.warn('Running in development mode - using mock data');
+                    const mockData = [
+                        // Add some mock data for development testing
+                        {
+                            bin: "A-01-01",
+                            item: "Test Item 1",
+                            shelf: "Shelf A",
+                            quantityn: "10",
+                            quantityk: "10",
+                            valuedifference: "0.00",
+                            quantity: "10"
+                        },
+                        // Add more mock items as needed
+                    ];
+
+                    await table.setData(mockData);
+                    return mockData;
+                }
+
+                throw new Error(`Failed to load table data: ${error.message}`);
+            }
+        };
+
+        // Initialize everything when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                const tableElement = document.getElementById('report-inventorycount');
+                if (tableElement) {
+                    tableElement.style.display = 'none';
+                }
+
+                // Initialize Select2 if available
+                if (typeof $ !== 'undefined' && typeof $.fn.select2 !== 'undefined') {
+                    $('#invcount-header').select2({
+                        placeholder: "Select Inventory Count Session",
+                        allowClear: true
+                    });
+                }
+
+                let table = null;
+
+                // Event listener for the load button
+                const loadButton = document.getElementById('apply-load-inventorycount');
+                if (loadButton) {
+                    loadButton.addEventListener('click', async (event) => {
+                        event.preventDefault();
+
+                        const sessionValue = document.getElementById('invcount-header')?.value;
+                        if (!sessionValue) {
+                            showError('Selection Required', 'Please select an inventory count session');
+                            return;
+                        }
+
+                        if (tableElement) {
+                            tableElement.style.display = 'none';
+                        }
+
+                        const titleElement = document.getElementById('table-title');
+                        if (titleElement) {
+                            titleElement.style.display = 'none';
+                        }
+
+                        const loadingIcon = createLoadingIcon();
+                        if (loadingIcon) {
+                            loadingIcon.style.display = 'block';
+                        }
+
+                        try {
+                            table = initializeTable();
+                            if (!table) {
+                                throw new Error('Failed to initialize table');
+                            }
+
+                            // Load the table data
+                            await loadTableData(table, sessionValue);
+
+                        } catch (error) {
+                            console.error('Table loading error:', error);
+                            showError('Critical Error',
+                                'An unexpected error occurred while loading the table: ' + error.message
+                            );
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Initialization error:', error);
+                showError('Initialization Error',
+                    'Failed to initialize the application: ' + error.message
+                );
+            }
+        });
     } catch (error) {
         console.error('Initialization error:', error);
-        showError('Initialization Error', 
+        showError('Initialization Error',
             'Failed to initialize the application: ' + error.message
         );
     }
