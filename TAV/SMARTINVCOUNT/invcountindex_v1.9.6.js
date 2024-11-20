@@ -222,7 +222,7 @@ let table = new Tabulator("#report-inventorycount", {
             cellStyle: {
                 backgroundColor: "#FFD580",
             }
-        }
+        },
         {
             title: "Valore Differenza",
             field: "valuedifference",
