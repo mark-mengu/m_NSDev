@@ -249,8 +249,8 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
 
     require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         let resourcesUrl = url.resolveScript({
-            scriptId: 'customscript_gn_rl_reportwip_data',
-            deploymentId: 'customdeploy_gn_rl_reportwip_data',
+            scriptId: 'customscript_gn_rl_inventory_count_data',
+            deploymentId: 'customdeploy_gn_rl_inventory_count_data',
             params: {}
         });
         https.get.promise({
