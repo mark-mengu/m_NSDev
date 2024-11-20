@@ -256,10 +256,6 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
             deploymentId: 'customdeploy_gn_rl_reportwip_data',
             params: {}
         });
-
-        params.startDate = startDate;
-        params.endDate = endDate;
-
         https.get.promise({
             url: resourcesUrl,
             body: JSON.stringify(params),
