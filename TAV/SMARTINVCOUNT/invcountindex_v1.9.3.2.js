@@ -29,40 +29,33 @@ const setDefaultDates = () => {
 }
 
 const binTypes = ['PROD', 'MAG', 'SPED', 'KARDEX'];
-var multiSelectHeaderFilter = (cell) => {
-    var values = binTypes;
+var singleSelectHeaderFilter = (cell) => {
+    var selectedValue = binTypes[0]; 
     const filterFunc = (rowData) => {
-        return values.includes(rowData['bin']);
-    }
-    const getSelectedValues = (multiSelect) => {
-        var result = [];
-        var options = multiSelect && multiSelect.options;
-        var opt;
-        for (var i = 0, iLen = options.length; i < iLen; i++) {
-            opt = options[i];
-            if (opt.selected) { result.push(opt.value || opt.text); }
-        }
-        return result;
-    }
-    const onChange = () => {
-        var editor = document.getElementById('binSelector');
-        values = getSelectedValues(editor);
-        console.log("values: " + values);
+        return rowData['bin'] === selectedValue;
+    };
+
+    const onChange = (event) => {
+        selectedValue = event.target.value; 
         cell.getColumn().getTable().removeFilter(filterFunc);
         cell.getColumn().getTable().addFilter(filterFunc);
-    }
-    var select = document.createElement("select");
-    select.multiple = "multiple";
+    };
+    let select = document.createElement("select");
     select.id = 'binSelector';
-    select.class = "chosen-select";
-    select.style = 'width: 100%';
-    binTypes.forEach(bins => {
-        select.innerHTML += "<option id='" + bins + "' value='" + bins + "' selected='selected'>" + bins + "</option>";
+    select.className = "cool-select";
+    select.style = 'width: 100%; padding: 5px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px;';
+
+    binTypes.forEach((bin) => {
+        const option = document.createElement("option");
+        option.value = bin;
+        option.text = bin;
+        select.appendChild(option);
     });
     cell.getColumn().getTable().addFilter(filterFunc);
     select.addEventListener('change', onChange);
     return select;
-}
+};
+
 
 var editCheck = (cell) => {
     return !cell.getRow().getData().hold;
@@ -174,7 +167,7 @@ let table = new Tabulator("#report-inventorycount", {
         {
             title: "Bin",
             field: "bin",
-            headerFilter: multiSelectHeaderFilter,
+            headerFilter: "input",
             formatter: stdBoldFormatter,
             width: 100,
             headerFilterPlaceholder: ""
@@ -297,10 +290,10 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
         }
         if (sessionRecord.custrecord_gn_tav_invcount_head_status[0].value == "2") {
             buttonAdj.disabled = true;
-            buttonAdj.classList.remove('disabled-style');
+            buttonAdj.classList.add('disabled-style');
         } else {
             buttonAdj.disabled = false;
-            buttonAdj.classList.add('disabled-style');
+            buttonAdj.classList.remove('disabled-style');
         }
 
         let resourcesUrl = url.resolveScript({
