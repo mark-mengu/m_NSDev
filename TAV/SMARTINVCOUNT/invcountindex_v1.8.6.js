@@ -160,9 +160,10 @@ let table = new Tabulator("#report-inventorycount", {
     layout: "fitDataFill",
     movableRows: false,
     placeholder: "No Data Found",
-    pagination: "local",
+    pagination: false,
     paginationSize: 500,
     data: initialData, 
+    groupBy: false,
     columns: [
         {
             title: "Bin",
