@@ -218,8 +218,11 @@ let table = new Tabulator("#report-inventorycount", {
             validator: ["numeric", "min:0"],
             editorParams: {
                 selectContents: true
+            },
+            cellStyle: {
+                backgroundColor: "#FFD580",
             }
-        },
+        }
         {
             title: "Valore Differenza",
             field: "valuedifference",
