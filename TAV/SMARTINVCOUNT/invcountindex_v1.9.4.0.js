@@ -178,18 +178,18 @@ table = new Tabulator("#report-inventorycount", {
         {
             title: "Shelf NetSuite",
             field: "shelfnetsuite",
-            headerFilter: "input",
+            //headerFilter: "input",
             formatter: stdFormatter,
             width: 180,
-            headerFilterPlaceholder: "Filtra per NetSuite shelf..."
+            //headerFilterPlaceholder: "Filtra per NetSuite shelf..."
         },
         {
             title: "Shelf Kardex",
             field: "shelfkardex",
-            headerFilter: "input",
+            //headerFilter: "input",
             formatter: stdFormatter,
             width: 180,
-            headerFilterPlaceholder: "Filtra per Kardex shelf..."
+            //headerFilterPlaceholder: "Filtra per Kardex shelf..."
         },
         {
             title: "Q.tà <br>NetSuite",
