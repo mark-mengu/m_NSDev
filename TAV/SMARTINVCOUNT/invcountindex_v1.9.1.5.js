@@ -266,8 +266,6 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
         loadingIcon.style.display = 'none';
         document.body.removeChild(overlay);
 
-        document.getElementById('report-inventorycount').style.display = 'block';
-        document.getElementById('table-title').style.display = 'block';
         return; 
     }
 
