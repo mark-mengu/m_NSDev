@@ -159,87 +159,111 @@ const customAjaxRequest = async (url, config, params) => {
     }
 };
 
-const loadTableData = async (table, sessionValue) => {
-    console.log('DATA LOAD STARTED')
+/**
+ * Enhanced Inventory Count Data Loader with Robust Error Tracing
+ */
+const loadTableData = (table, sessionValue) => {
+    console.log('DATA LOAD STARTED', { sessionValue });
+
     const tableTitle = document.getElementById('table-title');
     if (tableTitle) {
         tableTitle.textContent = `Inventory Count - ${sessionValue}`;
         tableTitle.style.display = 'block';
     }
 
-    try {
-        // Explicit logging for module loading
-        require(['N/https', 'N/url'], (https, url) => {
-            console.log('NetSuite modules loaded successfully');
+    // Create detailed logging function
+    const logStep = (step, details = {}) => {
+        console.group(`LoadTableData: ${step}`);
+        console.log('Details:', details);
+        console.trace(); // Print stack trace
+        console.groupEnd();
+    };
 
-            try {
-                const resourcesUrl = url.resolveScript({
-                    scriptId: 'customscript_gn_rl_inventory_count_data',
-                    deploymentId: 'customdeploy_gn_rl_inventory_count_data',
-                    params: {
-                        sessionId: sessionValue
-                    }
-                });
+    require(['N/https', 'N/url', 'N/runtime'], (https, url, runtime) => {
+        try {
+            logStep('Resolving Script URL', { sessionValue });
 
-                console.log('Resolved Script URL:', resourcesUrl);
+            const resourcesUrl = url.resolveScript({
+                scriptId: 'customscript_gn_rl_inventory_count_data',
+                deploymentId: 'customdeploy_gn_rl_inventory_count_data',
+                params: { sessionId: sessionValue }
+            });
 
-                // Enhanced error handling for HTTPS request
-                https.get.promise({
-                    url: resourcesUrl,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    }
-                }).then((response) => {
-                    console.log('Full Response Object:', JSON.stringify(response, null, 2));
-                    console.log('Response Status:', response.status);
-                    console.log('Response Body:', response.body);
+            logStep('Resolved Script URL', { resourcesUrl });
 
-                    try {
-                        let data = JSON.parse(response.body);
-                        console.log('Parsed Data:', JSON.stringify(data, null, 2));
-
-                        if (data.error) {
-                            console.error('Server returned error:', data.error);
-                            throw new Error(data.error.message || 'Server response error');
+            // Comprehensive error handling wrapper
+            const executeRequest = () => {
+                return new Promise((resolve, reject) => {
+                    https.get.promise({
+                        url: resourcesUrl,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
                         }
+                    }).then(response => {
+                        logStep('HTTP Response Received', {
+                            status: response.status,
+                            bodyLength: response.body ? response.body.length : 'No Body'
+                        });
 
-                        if (!data.data || !Array.isArray(data.data)) {
-                            console.error('Invalid data format:', data);
-                            throw new Error('Invalid data format received');
-                        }
+                        try {
+                            const data = JSON.parse(response.body);
 
-                        table.setData(data.data)
-                            .then(() => {
-                                console.log('Table data set successfully');
-                                return data.data;
-                            })
-                            .catch(error => {
-                                console.error('Failed to set table data:', error);
-                                throw new Error(`Failed to set table data: ${error.message}`);
+                            if (data.error) {
+                                logStep('Server Error', { errorMessage: data.error.message });
+                                throw new Error(data.error.message || 'Server response error');
+                            }
+
+                            if (!data.data || !Array.isArray(data.data)) {
+                                logStep('Invalid Data Format', { receivedData: data });
+                                throw new Error('Invalid data format received');
+                            }
+
+                            resolve(data.data);
+                        } catch (parseError) {
+                            logStep('Data Parsing Error', {
+                                originalError: parseError.message,
+                                responseBody: response.body
                             });
-                    } catch (parseError) {
-                        console.error('Data parsing error:', parseError);
-                        throw new Error(`Data parsing error: ${parseError.message}`);
-                    }
-                }).catch(httpError => {
-                    console.error('HTTPS GET Error:', httpError);
-                    throw httpError;
+                            reject(parseError);
+                        }
+                    }).catch(httpError => {
+                        logStep('HTTPS Request Error', {
+                            errorMessage: httpError.message,
+                            scriptContext: runtime.getCurrentScript().id
+                        });
+                        reject(httpError);
+                    });
                 });
-            } catch (urlError) {
-                console.error('URL Resolution Error:', urlError);
-                throw new Error(`Failed to resolve script URL: ${urlError.message}`);
-            }
-        });
+            };
 
-        const loadingIcon = document.getElementById('loading-icon');
-        if (loadingIcon) loadingIcon.remove();
+            // Execute request with comprehensive error handling
+            executeRequest()
+                .then(processedData => {
+                    logStep('Setting Table Data', { dataLength: processedData.length });
+                    return table.setData(processedData);
+                })
+                .then(() => {
+                    logStep('Table Data Set Successfully');
+                    const tableElement = document.getElementById('report-inventorycount');
+                    if (tableElement) tableElement.style.display = 'block';
+                })
+                .catch(error => {
+                    logStep('Critical Failure', {
+                        errorMessage: error.message,
+                        stack: error.stack
+                    });
+                    showError('Data Loading Error', error.message);
+                });
 
-        const tableElement = document.getElementById('report-inventorycount');
-        if (tableElement) tableElement.style.display = 'block';
-    } catch (error) {
-        showError('Data Loading Error', error.message);
-    }
+        } catch (urlResolutionError) {
+            logStep('URL Resolution Error', {
+                errorMessage: urlResolutionError.message,
+                scriptContext: runtime.getCurrentScript().id
+            });
+            showError('URL Resolution Error', urlResolutionError.message);
+        }
+    });
 };
 
 const TABLE_CONFIG = {
