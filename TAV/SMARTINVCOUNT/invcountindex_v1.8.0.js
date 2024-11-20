@@ -172,7 +172,7 @@ const table = new Tabulator("#report-inventorycount", {
             field: "item",
             headerFilter: "input",
             formatter: stdFormatter,
-            width: 250,
+            width: 350,
             headerFilterPlaceholder: "Filter Article"
         },
         {
@@ -222,7 +222,7 @@ const table = new Tabulator("#report-inventorycount", {
             formatter: inventoryValueFormatter,
             bottomCalc: 'sum',
             bottomCalcParams: { precision: 2 },
-            width: 260,
+            width: 200,
             validator: "numeric"
         }
     ],
@@ -231,46 +231,45 @@ const table = new Tabulator("#report-inventorycount", {
 document.getElementById('report-inventorycount').style.display = 'none';
 document.getElementById('table-title').style.display = 'none';
 
-const reportInvCount = document.getElementById('report-inventorycount');
-const tableTitle = document.getElementById('table-title');
-reportInvCount.style.display = 'none';
-tableTitle.style.display = 'none';
+const reportInvCount = document.getElementById('report-inventorycount').style.display = 'none';
+const tableTitle = document.getElementById('table-title').style.display = 'none';
 
-
-//---------------------------------------------------APPLY FILTER EVENT DATA---------------------------------------------------
 document.getElementById('apply-load-inventorycount').addEventListener('click', (event) => {
     event.preventDefault();
+
     let params = {};
 
     const loadingIcon = createLoadingIcon();
     loadingIcon.style.display = 'block';
+
     document.getElementById('report-inventorycount').style.display = 'none';
     document.getElementById('table-title').style.display = 'none';
-
     require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         let resourcesUrl = url.resolveScript({
             scriptId: 'customscript_gn_rl_inventory_count_data',
             deploymentId: 'customdeploy_gn_rl_inventory_count_data',
             params: {}
         });
+
         https.get.promise({
             url: resourcesUrl,
             body: JSON.stringify(params),
             headers: { 'Content-Type': 'application/json' }
         })
-            .then((response) => {
-                let data = JSON.parse(response.body);
-                table.setData(data.data);
-            })
-            .catch((error) => {
-                console.error(error);
-            })
-            .finally(() => {
-                loadingIcon.style.display = 'none';
-                document.getElementById('report-inventorycount').style.display = 'block';
-                document.getElementById('table-title').style.display = 'block';
-            });
+        .then((response) => {
+            let data = JSON.parse(response.body);
+            table.setData(data.data); 
+        })
+        .catch((error) => {
+            console.error(error); 
+        })
+        .finally(() => {
+            loadingIcon.style.display = 'none';
+            document.getElementById('report-inventorycount').style.display = 'block';
+            document.getElementById('table-title').style.display = 'block';
+        });
     });
 });
+
 
 
