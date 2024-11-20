@@ -328,16 +328,10 @@ const TABLE_CONFIG = {
 };
 
 const initializeTable = () => {
-    return new Promise((resolve, reject) => {
-        try {
-            const table = new Tabulator("#report-inventorycount", {
-                ...TABLE_CONFIG,
-                tableBuilt: function () {
-                    resolve(table);
-                }
-            });
-        } catch (error) {
-            reject(error);
+    const table = new Tabulator("#report-inventorycount", {
+        ...TABLE_CONFIG,
+        tableBuilt: function () {
+            table;
         }
     });
 };
@@ -380,8 +374,8 @@ const handleLoadButtonClick = async (event) => {
     createLoadingIcon();
 
     try {
-        const table = await initializeTable();
-        console.log("TABLE CHECK 1 (resolved):", table); 
+        const table = initializeTable();
+        console.log("TABLE CHECK 1 (resolved):", table);
         loadTableData(table, sessionValue);
     } catch (error) {
         console.error('Critical Error:', error);
