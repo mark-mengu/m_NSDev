@@ -160,20 +160,13 @@ const customAjaxRequest = async (url, config, params) => {
 };
 
 const loadTableData = async (table, sessionValue) => {
-    console.log('Start loadTableData - Session Value:', sessionValue);
-
-    if (!table) {
-        console.error('No table instance provided');
-        throw new Error('Table instance is required');
+    const tableTitle = document.getElementById('table-title');
+    if (tableTitle) {
+        tableTitle.textContent = `Inventory Count - ${sessionValue}`;
+        tableTitle.style.display = 'block';
     }
 
     try {
-        // NetSuite environment detection
-        if (typeof require === 'undefined') {
-            console.error('NetSuite require function not available');
-            throw new Error('NetSuite module loading is not available');
-        }
-
         // Explicit logging for module loading
         require(['N/https', 'N/url'], (https, url) => {
             console.log('NetSuite modules loaded successfully');
@@ -238,9 +231,14 @@ const loadTableData = async (table, sessionValue) => {
                 throw new Error(`Failed to resolve script URL: ${urlError.message}`);
             }
         });
-    } catch (requireError) {
-        console.error('Require Module Error:', requireError);
-        throw new Error(`Module loading error: ${requireError.message}`);
+
+        const loadingIcon = document.getElementById('loading-icon');
+        if (loadingIcon) loadingIcon.remove();
+
+        const tableElement = document.getElementById('report-inventorycount');
+        if (tableElement) tableElement.style.display = 'block';
+    } catch (error) {
+        showError('Data Loading Error', error.message);
     }
 };
 
@@ -327,25 +325,13 @@ const TABLE_CONFIG = {
 const initializeTable = () => {
     return new Promise((resolve, reject) => {
         try {
-            const tableElement = document.getElementById('report-inventorycount');
-            if (!tableElement) {
-                throw new Error('Table element not found');
-            }
             const table = new Tabulator("#report-inventorycount", {
                 ...TABLE_CONFIG,
                 tableBuilt: function () {
-                    console.log("Table fully built");
-                    resolve(table);
-                },
-                ajaxRequestFunc: customAjaxRequest,
-                ajaxError: handleAjaxError,
-                dataLoaded: function (data) {
-                    handleDataLoaded(data, tableElement);
+                    resolve(this);
                 }
             });
         } catch (error) {
-            console.error('Table initialization error:', error);
-            showError('Table Initialization Error', error.message);
             reject(error);
         }
     });
@@ -377,28 +363,32 @@ const initializeApp = async () => {
 const handleLoadButtonClick = async (event) => {
     event.preventDefault();
 
-    const sessionValue = document.getElementById('invcount-header')?.value;
+    const sessionValue = document.getElementById('invcount-header').value;
     if (!sessionValue) {
         showError('Selection Required', 'Please select an inventory count session');
         return;
     }
 
     const tableElement = document.getElementById('report-inventorycount');
-    const titleElement = document.getElementById('table-title');
-
     if (tableElement) tableElement.style.display = 'none';
-    if (titleElement) titleElement.style.display = 'none';
 
-    const loadingIcon = createLoadingIcon();
-    if (loadingIcon) loadingIcon.style.display = 'block';
+    createLoadingIcon();
 
     try {
         const table = await initializeTable();
         await loadTableData(table, sessionValue);
     } catch (error) {
-        console.error('Table loading error:', error);
-        showError('Critical Error', 'An unexpected error occurred while loading the table: ' + error.message);
+        showError('Critical Error', error.message);
     }
 };
 
-document.addEventListener('DOMContentLoaded', initializeApp);
+document.addEventListener('DOMContentLoaded', () => {
+    $('#invcount-header').select2({
+        placeholder: "Select Inventory Count Session",
+        allowClear: true
+    });
+
+    document.getElementById('apply-load-inventorycount')
+        .addEventListener('click', handleLoadButtonClick);
+});
+
