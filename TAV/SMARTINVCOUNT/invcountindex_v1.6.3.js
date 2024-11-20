@@ -220,6 +220,7 @@ const loadTableData = (table, sessionValue) => {
             executeRequest()
                 .then(processedData => {
                     logStep('Data', { data: processedData });
+                    logStep('table', { table: table });
                     table.setData(processedData)
                         .then(() => {
                             console.log('Data set successfully');
@@ -366,19 +367,18 @@ const initializeApp = async () => {
 const handleLoadButtonClick = async (event) => {
     event.preventDefault();
     const sessionValue = document.getElementById('invcount-header').value;
-
     if (!sessionValue) {
         showError('Selection Required', 'Please select an inventory count session');
         return;
     }
     const tableElement = document.getElementById('report-inventorycount');
     if (tableElement) tableElement.style.display = 'none';
+
     createLoadingIcon();
     try {
-        const table = await initializeTable(); // Aspetta che la tabella sia inizializzata
-        await loadTableData(table, sessionValue); // Passa l'istanza corretta a `loadTableData`
+        const table = initializeTable();
+        loadTableData(table, sessionValue);
     } catch (error) {
-        console.error('Critical Error:', error);
         showError('Critical Error', error.message);
     }
 };
