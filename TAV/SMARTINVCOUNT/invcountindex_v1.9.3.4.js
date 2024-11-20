@@ -425,7 +425,7 @@ const editqtyData = (table, session) => {
         });
         https.post.promise({
             url: resourcesUrl,
-            body: JSON.stringify({}),
+            body: "",//JSON.stringify({}),
             headers: { 'Content-Type': 'application/json' }
         })
             .then((response) => {
