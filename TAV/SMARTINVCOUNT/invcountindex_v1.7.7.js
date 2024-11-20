@@ -148,7 +148,7 @@ var createLoadingIcon = () => {
     return loadingIcon;
 };
 //----------------------------------------------------------------TABULATOR-----------------------------------------------------
-const table = new Tabulator("#report-report-inventorycount", {
+const table = new Tabulator("#report-inventorycount", {
     layout: "fitDataFill",
     movableRows: false,
     dataTree: true,
