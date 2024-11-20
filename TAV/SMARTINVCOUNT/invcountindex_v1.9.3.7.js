@@ -56,11 +56,6 @@ var singleSelectHeaderFilter = (cell) => {
     return select;
 };
 
-
-var editCheck = (cell) => {
-    return !cell.getRow().getData().hold;
-}
-
 var linkFormatter = (cell, formatterParams) => {
     let value = cell.getValue();
     let url = 'https://example.com/' + encodeURIComponent(value);
@@ -146,9 +141,9 @@ var createLoadingIcon = () => {
 
 const reportInvCount = document.getElementById('report-inventorycount').style.display = 'none';
 const tableTitle = document.getElementById('table-title').style.display = 'none';
-
+var table;
 let initialData = [];
-var table = new Tabulator("#report-inventorycount", {
+table = new Tabulator("#report-inventorycount", {
     layout: "fitDataFill",
     movableRows: false,
     placeholder: "No Data Found",
@@ -413,9 +408,7 @@ document.getElementById('load-inventoryadj').addEventListener('click', (event) =
     });
 });
 
-table.on("cellEdited", function (cell) { editqtyData(); });
-
-const editqtyData = (table, session) => {
+table.on("cellEdited", (cell) => {
     require(['N/https', 'N/url', "N/search"], (https, url, search) => {
         const { overlay, loadingIcon } = showeditLoadingOverlay();
         let resourcesUrl = url.resolveScript({
@@ -447,7 +440,7 @@ const editqtyData = (table, session) => {
                 document.getElementById('table-title').style.display = 'block';
             });
     });
-}
+});
 
 const showeditLoadingOverlay = () => {
     const overlay = document.createElement('div');
