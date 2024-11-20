@@ -1,3 +1,8 @@
+/**
+ * @Description Enhanced inventory count table with complete helper functions
+ */
+
+
 const formatDate = (date) => {
     if (!(date instanceof Date) || isNaN(date)) return '';
     const day = String(date.getDate()).padStart(2, '0');
@@ -39,6 +44,7 @@ const createLoadingIcon = () => {
             z-index: 9999;
         `;
 
+        // Add the spin animation
         const styleSheet = document.createElement('style');
         styleSheet.textContent = `
             @keyframes spin {
@@ -99,77 +105,126 @@ const handleDataLoaded = (data, tableElement) => {
     }
 };
 
+
+const customAjaxRequest = async (url, config, params) => {
+    const maxRetries = 3;
+    let retryCount = 0;
+
+    while (retryCount < maxRetries) {
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include'
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            retryCount++;
+            if (retryCount === maxRetries) {
+                throw new Error(`Failed after ${maxRetries} attempts: ${error.message}`);
+            }
+            await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
+        }
+    }
+};
+
 const loadTableData = async (table, sessionValue) => {
     if (!table) {
         throw new Error('Table instance is required');
     }
+    try {
+        if (typeof require === 'undefined') {
+            console.warn('Running in development mode - using mock data');
+            const mockData = [
+                {
+                    bin: "A-01-01",
+                    item: "Test Item 1",
+                    shelf: "Shelf A",
+                    quantityn: "10",
+                    quantityk: "10",
+                    valuedifference: "0.00",
+                    quantity: "10"
+                },
+            ];
+            await table.setData(mockData);
+            return mockData;
+        }
 
-    return new Promise((resolve, reject) => {
-        require(['N/https', 'N/url'], (https, url) => {
-            try {
-                const resourcesUrl = url.resolveScript({
-                    scriptId: 'customscript_gn_rl_inventory_count_data',
-                    deploymentId: 'customdeploy_gn_rl_inventory_count_data',
-                    returnExternalUrl: false,
-                    params: {
-                        sessionId: sessionValue
-                    }
-                });
-
-                if (!resourcesUrl) {
-                    throw new Error('Failed to resolve RESTlet URL');
+        return new Promise((resolve, reject) => {
+            require(['N/https', 'N/url'], (https, url) => {
+                try {
+                    const resourcesUrl = url.resolveScript({
+                        scriptId: 'customscript_gn_rl_inventory_count_data',
+                        deploymentId: 'customdeploy_gn_rl_inventory_count_data',
+                        params: {
+                            sessionId: sessionValue
+                        }
+                    });
+                    https.get.promise({
+                        url: resourcesUrl,
+                        headers: { 'Content-Type': 'application/json' }
+                    })
+                        .then((response) => {
+                            try {
+                                let data = JSON.parse(response.body);
+                                if (data.error) {
+                                    throw new Error(data.error.message || 'Server response error');
+                                }
+                                if (!data.data || !Array.isArray(data.data)) {
+                                    throw new Error('Invalid data format received');
+                                }
+                                table.setData(data.data)
+                                    .then(() => resolve(data.data))
+                                    .catch(error => reject(new Error(`Failed to set table data: ${error.message}`)));
+                            } catch (parseError) {
+                                reject(new Error(`Data parsing error: ${parseError.message}`));
+                            }
+                        })
+                        .catch(reject);
+                } catch (urlError) {
+                    reject(new Error(`Failed to resolve script URL: ${urlError.message}`));
                 }
-
-                https.get.promise({
-                    url: resourcesUrl,
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Cache-Control': 'no-cache'
-                    }
-                })
-                .then((response) => {
-                    try {
-                        if (!response || !response.body) {
-                            throw new Error('Empty response received from server');
-                        }
-
-                        let data = JSON.parse(response.body);
-                        
-                        if (data.error) {
-                            throw new Error(data.error.message || 'Server response error');
-                        }
-
-                        if (!data.data || !Array.isArray(data.data)) {
-                            throw new Error('Invalid data format received');
-                        }
-
-                        // Process and validate each row
-                        const processedData = data.data.map(row => ({
-                            ...row,
-                            quantityn: row.quantityn || '0',
-                            quantityk: row.quantityk || '0',
-                            valuedifference: row.valuedifference || '0.00',
-                            quantity: row.quantity || '0'
-                        }));
-
-                        table.setData(processedData)
-                            .then(() => resolve(processedData))
-                            .catch(error => reject(new Error(`Failed to set table data: ${error.message}`)));
-                    } catch (parseError) {
-                        reject(new Error(`Data parsing error: ${parseError.message}`));
-                    }
-                })
-                .catch(error => {
-                    reject(new Error(`RESTlet request failed: ${error.message}`));
-                });
-            } catch (urlError) {
-                reject(new Error(`Failed to resolve script URL: ${urlError.message}`));
-            }
+            });
         });
-    });
+    } catch (error) {
+        throw new Error(`Failed to load table data: ${error.message}`);
+    }
 };
 
-// Table configuration and formatting functions remain the same
+const stdFormatter = (cell) => {
+    try {
+        return cell.getValue() || '';
+    } catch (error) {
+        console.error('Formatter error:', error);
+        return '';
+    }
+};
+
+const stdBoldFormatter = (cell) => {
+    try {
+        return `<strong>${cell.getValue() || ''}</strong>`;
+    } catch (error) {
+        console.error('Bold formatter error:', error);
+        return '';
+    }
+};
+
+const inventoryValueFormatter = (cell) => {
+    try {
+        const value = cell.getValue();
+        return value ? parseFloat(value).toFixed(2) : '0.00';
+    } catch (error) {
+        console.error('Value formatter error:', error);
+        return '0.00';
+    }
+};
+
 const TABLE_CONFIG = {
     columns: [
         {
@@ -255,6 +310,7 @@ const initializeTable = () => {
                     console.log("Table fully built");
                     resolve(table);
                 },
+                ajaxRequestFunc: customAjaxRequest,
                 ajaxError: handleAjaxError,
                 dataLoaded: function(data) {
                     handleDataLoaded(data, tableElement);
@@ -266,6 +322,29 @@ const initializeTable = () => {
             reject(error);
         }
     });
+};
+
+const initializeApp = async () => {
+    try {
+        const tableElement = document.getElementById('report-inventorycount');
+        if (tableElement) {
+            tableElement.style.display = 'none';
+        }
+
+        if (typeof $ !== 'undefined' && typeof $.fn.select2 !== 'undefined') {
+            $('#invcount-header').select2({
+                placeholder: "Select Inventory Count Session",
+                allowClear: true
+            });
+        }
+        const loadButton = document.getElementById('apply-load-inventorycount');
+        if (loadButton) {
+            loadButton.addEventListener('click', handleLoadButtonClick);
+        }
+    } catch (error) {
+        console.error('Application initialization error:', error);
+        showError('Initialization Error', 'Failed to initialize the application: ' + error.message);
+    }
 };
 
 const handleLoadButtonClick = async (event) => {
@@ -292,29 +371,6 @@ const handleLoadButtonClick = async (event) => {
     } catch (error) {
         console.error('Table loading error:', error);
         showError('Critical Error', 'An unexpected error occurred while loading the table: ' + error.message);
-    }
-};
-
-const initializeApp = async () => {
-    try {
-        const tableElement = document.getElementById('report-inventorycount');
-        if (tableElement) {
-            tableElement.style.display = 'none';
-        }
-
-        if (typeof $ !== 'undefined' && typeof $.fn.select2 !== 'undefined') {
-            $('#invcount-header').select2({
-                placeholder: "Select Inventory Count Session",
-                allowClear: true
-            });
-        }
-        const loadButton = document.getElementById('apply-load-inventorycount');
-        if (loadButton) {
-            loadButton.addEventListener('click', handleLoadButtonClick);
-        }
-    } catch (error) {
-        console.error('Application initialization error:', error);
-        showError('Initialization Error', 'Failed to initialize the application: ' + error.message);
     }
 };
 
