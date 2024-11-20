@@ -280,7 +280,7 @@ tableTitle.style.display = 'none';
 
 
 //---------------------------------------------------APPLY FILTER EVENT DATA---------------------------------------------------
-document.getElementById('apply-filters-data').addEventListener('click', (event) => {
+document.getElementById('apply-load-inventorycount').addEventListener('click', (event) => {
     event.preventDefault();
 
     let startDateInput = document.getElementById('start-date');
