@@ -168,7 +168,6 @@ let table = new Tabulator("#report-inventorycount", {
         {
             title: "Location",
             field: "location",
-            headerFilter: "input",
             formatter: stdBoldFormatter,
             width: 130
         },
@@ -178,7 +177,7 @@ let table = new Tabulator("#report-inventorycount", {
             headerFilter: "input",
             formatter: stdBoldFormatter,
             width: 100,
-            headerFilterPlaceholder: "Filtra per bin..."
+            headerFilterPlaceholder: ""
         },
         {
             title: "Articolo",
@@ -193,7 +192,7 @@ let table = new Tabulator("#report-inventorycount", {
             field: "shelfnetsuite",
             headerFilter: "input",
             formatter: stdFormatter,
-            width: 180,
+            width: 10,
             headerFilterPlaceholder: "Filtra per NetSuite shelf..."
         },
         {
@@ -208,14 +207,14 @@ let table = new Tabulator("#report-inventorycount", {
             title: "Q.tà <br>NetSuite",
             field: "qtynetsuite",
             formatter: stdFormatter,
-            width: 150,
+            width: 120,
             validator: ["numeric", "min:0"]
         },
         {
             title: "Q.tà <br>Kardex",
             field: "qtykardex",
             formatter: stdFormatter,
-            width: 150,
+            width: 120,
             validator: ["numeric", "min:0"]
         },
         {
@@ -223,7 +222,7 @@ let table = new Tabulator("#report-inventorycount", {
             field: "qty",
             editor: "input",
             formatter: qtyconfirmedFormatted,
-            width: 150,
+            width: 120,
             validator: ["numeric", "min:0"],
             editorParams: {
                 selectContents: true
