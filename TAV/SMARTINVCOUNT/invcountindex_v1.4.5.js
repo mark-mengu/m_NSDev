@@ -2,6 +2,7 @@
  * @Description Enhanced inventory count table with complete helper functions
  */
 
+
 const formatDate = (date) => {
     if (!(date instanceof Date) || isNaN(date)) return '';
     const day = String(date.getDate()).padStart(2, '0');
@@ -94,7 +95,7 @@ const showError = (title, message) => {
         loadingIcon.remove();
     }
 
-    if (window.Swal) {
+    if (typeof Swal !== 'undefined') {
         Swal.fire({
             icon: 'error',
             title: title,
@@ -109,7 +110,7 @@ const showError = (title, message) => {
 
 const handleAjaxError = (error) => {
     console.error('AJAX Error:', error);
-    showError('Data Loading Error', 
+    showError('Data Loading Error',
         `Unable to load inventory data. Please check your connection and try again. 
         Error: ${error.message}`
     );
@@ -124,58 +125,122 @@ const handleDataLoaded = (data, tableElement) => {
         if (data && data.length > 0) {
             tableElement.style.display = 'block';
             document.getElementById('table-title').style.display = 'block';
-        } else {
-            showError('No Data', 'No inventory data found for the selected session.');
         }
     } catch (error) {
         console.error('Data loaded handler error:', error);
-        showError('Data Error', 'An error occurred while processing data.');
     }
 };
 
-const customAjaxRequest = async (url, config) => {
-    try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            credentials: 'include'
-        });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+const customAjaxRequest = async (url, config, params) => {
+    const maxRetries = 3;
+    let retryCount = 0;
+    while (retryCount < maxRetries) {
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include'
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            retryCount++;
+            if (retryCount === maxRetries) {
+                throw new Error(`Failed after ${maxRetries} attempts: ${error.message}`);
+            }
+            await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
         }
-
-        return await response.json();
-    } catch (error) {
-        console.error('Custom AJAX request error:', error);
-        throw error;
     }
 };
 
 const loadTableData = async (table, sessionValue) => {
-    if (!table) { 
-        throw new Error('Table instance is required'); 
+    console.log('Start loadTableData - Session Value:', sessionValue);
+
+    if (!table) {
+        console.error('No table instance provided');
+        throw new Error('Table instance is required');
     }
 
     try {
-        // Fallback for non-NetSuite environments (for testing)
-        const mockData = [
-            { bin: "A01", item: "Test Item 1", shelf: "Upper", quantityn: 10, quantityk: 9, valuedifference: 100.50, quantity: 10 },
-            { bin: "B02", item: "Test Item 2", shelf: "Lower", quantityn: 15, quantityk: 14, valuedifference: 200.75, quantity: 15 }
-        ];
+        // NetSuite environment detection
+        if (typeof require === 'undefined') {
+            console.error('NetSuite require function not available');
+            throw new Error('NetSuite module loading is not available');
+        }
 
-        // Simulating data load with a timeout
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        table.setData(mockData);
-        return mockData;
-    } catch (error) {
-        console.error('Table data loading error:', error);
-        showError('Data Load Error', error.message);
-        throw error;
+        // Explicit logging for module loading
+        require(['N/https', 'N/url'], (https, url) => {
+            console.log('NetSuite modules loaded successfully');
+
+            try {
+                // Debug log for script resolution
+                const resourcesUrl = url.resolveScript({
+                    scriptId: 'customscript_gn_rl_inventory_count_data',
+                    deploymentId: 'customdeploy_gn_rl_inventory_count_data',
+                    params: {
+                        sessionId: sessionValue
+                    }
+                });
+
+                console.log('Resolved Script URL:', resourcesUrl);
+
+                // Enhanced error handling for HTTPS request
+                https.get.promise({
+                    url: resourcesUrl,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                }).then((response) => {
+                    console.log('Full Response Object:', JSON.stringify(response, null, 2));
+                    console.log('Response Status:', response.status);
+                    console.log('Response Body:', response.body);
+
+                    try {
+                        let data = JSON.parse(response.body);
+                        console.log('Parsed Data:', JSON.stringify(data, null, 2));
+
+                        if (data.error) {
+                            console.error('Server returned error:', data.error);
+                            throw new Error(data.error.message || 'Server response error');
+                        }
+
+                        if (!data.data || !Array.isArray(data.data)) {
+                            console.error('Invalid data format:', data);
+                            throw new Error('Invalid data format received');
+                        }
+
+                        table.setData(data.data)
+                            .then(() => {
+                                console.log('Table data set successfully');
+                                return data.data;
+                            })
+                            .catch(error => {
+                                console.error('Failed to set table data:', error);
+                                throw new Error(`Failed to set table data: ${error.message}`);
+                            });
+                    } catch (parseError) {
+                        console.error('Data parsing error:', parseError);
+                        throw new Error(`Data parsing error: ${parseError.message}`);
+                    }
+                }).catch(httpError => {
+                    console.error('HTTPS GET Error:', httpError);
+                    throw httpError;
+                });
+            } catch (urlError) {
+                console.error('URL Resolution Error:', urlError);
+                throw new Error(`Failed to resolve script URL: ${urlError.message}`);
+            }
+        });
+    } catch (requireError) {
+        console.error('Require Module Error:', requireError);
+        throw new Error(`Module loading error: ${requireError.message}`);
     }
 };
 
@@ -198,8 +263,16 @@ const TABLE_CONFIG = {
             headerFilterPlaceholder: "Filter Article"
         },
         {
-            title: "Shelf",
-            field: "shelf",
+            title: "Shelf NetSuite",
+            field: "shelfnetsuite",
+            headerFilter: "input",
+            formatter: stdFormatter,
+            width: 200,
+            headerFilterPlaceholder: "Filter Shelf"
+        },
+        {
+            title: "Shelf NetSuite",
+            field: "shelfkardex",
             headerFilter: "input",
             formatter: stdFormatter,
             width: 200,
@@ -207,17 +280,28 @@ const TABLE_CONFIG = {
         },
         {
             title: "Quantity NS",
-            field: "quantityn",
+            field: "qtynetsuite",
             formatter: stdFormatter,
             width: 130,
             validator: ["numeric", "min:0"]
         },
         {
             title: "Quantity KDX",
-            field: "quantityk",
+            field: "qtykardex",
             formatter: stdFormatter,
             width: 130,
             validator: ["numeric", "min:0"]
+        },
+        {
+            title: "Quantity Contata",
+            field: "qty",
+            editor: "input",
+            formatter: stdFormatter,
+            width: 260,
+            validator: ["numeric", "min:0"],
+            editorParams: {
+                selectContents: true
+            }
         },
         {
             title: "Valore Differenza",
@@ -227,17 +311,6 @@ const TABLE_CONFIG = {
             bottomCalcParams: { precision: 2 },
             width: 260,
             validator: "numeric"
-        },
-        {
-            title: "Quantity Contata",
-            field: "quantity",
-            editor: "input",
-            formatter: stdFormatter,
-            width: 260,
-            validator: ["numeric", "min:0"],
-            editorParams: {
-                selectContents: true
-            }
         }
     ],
     layout: "fitDataFill",
@@ -262,7 +335,7 @@ const initializeTable = () => {
                 ...TABLE_CONFIG,
                 tableBuilt: function () {
                     console.log("Table fully built");
-                    resolve(this);
+                    resolve(table);
                 },
                 ajaxRequestFunc: customAjaxRequest,
                 ajaxError: handleAjaxError,
@@ -285,7 +358,7 @@ const initializeApp = async () => {
             tableElement.style.display = 'none';
         }
 
-        if (window.$ && window.$.fn.select2) {
+        if (typeof $ !== 'undefined' && typeof $.fn.select2 !== 'undefined') {
             $('#invcount-header').select2({
                 placeholder: "Select Inventory Count Session",
                 allowClear: true
@@ -325,10 +398,6 @@ const handleLoadButtonClick = async (event) => {
     } catch (error) {
         console.error('Table loading error:', error);
         showError('Critical Error', 'An unexpected error occurred while loading the table: ' + error.message);
-        const loadingIcon = document.getElementById('loading-icon');
-        if (loadingIcon) {
-            loadingIcon.remove();
-        }
     }
 };
 
