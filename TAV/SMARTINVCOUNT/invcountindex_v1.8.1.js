@@ -178,6 +178,7 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
             headers: { 'Content-Type': 'application/json' }
         })
             .then((response) => {
+                let data = JSON.parse(response.body);
                 const table = new Tabulator("#report-inventorycount", {
                     layout: "fitDataFill",
                     movableRows: false,
@@ -187,6 +188,9 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
                     groupToggleElement: "header",
                     placeholder: "No Data Found",
                     pagination: "local",
+                    tableBuilt: (data) => {
+                        table.setData(data.data);
+                    },
                     paginationSize: 500,
                     columns: [
                         {
@@ -257,8 +261,6 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
                         }
                     ],
                 });
-                let data = JSON.parse(response.body);
-                table.setData(data.data);
             })
             .catch((error) => {
                 console.error(error);
