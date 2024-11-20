@@ -229,6 +229,7 @@ const loadTableData = (table, sessionValue) => {
             executeRequest()
                 .then(processedData => {
                     logStep('Setting Table Data', { dataLength: processedData.length });
+                    logStep('Data', { data: processedData });
                     return new Promise((resolve, reject) => {
                         table.setData(processedData, () => {
                             logStep('Table Data Set Successfully');
@@ -239,8 +240,7 @@ const loadTableData = (table, sessionValue) => {
                             reject(error);
                         });
                     });
-                })
-                .catch(error => {
+                }).catch(error => {
                     logStep('Critical Failure', {
                         errorMessage: error.message,
                         stack: error.stack
