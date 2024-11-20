@@ -284,7 +284,7 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
     }
     require(['N/https', 'N/url', "N/search"], (https, url, search) => {
         const sessionRecord = search.lookupFields({ type: "customrecord_gn_tav_inv_count_header", id: session, columns: ["custrecord_gn_tav_invcount_head_status"] });
-        const buttonAdj = document.getElementById('apply-load-inventorycount');
+        const buttonAdj = document.getElementById('load-inventoryadj');
 
         if (sessionRecord.custrecord_gn_tav_invcount_head_status[0].value == "2") {
             validationIcon.style.display = 'inline';
