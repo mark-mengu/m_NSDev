@@ -158,8 +158,6 @@ const customAjaxRequest = async (url, config, params) => {
 };
 
 const loadTableData = (table, sessionValue) => {
-    console.log('DATA LOAD STARTED', { sessionValue });
-
     const tableTitle = document.getElementById('table-title');
     if (tableTitle) {
         tableTitle.textContent = `Inventory Count - ${sessionValue}`;
@@ -171,7 +169,6 @@ const loadTableData = (table, sessionValue) => {
         console.trace(); // Print stack trace
         console.groupEnd();
     };
-
     require(['N/https', 'N/url', 'N/runtime'], (https, url, runtime) => {
         try {
             logStep('Resolving Script URL', { sessionValue });
@@ -191,7 +188,6 @@ const loadTableData = (table, sessionValue) => {
                         }
                     }).then(response => {
                         logStep('HTTP Response Received', {
-                            status: response.status,
                             bodyLength: response.body ? response.body.length : 'No Body'
                         });
                         try {
@@ -224,8 +220,6 @@ const loadTableData = (table, sessionValue) => {
             executeRequest()
                 .then(processedData => {
                     logStep('Data', { data: processedData });
-
-                    // Directly call setData on the table object
                     table.setData(processedData)
                         .then(() => {
                             console.log('Data set successfully');
@@ -337,7 +331,7 @@ const initializeTable = () => {
             const table = new Tabulator("#report-inventorycount", {
                 ...TABLE_CONFIG,
                 tableBuilt: function () {
-                    resolve(this);
+                    resolve(table);
                 }
             });
         } catch (error) {
@@ -372,18 +366,19 @@ const initializeApp = async () => {
 const handleLoadButtonClick = async (event) => {
     event.preventDefault();
     const sessionValue = document.getElementById('invcount-header').value;
+
     if (!sessionValue) {
         showError('Selection Required', 'Please select an inventory count session');
         return;
     }
     const tableElement = document.getElementById('report-inventorycount');
     if (tableElement) tableElement.style.display = 'none';
-
     createLoadingIcon();
     try {
-        const table = initializeTable();
-        loadTableData(table, sessionValue);
+        const table = await initializeTable(); // Aspetta che la tabella sia inizializzata
+        await loadTableData(table, sessionValue); // Passa l'istanza corretta a `loadTableData`
     } catch (error) {
+        console.error('Critical Error:', error);
         showError('Critical Error', error.message);
     }
 };
