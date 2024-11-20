@@ -2,7 +2,6 @@
  * @Description Enhanced inventory count table with complete helper functions
  */
 
-
 const formatDate = (date) => {
     if (!(date instanceof Date) || isNaN(date)) return '';
     const day = String(date.getDate()).padStart(2, '0');
@@ -158,7 +157,6 @@ const customAjaxRequest = async (url, config, params) => {
     }
 };
 
-
 const loadTableData = (table, sessionValue) => {
     console.log('DATA LOAD STARTED', { sessionValue });
 
@@ -167,8 +165,6 @@ const loadTableData = (table, sessionValue) => {
         tableTitle.textContent = `Inventory Count - ${sessionValue}`;
         tableTitle.style.display = 'block';
     }
-
-    // Create detailed logging function
     const logStep = (step, details = {}) => {
         console.group(`LoadTableData: ${step}`);
         console.log('Details:', details);
@@ -230,7 +226,15 @@ const loadTableData = (table, sessionValue) => {
                 .then(processedData => {
                     logStep('Data', { data: processedData });
 
+                    // Directly call setData on the table object
                     table.setData(processedData)
+                        .then(() => {
+                            console.log('Data set successfully');
+                        })
+                        .catch(error => {
+                            console.error('Error setting data:', error);
+                            showError('Data Loading Error', error.message);
+                        });
                 }).catch(error => {
                     logStep('Critical Failure', {
                         errorMessage: error.message,
@@ -378,7 +382,7 @@ const handleLoadButtonClick = async (event) => {
 
     createLoadingIcon();
     try {
-        const table = initializeTable();
+        const table = await initializeTable(); // Use await here
         loadTableData(table, sessionValue);
     } catch (error) {
         showError('Critical Error', error.message);
@@ -393,4 +397,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('apply-load-inventorycount').addEventListener('click', handleLoadButtonClick);
 });
-
