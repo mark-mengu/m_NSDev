@@ -85,6 +85,12 @@ var stdFormatter = (cell, formatterParams) => {
     return value;
 };
 
+var qtyconfirmedFormatted = (cell, formatterParams) => {
+    let value = cell.getValue();
+    cell.getElement().style.backgroundColor = "#FFD580";
+    return value;
+};
+
 var stdBoldFormatter = (cell, formatterParams) => {
     let value = cell.getValue();
     cell.getElement().style.backgroundColor = "#ffffbf";
@@ -213,14 +219,11 @@ let table = new Tabulator("#report-inventorycount", {
             title: "Quantity Contata",
             field: "qty",
             editor: "input",
-            formatter: stdFormatter,
+            formatter: qtyconfirmedFormatted,
             width: 200,
             validator: ["numeric", "min:0"],
             editorParams: {
                 selectContents: true
-            },
-            cellStyle: {
-                backgroundColor: "#FFD580",
             }
         },
         {
