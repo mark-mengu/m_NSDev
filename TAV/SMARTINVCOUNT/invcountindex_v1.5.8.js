@@ -340,6 +340,7 @@ const initializeTable = () => {
                     resolve(this);
                 }
             });
+            return table;
         } catch (error) {
             reject(error);
         }
