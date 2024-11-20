@@ -201,14 +201,14 @@ const loadTableData = (table, sessionValue) => {
                             'Accept': 'application/json'
                         }
                     }).then(response => {
-                        logStep('HTTP Response Received', {
+                        logStep('HTTP Response Received', { 
                             status: response.status,
-                            bodyLength: response.body ? response.body.length : 'No Body'
+                            bodyLength: response.body ? response.body.length : 'No Body' 
                         });
 
                         try {
                             const data = JSON.parse(response.body);
-
+                            
                             if (data.error) {
                                 logStep('Server Error', { errorMessage: data.error.message });
                                 throw new Error(data.error.message || 'Server response error');
@@ -221,16 +221,16 @@ const loadTableData = (table, sessionValue) => {
 
                             resolve(data.data);
                         } catch (parseError) {
-                            logStep('Data Parsing Error', {
+                            logStep('Data Parsing Error', { 
                                 originalError: parseError.message,
-                                responseBody: response.body
+                                responseBody: response.body 
                             });
                             reject(parseError);
                         }
                     }).catch(httpError => {
-                        logStep('HTTPS Request Error', {
+                        logStep('HTTPS Request Error', { 
                             errorMessage: httpError.message,
-                            scriptContext: runtime.getCurrentScript().id
+                            scriptContext: runtime.getCurrentScript().id 
                         });
                         reject(httpError);
                     });
@@ -249,17 +249,17 @@ const loadTableData = (table, sessionValue) => {
                     if (tableElement) tableElement.style.display = 'block';
                 })
                 .catch(error => {
-                    logStep('Critical Failure', {
+                    logStep('Critical Failure', { 
                         errorMessage: error.message,
-                        stack: error.stack
+                        stack: error.stack 
                     });
                     showError('Data Loading Error', error.message);
                 });
 
         } catch (urlResolutionError) {
-            logStep('URL Resolution Error', {
+            logStep('URL Resolution Error', { 
                 errorMessage: urlResolutionError.message,
-                scriptContext: runtime.getCurrentScript().id
+                scriptContext: runtime.getCurrentScript().id 
             });
             showError('URL Resolution Error', urlResolutionError.message);
         }
