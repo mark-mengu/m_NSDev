@@ -190,7 +190,7 @@ let table = new Tabulator("#report-inventorycount", {
             headerFilterPlaceholder: "Filter Shelf"
         },
         {
-            title: "Shelf NetSuite",
+            title: "Shelf Kardex",
             field: "shelfkardex",
             headerFilter: "input",
             formatter: stdFormatter,
