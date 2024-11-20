@@ -340,14 +340,13 @@ const initializeTable = () => {
                     resolve(this);
                 }
             });
-            return table;
         } catch (error) {
             reject(error);
         }
     });
 };
 
-const initializeApp = () => {
+const initializeApp = async () => {
     try {
         const tableElement = document.getElementById('report-inventorycount');
         if (tableElement) {
@@ -370,7 +369,7 @@ const initializeApp = () => {
     }
 };
 
-const handleLoadButtonClick = (event) => {
+const handleLoadButtonClick = async (event) => {
     event.preventDefault();
     const sessionValue = document.getElementById('invcount-header').value;
     if (!sessionValue) {
@@ -382,10 +381,10 @@ const handleLoadButtonClick = (event) => {
 
     createLoadingIcon();
     initializeTable()
-        .then(function (table) {
+        .then(table => {
             loadTableData(table, sessionValue);
         })
-        .catch(function (error) {
+        .catch(error => {
             showError('Critical Error', error.message);
         });
 };
