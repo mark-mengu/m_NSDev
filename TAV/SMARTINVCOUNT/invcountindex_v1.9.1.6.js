@@ -256,6 +256,7 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
     document.getElementById('table-title').style.display = 'none';
 
     let session = document.getElementById('invcount-header').value;
+    let validationIcon = document.getElementById('validation-icon');
     if (!session || session.trim() === 'null') {
         Swal.fire({
             title: 'Attenzione!',
@@ -268,7 +269,15 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
 
         return; 
     }
-
+    if (session === "null" || session.trim() === "") {
+        validationIcon.style.display = 'inline';
+        validationIcon.innerHTML = '❌'; 
+        validationIcon.style.color = 'red';
+    } else {
+        validationIcon.style.display = 'inline';
+        validationIcon.innerHTML = '✅'; 
+        validationIcon.style.color = 'green';
+    }
     require(['N/https', 'N/url'], (https, url) => {
         let resourcesUrl = url.resolveScript({
             scriptId: 'customscript_gn_rl_inventory_count_data',
@@ -301,6 +310,7 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
             });
     });
 });
+
 
 
 
