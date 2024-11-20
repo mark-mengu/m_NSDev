@@ -160,6 +160,7 @@ const customAjaxRequest = async (url, config, params) => {
 };
 
 const loadTableData = async (table, sessionValue) => {
+    console.log('DATA LOAD STARTED')
     const tableTitle = document.getElementById('table-title');
     if (tableTitle) {
         tableTitle.textContent = `Inventory Count - ${sessionValue}`;
@@ -172,7 +173,6 @@ const loadTableData = async (table, sessionValue) => {
             console.log('NetSuite modules loaded successfully');
 
             try {
-                // Debug log for script resolution
                 const resourcesUrl = url.resolveScript({
                     scriptId: 'customscript_gn_rl_inventory_count_data',
                     deploymentId: 'customdeploy_gn_rl_inventory_count_data',
