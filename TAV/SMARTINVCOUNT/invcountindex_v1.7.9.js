@@ -267,7 +267,7 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
             })
             .finally(() => {
                 loadingIcon.style.display = 'none';
-                document.getElementById('report-inventorycount-wip').style.display = 'block';
+                document.getElementById('report-inventorycount').style.display = 'block';
                 document.getElementById('table-title').style.display = 'block';
             });
     });
