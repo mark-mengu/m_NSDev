@@ -223,7 +223,7 @@ let table = new Tabulator("#report-inventorycount", {
             },
             editable: (cell) => {
                 const rowData = cell.getRow().getData();
-                return rowData.header !== "2";
+                return rowData.statusheader !== "2";
             }
         },
         {
