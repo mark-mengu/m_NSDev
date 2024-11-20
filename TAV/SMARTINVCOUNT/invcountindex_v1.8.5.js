@@ -159,14 +159,10 @@ let initialData = [];
 let table = new Tabulator("#report-inventorycount", {
     layout: "fitDataFill",
     movableRows: false,
-    dataTree: true,
-    groupBy: "",
-    groupStartOpen: false,
-    groupToggleElement: "header",
     placeholder: "No Data Found",
     pagination: "local",
     paginationSize: 500,
-    data: initialData, // Dati iniziali (vuoti)
+    data: initialData, 
     columns: [
         {
             title: "Bin",
