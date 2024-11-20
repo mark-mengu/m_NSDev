@@ -175,7 +175,7 @@ let table = new Tabulator("#report-inventorycount", {
             headerFilter: "input",
             formatter: stdBoldFormatter,
             width: 130,
-            headerFilterPlaceholder: "Filter Bin"
+            headerFilterPlaceholder: "Filtra per bin..."
         },
         {
             title: "Articolo",
@@ -183,7 +183,7 @@ let table = new Tabulator("#report-inventorycount", {
             headerFilter: "input",
             formatter: stdFormatter,
             width: 350,
-            headerFilterPlaceholder: "Filter Article"
+            headerFilterPlaceholder: "Filtra per articolo..."
         },
         {
             title: "Shelf NetSuite",
@@ -191,7 +191,7 @@ let table = new Tabulator("#report-inventorycount", {
             headerFilter: "input",
             formatter: stdFormatter,
             width: 200,
-            headerFilterPlaceholder: "Filter Shelf"
+            headerFilterPlaceholder: "Filtra per NetSuite shelf..."
         },
         {
             title: "Shelf Kardex",
@@ -199,7 +199,7 @@ let table = new Tabulator("#report-inventorycount", {
             headerFilter: "input",
             formatter: stdFormatter,
             width: 200,
-            headerFilterPlaceholder: "Filter Shelf"
+            headerFilterPlaceholder: "Filtra per Kardex shelf..."
         },
         {
             title: "Quantity NetSuite",
