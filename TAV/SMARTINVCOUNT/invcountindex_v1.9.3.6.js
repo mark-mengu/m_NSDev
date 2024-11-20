@@ -148,7 +148,7 @@ const reportInvCount = document.getElementById('report-inventorycount').style.di
 const tableTitle = document.getElementById('table-title').style.display = 'none';
 
 let initialData = [];
-let table = new Tabulator("#report-inventorycount", {
+var table = new Tabulator("#report-inventorycount", {
     layout: "fitDataFill",
     movableRows: false,
     placeholder: "No Data Found",
