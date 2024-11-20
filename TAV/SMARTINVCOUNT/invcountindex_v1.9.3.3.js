@@ -30,13 +30,13 @@ const setDefaultDates = () => {
 
 const binTypes = ['PROD', 'MAG', 'SPED', 'KARDEX'];
 var singleSelectHeaderFilter = (cell) => {
-    var selectedValue = binTypes[0]; 
+    var selectedValue = binTypes[0];
     const filterFunc = (rowData) => {
         return rowData['bin'] === selectedValue;
     };
 
     const onChange = (event) => {
-        selectedValue = event.target.value; 
+        selectedValue = event.target.value;
         cell.getColumn().getTable().removeFilter(filterFunc);
         cell.getColumn().getTable().addFilter(filterFunc);
     };
@@ -328,7 +328,149 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
     });
 });
 
+document.getElementById('load-inventoryadj').addEventListener('click', (event) => {
+    event.preventDefault();
 
+    const loadingIcon = createLoadingIcon();
+    const overlay = document.createElement('div');
+    overlay.style.position = 'absolute';
+    overlay.style.top = 0;
+    overlay.style.left = 0;
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    overlay.style.zIndex = 9999;
+    overlay.appendChild(loadingIcon);
+    document.body.appendChild(overlay);
+    loadingIcon.style.display = 'block';
+
+    let session = document.getElementById('invcount-header').value;
+    let validationIcon = document.getElementById('validation-icon');
+    if (!session || session.trim() === 'null') {
+        validationIcon.style.display = 'inline';
+        validationIcon.innerHTML = '❌';
+        validationIcon.style.color = 'red';
+        Swal.fire({
+            title: 'Attenzione!',
+            text: 'Selezionare prima una Sessione di inventario valida...',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+        loadingIcon.style.display = 'none';
+        document.body.removeChild(overlay);
+
+        return;
+    }
+    require(['N/https', 'N/url', "N/search"], (https, url, search) => {
+        const sessionRecord = search.lookupFields({ type: "customrecord_gn_tav_inv_count_header", id: session, columns: ["custrecord_gn_tav_invcount_head_status"] });
+        const buttonAdj = document.getElementById('load-inventoryadj');
+
+        if (sessionRecord.custrecord_gn_tav_invcount_head_status[0].value == "2") {
+            validationIcon.style.display = 'inline';
+            validationIcon.innerHTML = '<b>Sessione di Inventario chiusa</b> ❌';
+            validationIcon.style.color = 'red';
+        } else {
+            validationIcon.style.display = 'inline';
+            validationIcon.innerHTML = '<b>Sessione di Inventario aperta</b> ✅';
+            validationIcon.style.color = 'green';
+        }
+        if (sessionRecord.custrecord_gn_tav_invcount_head_status[0].value == "2") {
+            buttonAdj.disabled = true;
+            buttonAdj.classList.add('disabled-style');
+        } else {
+            buttonAdj.disabled = false;
+            buttonAdj.classList.remove('disabled-style');
+        }
+
+        let resourcesUrl = url.resolveScript({
+            scriptId: 'customscript_gn_rl_inventory_count_data',
+            deploymentId: 'customdeploy_gn_rl_inventory_count_data',
+            params: { session: session }
+        });
+        https.post.promise({
+            url: resourcesUrl,
+            body: JSON.stringify({}),
+            headers: { 'Content-Type': 'application/json' }
+        })
+            .then((response) => {
+                let data = JSON.parse(response.body);
+                table.setData(data.data);
+            })
+            .catch((error) => {
+                Swal.fire({
+                    title: 'Errore!',
+                    text: 'Si è verificato un errore durante la creazione del ADJ ' + error,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            })
+            .finally(() => {
+                loadingIcon.style.display = 'none';
+                document.body.removeChild(overlay);
+                document.getElementById('report-inventorycount').style.display = 'block';
+                document.getElementById('table-title').style.display = 'block';
+            });
+    });
+});
+
+table.on("cellEdited", function (cell) { editqtyData(); });
+
+const editqtyData = (table, session) => {
+    require(['N/https', 'N/url', "N/search"], (https, url, search) => {
+        const { overlay, loadingIcon } = showeditLoadingOverlay();
+        let resourcesUrl = url.resolveScript({
+            scriptId: 'customscript_gn_rl_inventory_count_data',
+            deploymentId: 'customdeploy_gn_rl_inventory_count_data',
+            params: { session: session }
+        });
+        https.post.promise({
+            url: resourcesUrl,
+            body: JSON.stringify({}),
+            headers: { 'Content-Type': 'application/json' }
+        })
+            .then((response) => {
+                let data = JSON.parse(response.body);
+                table.setData(data.data);
+            })
+            .catch((error) => {
+                Swal.fire({
+                    title: 'Errore!',
+                    text: 'Si è verificato un errore durante il caricamento dei dati: ' + error,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            })
+            .finally(() => {
+                document.body.removeChild(overlay);
+                document.getElementById('report-inventorycount').style.display = 'block';
+                document.getElementById('table-title').style.display = 'block';
+            });
+    });
+}
+
+const showeditLoadingOverlay = () => {
+    const overlay = document.createElement('div');
+    overlay.id = 'loading-overlay';
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    overlay.style.display = 'flex';
+    overlay.style.justifyContent = 'center';
+    overlay.style.alignItems = 'center';
+    overlay.style.zIndex = '9999';
+
+    const loadingIcon = document.createElement('div');
+    loadingIcon.id = 'loading-icon';
+    loadingIcon.innerHTML = 'Caricamento in corso...';
+    loadingIcon.style.color = 'white';
+    loadingIcon.style.fontSize = '24px';
+    overlay.appendChild(loadingIcon);
+    document.body.appendChild(overlay);
+    return { overlay, loadingIcon };
+}
 
 
 
