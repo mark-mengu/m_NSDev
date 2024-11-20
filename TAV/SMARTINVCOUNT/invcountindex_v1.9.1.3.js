@@ -242,7 +242,6 @@ document.getElementById('table-title').style.display = 'none';
 document.getElementById('apply-load-inventorycount').addEventListener('click', (event) => {
     event.preventDefault();
 
-    let params = {};
     const loadingIcon = createLoadingIcon();
     const overlay = document.createElement('div');
     overlay.style.position = 'absolute';
@@ -260,28 +259,31 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
     document.getElementById('table-title').style.display = 'none';
 
     let session = document.getElementById('invcount-header').value;
-    if (isNull(session)) {
+    if (!session || session.trim() === '') {
         Swal.fire({
             title: 'Attenzione!',
-            text: 'Selezionare prima una Sessione di invetario valida...',
+            text: 'Selezionare prima una Sessione di inventario valida...',
             icon: 'warning',
             confirmButtonText: 'OK'
         });
         loadingIcon.style.display = 'none';
         document.body.removeChild(overlay);
+
         document.getElementById('report-inventorycount').style.display = 'block';
         document.getElementById('table-title').style.display = 'block';
-        return;
+        return; 
     }
+
     require(['N/https', 'N/url'], (https, url) => {
         let resourcesUrl = url.resolveScript({
             scriptId: 'customscript_gn_rl_inventory_count_data',
             deploymentId: 'customdeploy_gn_rl_inventory_count_data',
             params: { session: session }
         });
+
         https.get.promise({
             url: resourcesUrl,
-            body: JSON.stringify(params),
+            body: JSON.stringify({}),
             headers: { 'Content-Type': 'application/json' }
         })
             .then((response) => {
@@ -304,6 +306,7 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
             });
     });
 });
+
 
 
 
