@@ -148,10 +148,16 @@ var createLoadingIcon = () => {
     return loadingIcon;
 };
 //----------------------------------------------------------------TABULATOR-----------------------------------------------------
-const table = new Tabulator("#report-wip", { ...TABLE_CONFIG });
-document.getElementById('report-inventorycount').style.display = 'none';
-document.getElementById('table-title').style.display = 'none';
-const TABLE_CONFIG = {
+const table = new Tabulator("#report-wip", {
+    layout: "fitDataFill",
+    movableRows: false,
+    dataTree: true,
+    groupBy: "",
+    groupStartOpen: false,
+    groupToggleElement: "header",
+    placeholder: "No Data Found",
+    pagination: "local",
+    paginationSize: 500,
     columns: [
         {
             title: "Bin",
@@ -220,16 +226,11 @@ const TABLE_CONFIG = {
             validator: "numeric"
         }
     ],
-    layout: "fitDataFill",
-    movableRows: false,
-    dataTree: true,
-    groupBy: "",
-    groupStartOpen: false,
-    groupToggleElement: "header",
-    placeholder: "No Data Found",
-    pagination: "local",
-    paginationSize: 500
-};
+});
+
+document.getElementById('report-inventorycount').style.display = 'none';
+document.getElementById('table-title').style.display = 'none';
+
 
 const loadingIcon = createLoadingIcon();
 const reportInvCount = document.getElementById('report-inventorycount');
