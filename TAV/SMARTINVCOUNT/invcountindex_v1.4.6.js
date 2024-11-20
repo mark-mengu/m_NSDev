@@ -279,17 +279,17 @@ const TABLE_CONFIG = {
             headerFilterPlaceholder: "Filter Shelf"
         },
         {
-            title: "Quantity NS",
+            title: "Quantity NetSuite",
             field: "qtynetsuite",
             formatter: stdFormatter,
-            width: 130,
+            width: 200,
             validator: ["numeric", "min:0"]
         },
         {
-            title: "Quantity KDX",
+            title: "Quantity Kardex",
             field: "qtykardex",
             formatter: stdFormatter,
-            width: 130,
+            width: 200,
             validator: ["numeric", "min:0"]
         },
         {
@@ -297,7 +297,7 @@ const TABLE_CONFIG = {
             field: "qty",
             editor: "input",
             formatter: stdFormatter,
-            width: 260,
+            width: 200,
             validator: ["numeric", "min:0"],
             editorParams: {
                 selectContents: true
