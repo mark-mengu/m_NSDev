@@ -162,8 +162,9 @@ let table = new Tabulator("#report-inventorycount", {
     placeholder: "No Data Found",
     pagination: "local",
     paginationSize: 100,
-    data: initialData,
     groupBy: false,
+    reactiveData: true,
+    data: initialData,
     columns: [
         {
             title: "Bin",
@@ -254,13 +255,12 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
     document.getElementById('report-inventorycount').style.display = 'none';
     document.getElementById('table-title').style.display = 'none';
 
-    require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
+    require(['N/https', 'N/url'], (https, url) => {
         let resourcesUrl = url.resolveScript({
             scriptId: 'customscript_gn_rl_inventory_count_data',
             deploymentId: 'customdeploy_gn_rl_inventory_count_data',
             params: {}
         });
-
         https.get.promise({
             url: resourcesUrl,
             body: JSON.stringify(params),
@@ -268,22 +268,21 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
         })
             .then((response) => {
                 let data = JSON.parse(response.body);
-
                 table.setData(data.data);
             })
             .catch((error) => {
                 Swal.fire({
                     title: 'Errore!',
-                    text: 'Si è verificato un errore durante il caricamento dei dati.',
+                    text: 'Si è verificato un errore durante il caricamento dei dati: ' + error,
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
             })
             .finally(() => {
-                loadingIcon.style.display = 'none'; 
-                document.body.removeChild(overlay); 
-                document.getElementById('report-inventorycount').style.display = 'block'; 
-                document.getElementById('table-title').style.display = 'block'; 
+                loadingIcon.style.display = 'none';
+                document.body.removeChild(overlay);
+                document.getElementById('report-inventorycount').style.display = 'block';
+                document.getElementById('table-title').style.display = 'block';
             });
     });
 });
