@@ -295,9 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadingIcon.style.display = 'block';
 
         try {
-            if (!table) {
-                table = initializeTable();
-            }
+            table = initializeTable();
 
             require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
                 let resourcesUrl = url.resolveScript({
