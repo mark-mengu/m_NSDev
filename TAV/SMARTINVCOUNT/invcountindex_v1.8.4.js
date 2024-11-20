@@ -155,20 +155,95 @@ document.getElementById('table-title').style.display = 'none';
 const reportInvCount = document.getElementById('report-inventorycount').style.display = 'none';
 const tableTitle = document.getElementById('table-title').style.display = 'none';
 
-// Nascondi tabella e titolo all'avvio
-document.getElementById('report-inventorycount').style.display = 'none';
-document.getElementById('table-title').style.display = 'none';
-
-// Inizializza la variabile della tabella (senza dati iniziali)
-let table = null;
+let initialData = []; 
+let table = new Tabulator("#report-inventorycount", {
+    layout: "fitDataFill",
+    movableRows: false,
+    dataTree: true,
+    groupBy: "",
+    groupStartOpen: false,
+    groupToggleElement: "header",
+    placeholder: "No Data Found",
+    pagination: "local",
+    paginationSize: 500,
+    data: initialData, // Dati iniziali (vuoti)
+    columns: [
+        {
+            title: "Bin",
+            field: "bin",
+            headerFilter: "input",
+            formatter: stdBoldFormatter,
+            width: 130,
+            headerFilterPlaceholder: "Filter Bin"
+        },
+        {
+            title: "Articolo",
+            field: "item",
+            headerFilter: "input",
+            formatter: stdFormatter,
+            width: 350,
+            headerFilterPlaceholder: "Filter Article"
+        },
+        {
+            title: "Shelf NetSuite",
+            field: "shelfnetsuite",
+            headerFilter: "input",
+            formatter: stdFormatter,
+            width: 200,
+            headerFilterPlaceholder: "Filter Shelf"
+        },
+        {
+            title: "Shelf NetSuite",
+            field: "shelfkardex",
+            headerFilter: "input",
+            formatter: stdFormatter,
+            width: 200,
+            headerFilterPlaceholder: "Filter Shelf"
+        },
+        {
+            title: "Quantity NetSuite",
+            field: "qtynetsuite",
+            formatter: stdFormatter,
+            width: 200,
+            validator: ["numeric", "min:0"]
+        },
+        {
+            title: "Quantity Kardex",
+            field: "qtykardex",
+            formatter: stdFormatter,
+            width: 200,
+            validator: ["numeric", "min:0"]
+        },
+        {
+            title: "Quantity Contata",
+            field: "qty",
+            editor: "input",
+            formatter: stdFormatter,
+            width: 200,
+            validator: ["numeric", "min:0"],
+            editorParams: {
+                selectContents: true
+            }
+        },
+        {
+            title: "Valore Differenza",
+            field: "valuedifference",
+            formatter: inventoryValueFormatter,
+            bottomCalc: 'sum',
+            bottomCalcParams: { precision: 2 },
+            width: 200,
+            validator: "numeric"
+        }
+    ]
+});
 
 document.getElementById('apply-load-inventorycount').addEventListener('click', (event) => {
     event.preventDefault();
 
-    let params = {}; // Parametri per la richiesta
+    let params = {};
 
     const loadingIcon = createLoadingIcon();
-    loadingIcon.style.display = 'block'; // Mostra l'icona di caricamento
+    loadingIcon.style.display = 'block';
 
     document.getElementById('report-inventorycount').style.display = 'none';
     document.getElementById('table-title').style.display = 'none';
@@ -185,104 +260,24 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
             body: JSON.stringify(params),
             headers: { 'Content-Type': 'application/json' }
         })
-            .then((response) => {
-                let data = JSON.parse(response.body);
+        .then((response) => {
+            let data = JSON.parse(response.body);
 
-                // Controlla se la tabella è già stata creata
-                if (!table) {
-                    // Crea la tabella
-                    table = new Tabulator("#report-inventorycount", {
-                        layout: "fitDataFill",
-                        movableRows: false,
-                        dataTree: true,
-                        groupBy: "",
-                        groupStartOpen: false,
-                        groupToggleElement: "header",
-                        placeholder: "No Data Found",
-                        pagination: "local",
-                        paginationSize: 500,
-                        columns: [
-                            {
-                                title: "Bin",
-                                field: "bin",
-                                headerFilter: "input",
-                                formatter: stdBoldFormatter,
-                                width: 130,
-                                headerFilterPlaceholder: "Filter Bin"
-                            },
-                            {
-                                title: "Articolo",
-                                field: "item",
-                                headerFilter: "input",
-                                formatter: stdFormatter,
-                                width: 350,
-                                headerFilterPlaceholder: "Filter Article"
-                            },
-                            {
-                                title: "Shelf NetSuite",
-                                field: "shelfnetsuite",
-                                headerFilter: "input",
-                                formatter: stdFormatter,
-                                width: 200,
-                                headerFilterPlaceholder: "Filter Shelf"
-                            },
-                            {
-                                title: "Shelf NetSuite",
-                                field: "shelfkardex",
-                                headerFilter: "input",
-                                formatter: stdFormatter,
-                                width: 200,
-                                headerFilterPlaceholder: "Filter Shelf"
-                            },
-                            {
-                                title: "Quantity NetSuite",
-                                field: "qtynetsuite",
-                                formatter: stdFormatter,
-                                width: 200,
-                                validator: ["numeric", "min:0"]
-                            },
-                            {
-                                title: "Quantity Kardex",
-                                field: "qtykardex",
-                                formatter: stdFormatter,
-                                width: 200,
-                                validator: ["numeric", "min:0"]
-                            },
-                            {
-                                title: "Quantity Contata",
-                                field: "qty",
-                                editor: "input",
-                                formatter: stdFormatter,
-                                width: 200,
-                                validator: ["numeric", "min:0"],
-                                editorParams: {
-                                    selectContents: true
-                                }
-                            },
-                            {
-                                title: "Valore Differenza",
-                                field: "valuedifference",
-                                formatter: inventoryValueFormatter,
-                                bottomCalc: 'sum',
-                                bottomCalcParams: { precision: 2 },
-                                width: 200,
-                                validator: "numeric"
-                            }
-                        ],
-                    });
-                }
-                table.setData(data.data);
-            })
-            .catch((error) => {
-                console.error("Errore durante il caricamento dei dati:", error);
-            })
-            .finally(() => {
-                loadingIcon.style.display = 'none'; // Nascondi l'icona di caricamento
-                document.getElementById('report-inventorycount').style.display = 'block'; // Mostra la tabella
-                document.getElementById('table-title').style.display = 'block'; // Mostra il titolo
-            });
+            // Aggiorna i dati nella tabella
+            table.setData(data.data);
+        })
+        .catch((error) => {
+            console.error("Errore durante il caricamento dei dati:", error);
+        })
+        .finally(() => {
+            loadingIcon.style.display = 'none'; // Nascondi l'icona di caricamento
+            document.getElementById('report-inventorycount').style.display = 'block'; // Mostra la tabella
+            document.getElementById('table-title').style.display = 'block'; // Mostra il titolo
+        });
     });
 });
+
+
 
 
 
