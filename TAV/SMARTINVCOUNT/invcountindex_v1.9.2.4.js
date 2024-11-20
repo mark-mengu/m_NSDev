@@ -170,14 +170,14 @@ let table = new Tabulator("#report-inventorycount", {
             field: "location",
             headerFilter: "input",
             formatter: stdBoldFormatter,
-            width: 110
+            width: 130
         },
         {
             title: "Bin",
             field: "bin",
             headerFilter: "input",
             formatter: stdBoldFormatter,
-            width: 110,
+            width: 100,
             headerFilterPlaceholder: "Filtra per bin..."
         },
         {
@@ -185,7 +185,7 @@ let table = new Tabulator("#report-inventorycount", {
             field: "item",
             headerFilter: "input",
             formatter: stdFormatter,
-            width: 420,
+            width: 450,
             headerFilterPlaceholder: "Filtra per articolo..."
         },
         {
@@ -193,7 +193,7 @@ let table = new Tabulator("#report-inventorycount", {
             field: "shelfnetsuite",
             headerFilter: "input",
             formatter: stdFormatter,
-            width: 200,
+            width: 180,
             headerFilterPlaceholder: "Filtra per NetSuite shelf..."
         },
         {
@@ -201,7 +201,7 @@ let table = new Tabulator("#report-inventorycount", {
             field: "shelfkardex",
             headerFilter: "input",
             formatter: stdFormatter,
-            width: 200,
+            width: 180,
             headerFilterPlaceholder: "Filtra per Kardex shelf..."
         },
         {
@@ -234,7 +234,7 @@ let table = new Tabulator("#report-inventorycount", {
             }
         },
         {
-            title: "Valore Differenza",
+            title: "Valore <br>Differenza",
             field: "valuedifference",
             formatter: inventoryValueFormatter,
             bottomCalc: 'sum',
