@@ -169,23 +169,23 @@ const loadTableData = async (table, sessionValue) => {
                     https.get.promise({
                         url: resourcesUrl,
                         headers: { 'Content-Type': 'application/json' }
-                    })
-                        .then((response) => {
-                            try {
-                                let data = JSON.parse(response.body);
-                                if (data.error) {
-                                    throw new Error(data.error.message || 'Server response error');
-                                }
-                                if (!data.data || !Array.isArray(data.data)) {
-                                    throw new Error('Invalid data format received');
-                                }
-                                table.setData(data.data)
-                                    .then(() => resolve(data.data))
-                                    .catch(error => reject(new Error(`Failed to set table data: ${error.message}`)));
-                            } catch (parseError) {
-                                reject(new Error(`Data parsing error: ${parseError.message}`));
+                    }).then((response) => {
+                        try {
+                            let data = JSON.parse(response.body);
+                            if (data.error) {
+                                throw new Error(data.error.message || 'Server response error');
                             }
-                        })
+                            if (!data.data || !Array.isArray(data.data)) {
+                                throw new Error('Invalid data format received');
+                            }
+                            console.log(JSON.parse(data.data));
+                            table.setData(data.data)
+                                .then(() => resolve(data.data))
+                                .catch(error => reject(new Error(`Failed to set table data: ${error.message}`)));
+                        } catch (parseError) {
+                            reject(new Error(`Data parsing error: ${parseError.message}`));
+                        }
+                    })
                         .catch(reject);
                 } catch (urlError) {
                     reject(new Error(`Failed to resolve script URL: ${urlError.message}`));
@@ -306,13 +306,13 @@ const initializeTable = () => {
             }
             const table = new Tabulator("#report-inventorycount", {
                 ...TABLE_CONFIG,
-                tableBuilt: function() {
+                tableBuilt: function () {
                     console.log("Table fully built");
                     resolve(table);
                 },
                 ajaxRequestFunc: customAjaxRequest,
                 ajaxError: handleAjaxError,
-                dataLoaded: function(data) {
+                dataLoaded: function (data) {
                     handleDataLoaded(data, tableElement);
                 }
             });
