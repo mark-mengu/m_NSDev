@@ -179,16 +179,12 @@ const loadTableData = (table, sessionValue) => {
     require(['N/https', 'N/url', 'N/runtime'], (https, url, runtime) => {
         try {
             logStep('Resolving Script URL', { sessionValue });
-
             const resourcesUrl = url.resolveScript({
                 scriptId: 'customscript_gn_rl_inventory_count_data',
                 deploymentId: 'customdeploy_gn_rl_inventory_count_data',
                 params: { sessionId: sessionValue }
             });
-
             logStep('Resolved Script URL', { resourcesUrl });
-
-            // Comprehensive error handling wrapper
             const executeRequest = () => {
                 return new Promise((resolve, reject) => {
                     https.get.promise({
@@ -205,17 +201,14 @@ const loadTableData = (table, sessionValue) => {
 
                         try {
                             const data = JSON.parse(response.body);
-
                             if (data.error) {
                                 logStep('Server Error', { errorMessage: data.error.message });
                                 throw new Error(data.error.message || 'Server response error');
                             }
-
                             if (!data.data || !Array.isArray(data.data)) {
                                 logStep('Invalid Data Format', { receivedData: data });
                                 throw new Error('Invalid data format received');
                             }
-
                             resolve(data.data);
                         } catch (parseError) {
                             logStep('Data Parsing Error', {
@@ -233,16 +226,19 @@ const loadTableData = (table, sessionValue) => {
                     });
                 });
             };
-            // Execute request with comprehensive error handling
             executeRequest()
                 .then(processedData => {
                     logStep('Setting Table Data', { dataLength: processedData.length });
-                    return table.setData(processedData);
-                })
-                .then(() => {
-                    logStep('Table Data Set Successfully');
-                    const tableElement = document.getElementById('report-inventorycount');
-                    if (tableElement) tableElement.style.display = 'block';
+                    return new Promise((resolve, reject) => {
+                        table.setData(processedData, () => {
+                            logStep('Table Data Set Successfully');
+                            const tableElement = document.getElementById('report-inventorycount');
+                            if (tableElement) tableElement.style.display = 'block';
+                            resolve();
+                        }, (error) => {
+                            reject(error);
+                        });
+                    });
                 })
                 .catch(error => {
                     logStep('Critical Failure', {
