@@ -194,7 +194,6 @@ const loadTableData = (table, sessionValue) => {
                             status: response.status,
                             bodyLength: response.body ? response.body.length : 'No Body'
                         });
-
                         try {
                             const data = JSON.parse(response.body);
                             if (data.error) {
@@ -381,12 +380,13 @@ const handleLoadButtonClick = async (event) => {
     if (tableElement) tableElement.style.display = 'none';
 
     createLoadingIcon();
-    try {
-        const table = initializeTable();
-        loadTableData(table, sessionValue);
-    } catch (error) {
-        showError('Critical Error', error.message);
-    }
+    initializeTable()
+        .then(table => {
+            loadTableData(table, sessionValue);
+        })
+        .catch(error => {
+            showError('Critical Error', error.message);
+        });
 };
 
 document.addEventListener('DOMContentLoaded', () => {
