@@ -284,6 +284,8 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
     }
     require(['N/https', 'N/url', "N/search"], (https, url, search) => {
         const sessionRecord = search.lookupFields({ type: "customrecord_gn_tav_inv_count_header", id: session, columns: ["custrecord_gn_tav_invcount_head_status"] });
+        const buttonAdj = document.getElementById('apply-load-inventorycount');
+
         if (sessionRecord.custrecord_gn_tav_invcount_head_status[0].value == "2") {
             validationIcon.style.display = 'inline';
             validationIcon.innerHTML = '<b>Sessione di Inventario chiusa</b> ❌';
@@ -292,6 +294,13 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
             validationIcon.style.display = 'inline';
             validationIcon.innerHTML = '<b>Sessione di Inventario aperta</b> ✅';
             validationIcon.style.color = 'green';
+        }
+        if (sessionRecord.custrecord_gn_tav_invcount_head_status[0].value == "2") {
+            buttonAdj.disabled = false;
+            buttonAdj.classList.remove('disabled-style');
+        } else {
+            buttonAdj.disabled = true;
+            buttonAdj.classList.add('disabled-style');
         }
 
         let resourcesUrl = url.resolveScript({
