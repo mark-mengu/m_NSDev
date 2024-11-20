@@ -408,9 +408,11 @@ document.getElementById('load-inventoryadj').addEventListener('click', (event) =
     });
 });
 
+
 table.on("cellEdited", (cell) => {
-    require(['N/https', 'N/url', "N/search"], (https, url, search) => {
+    require(['N/https', 'N/url'], (https, url) => {
         const { overlay, loadingIcon } = showeditLoadingOverlay();
+        let session = document.getElementById('invcount-header').value;
         let resourcesUrl = url.resolveScript({
             scriptId: 'customscript_gn_rl_inventory_count_data',
             deploymentId: 'customdeploy_gn_rl_inventory_count_data',
