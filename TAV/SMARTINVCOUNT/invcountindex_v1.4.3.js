@@ -20,7 +20,34 @@ const formatNumber = (num) => {
     return `${formattedInteger},${formattedDecimal}`;
 };
 
-// UI Components
+const stdFormatter = (cell) => {
+    try {
+        return cell.getValue() || '';
+    } catch (error) {
+        console.error('Formatter error:', error);
+        return '';
+    }
+};
+
+const stdBoldFormatter = (cell) => {
+    try {
+        return `<strong>${cell.getValue() || ''}</strong>`;
+    } catch (error) {
+        console.error('Bold formatter error:', error);
+        return '';
+    }
+};
+
+const inventoryValueFormatter = (cell) => {
+    try {
+        const value = cell.getValue();
+        return value ? parseFloat(value).toFixed(2) : '0.00';
+    } catch (error) {
+        console.error('Value formatter error:', error);
+        return '0.00';
+    }
+};
+
 const createLoadingIcon = () => {
     try {
         const existingIcon = document.getElementById('loading-icon');
@@ -44,7 +71,6 @@ const createLoadingIcon = () => {
             z-index: 9999;
         `;
 
-        // Add the spin animation
         const styleSheet = document.createElement('style');
         styleSheet.textContent = `
             @keyframes spin {
@@ -109,7 +135,6 @@ const handleDataLoaded = (data, tableElement) => {
 const customAjaxRequest = async (url, config, params) => {
     const maxRetries = 3;
     let retryCount = 0;
-
     while (retryCount < maxRetries) {
         try {
             const response = await fetch(url, {
@@ -135,23 +160,17 @@ const customAjaxRequest = async (url, config, params) => {
 };
 
 const loadTableData = async (table, sessionValue) => {
-    if (!table) {
-        throw new Error('Table instance is required');
-    }
-
+    console.log(table); 
+    if (!table) { throw new Error('Table instance is required'); }
     return new Promise((resolve, reject) => {
         try {
-            // Check if NetSuite module loading is available
             if (typeof require === 'undefined') {
                 reject(new Error('NetSuite module loading is not available'));
                 return;
             }
-
             require(['N/https', 'N/url'], (https, url) => {
                 try {
-                    // Detailed logging for debugging
                     console.log('Session Value:', sessionValue);
-
                     const resourcesUrl = url.resolveScript({
                         scriptId: 'customscript_gn_rl_inventory_count_data',
                         deploymentId: 'customdeploy_gn_rl_inventory_count_data',
@@ -159,9 +178,7 @@ const loadTableData = async (table, sessionValue) => {
                             sessionId: sessionValue
                         }
                     });
-
                     console.log('Resolved Script URL:', resourcesUrl);
-
                     https.get.promise({
                         url: resourcesUrl,
                         headers: {
@@ -204,34 +221,6 @@ const loadTableData = async (table, sessionValue) => {
             reject(new Error(`Module loading error: ${requireError.message}`));
         }
     });
-};
-
-const stdFormatter = (cell) => {
-    try {
-        return cell.getValue() || '';
-    } catch (error) {
-        console.error('Formatter error:', error);
-        return '';
-    }
-};
-
-const stdBoldFormatter = (cell) => {
-    try {
-        return `<strong>${cell.getValue() || ''}</strong>`;
-    } catch (error) {
-        console.error('Bold formatter error:', error);
-        return '';
-    }
-};
-
-const inventoryValueFormatter = (cell) => {
-    try {
-        const value = cell.getValue();
-        return value ? parseFloat(value).toFixed(2) : '0.00';
-    } catch (error) {
-        console.error('Value formatter error:', error);
-        return '0.00';
-    }
 };
 
 const TABLE_CONFIG = {
