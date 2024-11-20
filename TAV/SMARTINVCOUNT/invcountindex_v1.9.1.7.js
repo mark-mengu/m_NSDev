@@ -220,6 +220,10 @@ let table = new Tabulator("#report-inventorycount", {
             validator: ["numeric", "min:0"],
             editorParams: {
                 selectContents: true
+            },
+            editable: (cell) => {
+                const rowData = cell.getRow().getData();
+                return rowData.header !== "2";
             }
         },
         {
@@ -258,6 +262,9 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
     let session = document.getElementById('invcount-header').value;
     let validationIcon = document.getElementById('validation-icon');
     if (!session || session.trim() === 'null') {
+        validationIcon.style.display = 'inline';
+        validationIcon.innerHTML = '❌';
+        validationIcon.style.color = 'red';
         Swal.fire({
             title: 'Attenzione!',
             text: 'Selezionare prima una Sessione di inventario valida...',
@@ -267,15 +274,15 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
         loadingIcon.style.display = 'none';
         document.body.removeChild(overlay);
 
-        return; 
+        return;
     }
     if (session === "null" || session.trim() === "") {
         validationIcon.style.display = 'inline';
-        validationIcon.innerHTML = '❌'; 
+        validationIcon.innerHTML = 'Sessione di Inventario chiusa ❌';
         validationIcon.style.color = 'red';
     } else {
         validationIcon.style.display = 'inline';
-        validationIcon.innerHTML = '✅'; 
+        validationIcon.innerHTML = 'Sessione di Inventario aperta ✅';
         validationIcon.style.color = 'green';
     }
     require(['N/https', 'N/url'], (https, url) => {
