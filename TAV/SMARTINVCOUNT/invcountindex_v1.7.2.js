@@ -148,7 +148,7 @@ var createLoadingIcon = () => {
     return loadingIcon;
 };
 //----------------------------------------------------------------TABULATOR-----------------------------------------------------
-const table = new Tabulator("#report-wip", {
+const table = new Tabulator("#report-report-inventorycount", {
     layout: "fitDataFill",
     movableRows: false,
     dataTree: true,
@@ -261,7 +261,7 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
 
     const loadingIcon = createLoadingIcon();
     loadingIcon.style.display = 'block';
-    document.getElementById('report-wip').style.display = 'none';
+    document.getElementById('report-inventorycount').style.display = 'none';
     document.getElementById('table-title').style.display = 'none';
 
     require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
@@ -288,7 +288,7 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
             })
             .finally(() => {
                 loadingIcon.style.display = 'none';
-                document.getElementById('report-wip').style.display = 'block';
+                document.getElementById('report-inventorycount-wip').style.display = 'block';
                 document.getElementById('table-title').style.display = 'block';
             });
     });
