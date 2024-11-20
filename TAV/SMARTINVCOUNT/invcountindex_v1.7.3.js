@@ -243,21 +243,7 @@ tableTitle.style.display = 'none';
 //---------------------------------------------------APPLY FILTER EVENT DATA---------------------------------------------------
 document.getElementById('apply-load-inventorycount').addEventListener('click', (event) => {
     event.preventDefault();
-
-    let startDateInput = document.getElementById('start-date');
-    let endDateInput = document.getElementById('end-date');
-    let startDate = startDateInput.value;
-    let endDate = endDateInput.value;
-
     let params = {};
-    if (!startDate) {
-        startDate = formatDate(new Date());
-        startDateInput.value = startDate;
-    }
-    if (!endDate) {
-        endDate = formatDate(new Date());
-        endDateInput.value = endDate;
-    }
 
     const loadingIcon = createLoadingIcon();
     loadingIcon.style.display = 'block';
@@ -274,7 +260,7 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
         params.startDate = startDate;
         params.endDate = endDate;
 
-        https.post.promise({
+        https.get.promise({
             url: resourcesUrl,
             body: JSON.stringify(params),
             headers: { 'Content-Type': 'application/json' }
