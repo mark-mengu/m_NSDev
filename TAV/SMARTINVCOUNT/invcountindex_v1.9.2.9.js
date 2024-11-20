@@ -174,7 +174,7 @@ let table = new Tabulator("#report-inventorycount", {
         {
             title: "Bin",
             field: "bin",
-            headerFilter: "input",
+            headerFilter: multiSelectHeaderFilter,
             formatter: stdBoldFormatter,
             width: 100,
             headerFilterPlaceholder: ""
@@ -296,10 +296,10 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
             validationIcon.style.color = 'green';
         }
         if (sessionRecord.custrecord_gn_tav_invcount_head_status[0].value == "2") {
-            buttonAdj.disabled = false;
+            buttonAdj.disabled = true;
             buttonAdj.classList.remove('disabled-style');
         } else {
-            buttonAdj.disabled = true;
+            buttonAdj.disabled = false;
             buttonAdj.classList.add('disabled-style');
         }
 
