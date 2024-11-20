@@ -260,7 +260,7 @@ document.getElementById('apply-load-inventorycount').addEventListener('click', (
     document.getElementById('table-title').style.display = 'none';
 
     let session = document.getElementById('invcount-header').value;
-    if (!session) {
+    if (isNull(session)) {
         Swal.fire({
             title: 'Attenzione!',
             text: 'Selezionare prima una Sessione di invetario valida...',
