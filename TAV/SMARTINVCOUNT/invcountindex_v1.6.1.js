@@ -380,13 +380,12 @@ const handleLoadButtonClick = async (event) => {
     if (tableElement) tableElement.style.display = 'none';
 
     createLoadingIcon();
-    initializeTable()
-        .then(table => {
-            loadTableData(table, sessionValue);
-        })
-        .catch(error => {
-            showError('Critical Error', error.message);
-        });
+    try {
+        const table = initializeTable();
+        loadTableData(table, sessionValue);
+    } catch (error) {
+        showError('Critical Error', error.message);
+    }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
