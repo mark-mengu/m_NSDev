@@ -227,7 +227,7 @@ table = new Tabulator("#report-inventorycount", {
             }
         },
         {
-            title: "Valore <br>Unitario",
+            title: "Unitario <br>Considerato <br>NetSuite",
             field: "unitvalue",
             formatter: (cell) => {
                 cell.getElement().style.backgroundColor = "#ffffbf";
