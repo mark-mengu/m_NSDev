@@ -412,6 +412,7 @@ document.getElementById('load-inventoryadj').addEventListener('click', (event) =
                 }
             })
             .catch((error) => {
+                console.log(error)
                 Swal.fire({
                     title: 'Errore!',
                     text: 'Si è verificato un errore durante la creazione del ADJ ' + error.error,
