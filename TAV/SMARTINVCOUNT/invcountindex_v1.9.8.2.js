@@ -222,7 +222,7 @@ table = new Tabulator("#report-inventorycount", {
                 selectContents: true
             },
             editable: (cell) => {
-                const rowData = cell.getRow().getData();
+                let rowData = cell.getRow().getData();
                 return rowData.statusheader !== "2";
             }
         },
@@ -232,9 +232,11 @@ table = new Tabulator("#report-inventorycount", {
             formatter: (cell) => {
                 cell.getElement().style.backgroundColor = "#ffffbf";
                 let value = parseFloat(cell.getValue()) || 0;
-                return value.toFixed(4);
+                let rowData = cell.getRow().getData();
+                if ((Number(rowData.qtykardex) - Number(rowData.qtynetsuite)) > 0) {
+                    return value.toFixed(4);
+                } else { return value.toFixed(2) }
             },
-            formatterParams: { precision: 4 },
             width: 150,
             validator: "numeric"
         },
