@@ -389,7 +389,7 @@ document.getElementById('load-inventoryadj').addEventListener('click', (event) =
         let resourcesUrl = url.resolveScript({
             scriptId: 'customscript_gn_rl_inventory_count_data',
             deploymentId: 'customdeploy_gn_rl_inventory_count_data',
-            params: { session: session, data: data }
+            params: {}
         });
         https.put.promise({
             url: resourcesUrl,
