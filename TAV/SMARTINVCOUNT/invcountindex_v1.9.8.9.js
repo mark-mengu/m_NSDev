@@ -233,26 +233,27 @@ table = new Tabulator("#report-inventorycount", {
                 cell.getElement().style.backgroundColor = "#ffffbf";
                 let rowData = cell.getRow().getData();
                 let valueDifference = Number(rowData.valuedifference);
-                let value = parseFloat(cell.getValue()) || 0;                
+                let value = parseFloat(cell.getValue()) || 0;
                 if (valueDifference < 0) {
-                    return value.toFixed(2); 
+                    return value.toFixed(2);
                 } else {
-                    return value.toFixed(5); 
+                    return value.toFixed(5);
                 }
             },
             width: 150,
             validator: "numeric"
         },
         {
-            title: "Valore <br>Differenza<br>Indicativo",
+            title: "Valore <br>Differenza<br>Indicativa",
             field: "valuedifference",
             formatter: (cell) => {
                 cell.getElement().style.backgroundColor = "#ffffbf";
-                let value = parseFloat(cell.getValue()) || 0;                
+                let rowData = cell.getRow().getData();
+                let value = (parseFloat(rowData.unitvalue)) * (parseFloat(rowData.qty) - parseFloat(rowData.qtynetsuite));
                 if (value < 0) {
-                    return value.toFixed(2); 
+                    return value.toFixed(2);
                 } else {
-                    return value.toFixed(5); 
+                    return value.toFixed(5);
                 }
             },
             bottomCalc: "sum",
