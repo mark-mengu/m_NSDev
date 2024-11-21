@@ -425,7 +425,7 @@ table.on("cellEdited", (cell) => {
         });
         https.post.promise({
             url: resourcesUrl,
-            body: { session: session, detail: cellrow.detail, qty: cell.getData().value },
+            body: { session: session, detail: cellrow.detail, qty: cell.getValue() },
             headers: { 'Content-Type': 'application/json' }
         })
             .then((response) => {
