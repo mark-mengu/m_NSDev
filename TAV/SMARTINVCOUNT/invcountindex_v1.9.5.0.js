@@ -360,10 +360,15 @@ document.getElementById('load-inventoryadj').addEventListener('click', (event) =
     require(['N/https', 'N/url', "N/search"], (https, url, search) => {
         const sessionRecord = search.lookupFields({ type: "customrecord_gn_tav_inv_count_header", id: session, columns: ["custrecord_gn_tav_invcount_head_status"] });
         const buttonAdj = document.getElementById('load-inventoryadj');
-
         const visibleData = table.getData("visible");
-        console.log("Visible Data:", visibleData);
 
+        if (visibleData.length == 0)
+            Swal.fire({
+                title: 'Attenzione!',
+                text: 'Non ci sono riga da Trasformare in ADJ',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
         if (sessionRecord.custrecord_gn_tav_invcount_head_status[0].value == "2") {
             validationIcon.style.display = 'inline';
             validationIcon.innerHTML = '<b>Sessione di Inventario chiusa</b> ❌';
@@ -388,12 +393,12 @@ document.getElementById('load-inventoryadj').addEventListener('click', (event) =
         });
         https.put.promise({
             url: resourcesUrl,
-            body: JSON.stringify({}),
+            body: JSON.stringify({ data: visibleData, session: session }),
             headers: { 'Content-Type': 'application/json' }
         })
             .then((response) => {
-                let data = JSON.parse(response.body);
-                table.setData(data.data);
+                let resp = JSON.parse(response.body);
+                if (resp) { window.location.reload(); }
             })
             .catch((error) => {
                 Swal.fire({
