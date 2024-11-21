@@ -237,7 +237,7 @@ table = new Tabulator("#report-inventorycount", {
                 if (valueDifference < 0) {
                     return value.toFixed(2); 
                 } else {
-                    return value.toFixed(4); 
+                    return value.toFixed(5); 
                 }
             },
             width: 150,
@@ -252,7 +252,7 @@ table = new Tabulator("#report-inventorycount", {
                 if (value < 0) {
                     return value.toFixed(2); 
                 } else {
-                    return value.toFixed(4); 
+                    return value.toFixed(5); 
                 }
             },
             bottomCalc: "sum",
