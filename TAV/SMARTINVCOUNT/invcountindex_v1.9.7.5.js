@@ -400,19 +400,17 @@ document.getElementById('load-inventoryadj').addEventListener('click', (event) =
         })
             .then((response) => {
                 let resp = JSON.parse(response.body);
-                if (!resp.error) { document.getElementById('apply-load-inventorycount').click(); }
-                if (resp.error) {
-                    console.log("resp", resp);
+                if (resp.length != 0) {
+                    document.getElementById('apply-load-inventorycount').click();
                     Swal.fire({
                         title: 'Errore!',
-                        text: 'Si è verificato un errore durante la creazione del ADJ ' + resp.error,
-                        icon: 'error',
+                        text: "Inventory ADJ creato " + resp.adj,
+                        icon: 'confirm',
                         confirmButtonText: 'OK'
                     });
                 }
             })
             .catch((error) => {
-                console.log("error", error);
                 Swal.fire({
                     title: 'Errore!',
                     text: 'Si è verificato un errore durante la creazione del ADJ ' + error.message,
