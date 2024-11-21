@@ -360,18 +360,10 @@ document.getElementById('load-inventoryadj').addEventListener('click', (event) =
     require(['N/https', 'N/url', "N/search"], (https, url, search) => {
         const sessionRecord = search.lookupFields({ type: "customrecord_gn_tav_inv_count_header", id: session, columns: ["custrecord_gn_tav_invcount_head_status"] });
         const buttonAdj = document.getElementById('load-inventoryadj');
-        // Get filtered data
-        const filteredData = table.getFilteredData();
-        console.log("Filtered Data:", filteredData);
 
-        // Get visible data
         const visibleData = table.getData("visible");
         console.log("Visible Data:", visibleData);
 
-        // Get selected data
-        const selectedData = table.getSelectedData();
-        console.log("Selected Data:", selectedData);
-        
         if (sessionRecord.custrecord_gn_tav_invcount_head_status[0].value == "2") {
             validationIcon.style.display = 'inline';
             validationIcon.innerHTML = '<b>Sessione di Inventario chiusa</b> ❌';
