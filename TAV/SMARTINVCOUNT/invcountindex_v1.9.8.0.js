@@ -229,8 +229,12 @@ table = new Tabulator("#report-inventorycount", {
         {
             title: "Valore <br>Differenza <br>Unitario",
             field: "unitvalue",
-            formatter: inventoryValueFormatter, 
-            formatterParams: { precision: 4 }, 
+            formatter: (cell) => {
+                cell.getElement().style.backgroundColor = "#ffffbf";
+                let value = parseFloat(cell.getValue()) || 0;
+                return value.toFixed(4);
+            },
+            formatterParams: { precision: 4 },
             width: 150,
             validator: "numeric"
         },
@@ -239,12 +243,12 @@ table = new Tabulator("#report-inventorycount", {
             field: "valuedifference",
             formatter: (cell) => {
                 let value = parseFloat(cell.getValue()) || 0;
-                return value.toFixed(4); 
+                return value.toFixed(4);
             },
-            bottomCalc: "sum", 
+            bottomCalc: "sum",
             bottomCalcFormatter: (cell) => {
                 let value = cell.getValue();
-                return value ? parseFloat(value).toFixed(4) : "0.0000"; 
+                return value ? parseFloat(value).toFixed(4) : "0.0000";
             },
             width: 150,
             validator: "numeric"
