@@ -156,8 +156,8 @@ table = new Tabulator("#report-inventorycount", {
     groupBy: false,
     reactiveData: true,
     data: initialData,
-    progressiveLoad: "load",
-    progressiveLoadDelay: 200,
+    //progressiveLoad: "load",
+    //progressiveLoadDelay: 200,
     progressiveRender: true,
     progressiveRenderSize: 70,
     columns: [
