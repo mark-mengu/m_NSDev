@@ -231,11 +231,14 @@ table = new Tabulator("#report-inventorycount", {
             field: "unitvalue",
             formatter: (cell) => {
                 cell.getElement().style.backgroundColor = "#ffffbf";
-                let value = parseFloat(cell.getValue()) || 0;
                 let rowData = cell.getRow().getData();
-                if ((Number(rowData.qtykardex) - Number(rowData.qtynetsuite)) > 0) {
-                    return value.toFixed(4);
-                } else { return value.toFixed(2) }
+                let qtyDifference = Number(rowData.qtykardex) - Number(rowData.qtynetsuite);
+                let value = parseFloat(cell.getValue()) || 0;
+                if (qtyDifference > 0) {
+                    return value.toFixed(4); 
+                } else {
+                    return value.toFixed(2); 
+                }
             },
             width: 150,
             validator: "numeric"
