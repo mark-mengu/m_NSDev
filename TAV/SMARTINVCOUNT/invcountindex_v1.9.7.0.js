@@ -402,7 +402,7 @@ document.getElementById('load-inventoryadj').addEventListener('click', (event) =
                 let resp = JSON.parse(response.body);
                 if (!resp.error) { document.getElementById('apply-load-inventorycount').click(); }
                 if (resp.error) {
-                    console.log(resp)
+                    console.log("resp", resp);
                     Swal.fire({
                         title: 'Errore!',
                         text: 'Si è verificato un errore durante la creazione del ADJ ' + resp.error,
@@ -412,7 +412,7 @@ document.getElementById('load-inventoryadj').addEventListener('click', (event) =
                 }
             })
             .catch((error) => {
-                console.log(error)
+                console.log("error", error);
                 Swal.fire({
                     title: 'Errore!',
                     text: 'Si è verificato un errore durante la creazione del ADJ ' + error.error,
