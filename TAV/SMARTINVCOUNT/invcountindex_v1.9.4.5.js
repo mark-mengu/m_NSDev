@@ -386,7 +386,7 @@ document.getElementById('load-inventoryadj').addEventListener('click', (event) =
             deploymentId: 'customdeploy_gn_rl_inventory_count_data',
             params: { session: session }
         });
-        https.post.promise({
+        https.put.promise({
             url: resourcesUrl,
             body: JSON.stringify({}),
             headers: { 'Content-Type': 'application/json' }
@@ -425,12 +425,11 @@ table.on("cellEdited", (cell) => {
         });
         https.post.promise({
             url: resourcesUrl,
-            body: { session: session, detail: cellrow.detail },
+            body: { session: session, detail: cellrow.detail, qty: cell.getData().value },
             headers: { 'Content-Type': 'application/json' }
         })
             .then((response) => {
                 let data = JSON.parse(response.body);
-                console.log(table);
                 table.setData(data.data);
             })
             .catch((error) => {
