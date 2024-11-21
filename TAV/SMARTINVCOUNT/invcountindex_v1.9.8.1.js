@@ -421,7 +421,7 @@ document.getElementById('load-inventoryadj').addEventListener('click', (event) =
                 if (resp.length != 0) {
                     document.getElementById('apply-load-inventorycount').click();
                     Swal.fire({
-                        title: 'Errore!',
+                        title: 'Pronto!',
                         text: "Inventory ADJ creato " + resp.adj,
                         icon: 'confirm',
                         confirmButtonText: 'OK'
