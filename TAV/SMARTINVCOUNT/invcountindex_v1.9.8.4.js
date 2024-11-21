@@ -232,12 +232,12 @@ table = new Tabulator("#report-inventorycount", {
             formatter: (cell) => {
                 cell.getElement().style.backgroundColor = "#ffffbf";
                 let rowData = cell.getRow().getData();
-                let qtyDifference = Number(rowData.qtykardex) - Number(rowData.qtynetsuite);
+                let qtyDifference = Number(rowData.qty) - Number(rowData.qtynetsuite);
                 let value = parseFloat(cell.getValue()) || 0;
-                if (qtyDifference > 0) {
-                    return value.toFixed(4); 
+                if (qtyDifference >= 0) {
+                    return value.toFixed(4);
                 } else {
-                    return value.toFixed(2); 
+                    return value.toFixed(2);
                 }
             },
             width: 150,
