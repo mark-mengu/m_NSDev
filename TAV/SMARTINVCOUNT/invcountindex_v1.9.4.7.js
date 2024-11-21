@@ -414,7 +414,7 @@ document.getElementById('load-inventoryadj').addEventListener('click', (event) =
 
 
 table.on("cellEdited", (cell) => {
-    let cellrow = cell.getRow().getData().detail;
+    let cellrow = cell.getRow().getData();
     require(['N/https', 'N/url'], (https, url) => {
         const { overlay, loadingIcon } = showeditLoadingOverlay();
         let session = document.getElementById('invcount-header').value;
