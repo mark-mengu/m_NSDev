@@ -152,12 +152,10 @@ table = new Tabulator("#report-inventorycount", {
     movableRows: false,
     placeholder: "No Data Found",
     pagination: "local",
-    //paginationSize: 70,
+    paginationSize: 70,
     groupBy: false,
     reactiveData: true,
     data: initialData,
-    progressiveLoad: "load",
-    progressiveLoadDelay: 200,
     progressiveRender: true,
     progressiveRenderSize: 70,
     columns: [
