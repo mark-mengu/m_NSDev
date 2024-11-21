@@ -229,18 +229,23 @@ table = new Tabulator("#report-inventorycount", {
         {
             title: "Valore <br>Differenza <br>Unitario",
             field: "unitvalue",
-            formatter: inventoryValueFormatter,
-            bottomCalc: 'sum',
-            bottomCalcParams: { precision: 4 },
+            formatter: inventoryValueFormatter, 
+            formatterParams: { precision: 4 }, 
             width: 150,
             validator: "numeric"
         },
         {
             title: "Valore <br>Differenza",
             field: "valuedifference",
-            formatter: inventoryValueFormatter,
-            bottomCalc: 'sum',
-            bottomCalcParams: { precision: 4 },
+            formatter: (cell) => {
+                let value = parseFloat(cell.getValue()) || 0;
+                return value.toFixed(4); 
+            },
+            bottomCalc: "sum", 
+            bottomCalcFormatter: (cell) => {
+                let value = cell.getValue();
+                return value ? parseFloat(value).toFixed(4) : "0.0000"; 
+            },
             width: 150,
             validator: "numeric"
         }
@@ -495,7 +500,6 @@ const showeditLoadingOverlay = () => {
     document.body.appendChild(overlay);
     return { overlay, loadingIcon };
 }
-
 
 
 
