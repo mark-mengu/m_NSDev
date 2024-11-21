@@ -402,7 +402,7 @@ document.getElementById('load-inventoryadj').addEventListener('click', (event) =
         })
             .then((response) => {
                 let resp = JSON.parse(response.body);
-                if (resp) { window.location.reload(); }
+                if (resp) { document.getElementById('apply-load-inventorycount').click(); }
             })
             .catch((error) => {
                 Swal.fire({
