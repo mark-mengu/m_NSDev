@@ -244,12 +244,11 @@ table = new Tabulator("#report-inventorycount", {
             validator: "numeric"
         },
         {
-            title: "Differenza <br>Indicativa",
+            title: "Valore <br>Differenza<br>Indicativa",
             field: "valuedifference",
             formatter: (cell) => {
                 cell.getElement().style.backgroundColor = "#ffffbf";
-                let rowData = cell.getRow().getData();
-                let value = (parseFloat(rowData.unitvalue)) * (parseFloat(rowData.qty) - parseFloat(rowData.qtynetsuite));
+                let value = parseFloat(cell.getValue()) || 0;
                 if (value < 0) {
                     return value.toFixed(2);
                 } else {
