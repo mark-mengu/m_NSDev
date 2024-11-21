@@ -227,7 +227,7 @@ table = new Tabulator("#report-inventorycount", {
             }
         },
         {
-            title: "Valore <br>Differenza <br>Unitario",
+            title: "Valore <br>Unitario",
             field: "unitvalue",
             formatter: (cell) => {
                 cell.getElement().style.backgroundColor = "#ffffbf";
@@ -244,7 +244,7 @@ table = new Tabulator("#report-inventorycount", {
             validator: "numeric"
         },
         {
-            title: "Valore <br>Differenza<br>Indicativa",
+            title: "Differenza <br>Indicativa",
             field: "valuedifference",
             formatter: (cell) => {
                 cell.getElement().style.backgroundColor = "#ffffbf";
