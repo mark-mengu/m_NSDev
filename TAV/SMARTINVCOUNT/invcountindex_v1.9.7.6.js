@@ -227,11 +227,20 @@ table = new Tabulator("#report-inventorycount", {
             }
         },
         {
+            title: "Valore <br>Differenza <br>Unitario",
+            field: "unitvalue",
+            formatter: inventoryValueFormatter,
+            bottomCalc: 'sum',
+            bottomCalcParams: { precision: 4 },
+            width: 150,
+            validator: "numeric"
+        },
+        {
             title: "Valore <br>Differenza",
             field: "valuedifference",
             formatter: inventoryValueFormatter,
             bottomCalc: 'sum',
-            bottomCalcParams: { precision: 2 },
+            bottomCalcParams: { precision: 4 },
             width: 150,
             validator: "numeric"
         }
