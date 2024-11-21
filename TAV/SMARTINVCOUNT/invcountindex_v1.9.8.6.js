@@ -247,8 +247,13 @@ table = new Tabulator("#report-inventorycount", {
             title: "Valore <br>Differenza",
             field: "valuedifference",
             formatter: (cell) => {
-                let value = parseFloat(cell.getValue()) || 0;
-                return value.toFixed(4);
+                cell.getElement().style.backgroundColor = "#ffffbf";
+                let value = parseFloat(cell.getValue()) || 0;                
+                if (value < 0) {
+                    return value.toFixed(2); 
+                } else {
+                    return value.toFixed(4); 
+                }
             },
             bottomCalc: "sum",
             bottomCalcFormatter: (cell) => {
