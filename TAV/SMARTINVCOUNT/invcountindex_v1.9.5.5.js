@@ -229,7 +229,7 @@ table = new Tabulator("#report-inventorycount", {
             field: "valuedifference",
             formatter: inventoryValueFormatter,
             bottomCalc: 'sum',
-            bottomCalcParams: { precision: 5 },
+            bottomCalcParams: { precision: 2 },
             width: 150,
             validator: "numeric"
         }
