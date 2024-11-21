@@ -244,7 +244,7 @@ table = new Tabulator("#report-inventorycount", {
             validator: "numeric"
         },
         {
-            title: "Valore <br>Differenza",
+            title: "Valore <br>Differenza<br>Indicativo",
             field: "valuedifference",
             formatter: (cell) => {
                 cell.getElement().style.backgroundColor = "#ffffbf";
