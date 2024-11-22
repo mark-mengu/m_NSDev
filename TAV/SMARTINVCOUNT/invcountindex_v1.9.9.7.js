@@ -517,7 +517,7 @@ const showeditLoadingOverlay = () => {
 require(['N/search'], (search) => {
     const getCountSession = (search) => {
         let ses = [{
-            id: null,
+            id: "null",
             name: '- Select a Session - '
         }];
         var invcountsessions = search.create({
