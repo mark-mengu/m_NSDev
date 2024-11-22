@@ -516,7 +516,10 @@ const showeditLoadingOverlay = () => {
 
 require(['N/search'], (search) => {
     const getCountSession = (search) => {
-        let ses = [];
+        let ses = [{
+            id: null,
+            name: '- Select a Session - '
+        }];
         var invcountsessions = search.create({
             type: "customrecord_gn_tav_inv_count_header",
             filters: [
