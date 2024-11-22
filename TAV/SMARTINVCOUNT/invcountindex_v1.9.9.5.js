@@ -515,7 +515,7 @@ const showeditLoadingOverlay = () => {
 }
 
 require(['N/search'], (search) => {
-    function getCountSession(search) {
+    const getCountSession = (search) => {
         let ses = [];
         var invcountsessions = search.create({
             type: "customrecord_gn_tav_inv_count_header",
@@ -532,7 +532,6 @@ require(['N/search'], (search) => {
                 search.createColumn({ name: "custrecord_gn_tav_invcount_kard_shelf_in", label: "Input Shelf" })
             ]
         });
-
         invcountsessions.run().each(result => {
             let obj = {
                 id: result.id,
@@ -541,27 +540,20 @@ require(['N/search'], (search) => {
             ses.push(obj);
             return true;
         });
-
         return ses;
     }
-
     let sessionArr = getCountSession(search);
     const sessionOptions = sessionArr.map(session => {
         return `<option value="${session.id.toString().replace(/\s/g, '')}">${session.name}</option>`;
     }).join('');
-
     $('#invcount-header').append(sessionOptions);
     $('#invcount-header').select2({
         placeholder: 'Select Session',
         allowClear: true,
         width: '250px',
-        matcher: function (params, data) {
-            if ($.trim(params.term) === '') {
-                return data;
-            }
-            if (data.text.toLowerCase().indexOf(params.term.toLowerCase()) > -1) {
-                return data;
-            }
+        matcher: (params, data) => {
+            if ($.trim(params.term) === '') { return data; }
+            if (data.text.toLowerCase().indexOf(params.term.toLowerCase()) > -1) { return data; }
             return null;
         }
     });
