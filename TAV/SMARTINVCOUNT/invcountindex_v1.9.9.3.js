@@ -490,7 +490,6 @@ table.on("cellEdited", (cell) => {
             });
     });
 });
-
 const showeditLoadingOverlay = () => {
     const overlay = document.createElement('div');
     overlay.id = 'loading-overlay';
@@ -514,8 +513,55 @@ const showeditLoadingOverlay = () => {
     document.body.appendChild(overlay);
     return { overlay, loadingIcon };
 }
+require(['N/search'], (search) => {
+    let sessionArr = getCountSession(search)
+    const sessionOptions = sessionArr.map(session => {
+        return `<option value="${session.id.toString().replace(/\s/g, '')}">${session.name}</option>`;
+    }).join('');
 
+    $('#invcount-header').append(sessionOptions);
+    $('#invcount-header').select2({
+        placeholder: 'Select Session',
+        allowClear: true,
+        width: '250px',
+        matcher: function (params, data) {
+            if ($.trim(params.term) === '') {
+                return data;
+            }
+            if (data.text.toLowerCase().indexOf(params.term.toLowerCase()) > -1) {
+                return data;
+            }
+            return null;
+        }
+    });
 
-
-
-
+    let getCountSession = (search) => {
+        let ses = [];
+        var invcountsessions = search.create({
+            type: "customrecord_gn_tav_inv_count_header",
+            filters:
+                [
+                    ["custrecord_gn_tav_invcount_head_isannual", "is", "T"]
+                ],
+            columns:
+                [
+                    search.createColumn({ name: "name", label: "Name" }),
+                    search.createColumn({ name: "custrecord_gn_tav_invcount_head_date", label: "Date" }),
+                    search.createColumn({ name: "custrecord_gn_tav_invcount_head_isannual", label: "Annual Inventory Count?" }),
+                    search.createColumn({ name: "custrecord_gn_tav_invcount_head_status", label: "Status" }),
+                    search.createColumn({ name: "custrecord_gn_tav_invcount_head_file", label: "File" }),
+                    search.createColumn({ name: "custrecord_gn_tav_invcount_head_location", label: "Location" }),
+                    search.createColumn({ name: "custrecord_gn_tav_invcount_kard_shelf_in", label: "Input Shelf" })
+                ]
+        });
+        invcountsessions.run().each(result => {
+            let obj = {
+                id: result.id,
+                name: result.getValue('name')
+            };
+            ses.push(obj);
+            return true;
+        });
+        return ses;
+    }
+});
