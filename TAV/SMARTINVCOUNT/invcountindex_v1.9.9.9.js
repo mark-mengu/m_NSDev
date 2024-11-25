@@ -399,6 +399,8 @@ document.getElementById('load-inventoryadj').addEventListener('click', (event) =
                 icon: 'warning',
                 confirmButtonText: 'OK'
             });
+            loadingIcon.style.display = 'none';
+            document.body.removeChild(overlay);
             return;
         }
         if (sessionRecord.custrecord_gn_tav_invcount_head_status[0].value == "2") {
