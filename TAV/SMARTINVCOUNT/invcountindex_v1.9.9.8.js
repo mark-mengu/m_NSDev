@@ -392,13 +392,15 @@ document.getElementById('load-inventoryadj').addEventListener('click', (event) =
         const buttonAdj = document.getElementById('load-inventoryadj');
         const visibleData = table.getData("visible");
 
-        if (visibleData.length == 0)
+        if (visibleData.length == 0) {
             Swal.fire({
                 title: 'Attenzione!',
                 text: 'Non ci sono riga da Trasformare in ADJ',
                 icon: 'warning',
                 confirmButtonText: 'OK'
             });
+            return;
+        }
         if (sessionRecord.custrecord_gn_tav_invcount_head_status[0].value == "2") {
             validationIcon.style.display = 'inline';
             validationIcon.innerHTML = '<b>Sessione di Inventario chiusa</b> ❌';
