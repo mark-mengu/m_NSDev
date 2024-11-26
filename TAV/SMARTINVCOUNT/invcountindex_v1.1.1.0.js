@@ -158,6 +158,9 @@ table = new Tabulator("#report-inventorycount", {
     data: initialData,
     progressiveRender: true,
     progressiveRenderSize: 70,
+    initialSort: [
+        { column: "item", dir: "asc" }
+    ],
     columns: [
         {
             title: "Location",
@@ -179,23 +182,21 @@ table = new Tabulator("#report-inventorycount", {
             headerFilter: "input",
             formatter: stdFormatter,
             width: 450,
-            headerFilterPlaceholder: "Filtra per articolo..."
+            headerFilterPlaceholder: "Filtra per articolo...",
+            sorter: "string",
+            headerSortStartingDir: "asc"
         },
         {
             title: "Shelf NetSuite",
             field: "shelfnetsuite",
-            //headerFilter: "input",
             formatter: stdFormatter,
             width: 180,
-            //headerFilterPlaceholder: "Filtra per NetSuite shelf..."
         },
         {
             title: "Shelf Kardex",
             field: "shelfkardex",
-            //headerFilter: "input",
             formatter: stdFormatter,
             width: 180,
-            //headerFilterPlaceholder: "Filtra per Kardex shelf..."
         },
         {
             title: "Q.tà <br>NetSuite",
@@ -443,9 +444,10 @@ document.getElementById('load-inventoryadj').addEventListener('click', (event) =
                 }
             })
             .catch((error) => {
+                const errorMessage = error.message.match(/(?:ReferenceError:|Error:)(.+?)\[/)?.[1]?.trim() || error.message;
                 Swal.fire({
                     title: 'Errore!',
-                    text: 'Si è verificato un errore durante la creazione del ADJ ' + error.message,
+                    text: 'Si è verificato un errore durante la creazione del ADJ: ' + errorMessage,
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
