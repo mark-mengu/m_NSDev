@@ -183,8 +183,7 @@ table = new Tabulator("#report-inventorycount", {
             formatter: stdFormatter,
             width: 450,
             headerFilterPlaceholder: "Filtra per articolo...",
-            sorter: "string",
-            headerSortStartingDir: "asc"
+            sorter: "string" 
         },
         {
             title: "Shelf NetSuite",
@@ -266,6 +265,7 @@ table = new Tabulator("#report-inventorycount", {
         }
     ]
 });
+table.on("dataLoaded", () => { table.setSort([{ column: "item", dir: "asc" }]); });
 document.getElementById('report-inventorycount').style.display = 'none';
 document.getElementById('table-title').style.display = 'none';
 
