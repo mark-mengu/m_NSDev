@@ -284,6 +284,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         validator: '',
         tooltip: 'Bin'
     };
+    table.addColumn(binColumns);
 
     let inventoryValueColumns = {
         title: "Valore al Costo Medio", field: "item_value", editor: "textarea", validator: '', width: 260, minWidth: 150, maxWidth: 300, editable: false, formatter: inventoryValueFormatter,
