@@ -252,59 +252,24 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         headerFilter: "list",
         headerFilterParams: {
             multiselect: true,
-            // We'll use a custom values function instead of valuesLookup to include our EMPTY option
-            values: function(value, field) {
-                // Get all unique bin values from the table
-                const uniqueBins = new Set();
-                this.table.getData().forEach(row => {
-                    if (row.bin === "" || row.bin === null || row.bin === undefined) {
-                        uniqueBins.add("EMPTY");
-                    } else if (row.bin) {
-                        uniqueBins.add(row.bin);
-                    }
-                });
-                return Array.from(uniqueBins).sort();
-            },
+            valuesLookup: "active",
             clearable: true,
             sort: "asc",
             placeholderEmpty: "Nessun risultato",
             placeholderLoading: "Caricamento...",
             maxWidth: true,
-            itemFormatter: function(label, value, item) {
+            itemFormatter: function (label, value, item) {
                 return `<strong>${label}</strong>`;
             },
-            allowEmpty: true,
+            allowEmpty: false,
             listOnEmpty: true,
             freetext: true,
-            emptyValue: "EMPTY"
+            emptyValue: "EMPTY",
         },
-        // Custom formatter to display empty values
-        formatter: function(cell) {
-            const value = cell.getValue();
-            return value === null || value === undefined || value === "" ? "EMPTY" : value;
-        },
-        // Custom filter function to handle both empty values and normal filtering
-        headerFilterFunc: function(headerValue, rowValue, rowData, filterParams) {
-            // If no filter is selected, show all rows
-            if (!headerValue || headerValue.length === 0) {
-                return true;
-            }
-            
-            // Convert headerValue to array if it isn't already (handles multiselect)
-            const selectedValues = Array.isArray(headerValue) ? headerValue : [headerValue];
-            
-            // Handle empty values
-            if (rowValue === "" || rowValue === null || rowValue === undefined) {
-                return selectedValues.includes("EMPTY");
-            }
-            
-            // Handle normal values
-            return selectedValues.includes(rowValue);
-        },
+        formatter: "text",
         validator: '',
         tooltip: 'Bin'
     };
-    
     table.addColumn(binColumns);
 
     let inventoryValueColumns = {
