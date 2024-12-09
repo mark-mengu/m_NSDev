@@ -281,7 +281,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
             const selectedValues = Array.isArray(headerValue) ? headerValue : [headerValue];
             return selectedValues.includes(rowValue);
         },
-        formatter: "",
+        formatter: stdFormatter,
         validator: '',
         tooltip: 'Bin'
     };
