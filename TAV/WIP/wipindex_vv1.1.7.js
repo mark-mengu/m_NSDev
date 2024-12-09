@@ -260,7 +260,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
             placeholderLoading: "Caricamento...",
             maxWidth: true,
             itemFormatter: function(label, value, item) {
-                return `<strong class="text-white">${value}</strong>`;
+                return `<strong class="text-gray-900 selected:text-black hover:text-black">${value}</strong>`;
             },
             filterFunc: function(term, label, value, rowData) {
                 if (Array.isArray(term)) {
@@ -283,8 +283,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         formatter: "text",
         validator: '',
         tooltip: 'Bin'
-    };    
-    table.addColumn(binColumns);
+    };
 
     let inventoryValueColumns = {
         title: "Valore al Costo Medio", field: "item_value", editor: "textarea", validator: '', width: 260, minWidth: 150, maxWidth: 300, editable: false, formatter: inventoryValueFormatter,
