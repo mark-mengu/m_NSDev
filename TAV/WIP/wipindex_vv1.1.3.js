@@ -259,18 +259,31 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
             placeholderEmpty: "Nessun risultato",
             placeholderLoading: "Caricamento...",
             maxWidth: true,
-            itemFormatter: function (label, value, item) {
+            itemFormatter: function(label, value, item) {
                 return `<strong>${label}</strong>`;
+            },
+            filterFunc: function(term, label, value, rowData) {
+                if (Array.isArray(term)) {
+                    return term.includes(label);
+                }
+                return label === term;
             },
             allowEmpty: false,
             listOnEmpty: true,
             freetext: true,
             emptyValue: "EMPTY",
         },
+        headerFilterFunc: function(headerValue, rowValue, rowData, filterParams) {
+            if (!headerValue || headerValue.length === 0) {
+                return true;
+            }            
+            const selectedValues = Array.isArray(headerValue) ? headerValue : [headerValue];            
+            return selectedValues.includes(rowValue);
+        },
         formatter: "text",
         validator: '',
         tooltip: 'Bin'
-    };
+    };    
     table.addColumn(binColumns);
 
     let inventoryValueColumns = {
