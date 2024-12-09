@@ -255,6 +255,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
             valuesLookup: "active",
             clearable: true,
             sort: "asc",
+            values: ["KARDEX", "MAG", "PROD", "SPED"],
             placeholderEmpty: "Nessun risultato",
             placeholderLoading: "Caricamento...",
             maxWidth: true,
