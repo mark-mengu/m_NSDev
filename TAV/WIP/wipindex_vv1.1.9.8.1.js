@@ -280,9 +280,9 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
             placeholderEmpty: "Nessun risultato",
             placeholderLoading: "Caricamento...",
             maxWidth: true,
-            itemFormatter: function (label, value, item) {
-                return `<strong class="${item.className}">${value}</strong>`;
-            },
+            //itemFormatter: function (label, value, item) {
+            //return `<strong class="${item.className}">${value}</strong>`;
+            // },
             filterFunc: function (term, label, value, rowData) {
                 if (Array.isArray(term)) {
                     return term.includes(label);
