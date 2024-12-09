@@ -249,11 +249,11 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         width: 100,
         minWidth: 80,
         maxWidth: 150,
-        headerFilter: "select",
-        headerFilterParams: { values: true, multiselect: true },
-        headerFilterFunc: "in",
+        headerFilter: "list",
+        editorParams: {
+            valuesLookup: "active",
+        },
         validator: '',
-        formatter: stdFormatter,
         tooltip: 'Bin'
     };
     table.addColumn(binColumns);
