@@ -260,7 +260,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
             placeholderLoading: "Caricamento...",
             maxWidth: true,
             itemFormatter: function(label, value, item) {
-                return `<strong class="text-gray-900 selected:text-black hover:text-black">${value}</strong>`;
+                return `<strong class="text-gray-900 bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent">${value}</strong>`;
             },
             filterFunc: function(term, label, value, rowData) {
                 if (Array.isArray(term)) {
@@ -270,7 +270,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
             },
             allowEmpty: false,
             listOnEmpty: true,
-            freetext: true,
+            freetext: false,
             emptyValue: "EMPTY",
         },
         headerFilterFunc: function(headerValue, rowValue, rowData, filterParams) {
