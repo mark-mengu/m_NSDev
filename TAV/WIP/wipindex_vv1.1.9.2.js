@@ -246,9 +246,9 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     const binColumns = {
         title: "Bin",
         field: "bin",
-        width: 100,
+        width: 150,
         minWidth: 80,
-        maxWidth: 150,
+        maxWidth: 180,
         headerFilter: "list",
         headerFilterParams: {
             multiselect: true,
