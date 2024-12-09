@@ -260,7 +260,10 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
             maxWidth: true,
             itemFormatter: function (label, value, item) {
                 return `<strong>${label}</strong>`;
-            }
+            },
+            allowEmpty: true,
+            listOnEmpty: true,
+            freetext: true, 
         },
         formatter: "text",
         validator: '',
