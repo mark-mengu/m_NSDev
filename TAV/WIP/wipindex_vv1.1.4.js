@@ -259,10 +259,37 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
             placeholderEmpty: "Nessun risultato",
             placeholderLoading: "Caricamento...",
             maxWidth: true,
-            itemFormatter: function(label, value, item) {
-                return `<strong>${label}</strong>`;
+            itemFormatter: function (label, value, item, element) {
+                const isSelected = element.classList.contains('tabulator-selected');
+                const container = document.createElement('div');
+                container.style.cssText = `
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    transition: all 0.2s ease;
+                    width: 100%;
+                    cursor: pointer;
+                `;
+                if (isSelected) {
+                    container.style.backgroundColor = '#FF9933';
+                    container.style.color = '#000000';
+                    container.style.fontWeight = 'bold';
+                }
+                element.addEventListener('mouseover', () => {
+                    if (!isSelected) {
+                        container.style.backgroundColor = '#FFE0B2';
+                    }
+                });
+
+                element.addEventListener('mouseout', () => {
+                    if (!isSelected) {
+                        container.style.backgroundColor = 'transparent';
+                    }
+                });
+
+                container.innerHTML = `<strong>${label}</strong>`;
+                return container;
             },
-            filterFunc: function(term, label, value, rowData) {
+            filterFunc: function (term, label, value, rowData) {
                 if (Array.isArray(term)) {
                     return term.includes(label);
                 }
@@ -272,18 +299,45 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
             listOnEmpty: true,
             freetext: true,
             emptyValue: "EMPTY",
+            elementAttributes: {
+                style: `
+                    background-color: white;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                    max-height: 200px;
+                    overflow-y: auto;
+                `
+            }
         },
-        headerFilterFunc: function(headerValue, rowValue, rowData, filterParams) {
+        headerFilterFunc: function (headerValue, rowValue, rowData, filterParams) {
             if (!headerValue || headerValue.length === 0) {
                 return true;
-            }            
-            const selectedValues = Array.isArray(headerValue) ? headerValue : [headerValue];            
+            }
+            const selectedValues = Array.isArray(headerValue) ? headerValue : [headerValue];
             return selectedValues.includes(rowValue);
         },
         formatter: "text",
         validator: '',
         tooltip: 'Bin'
-    };    
+    };
+    const style = document.createElement('style');
+    style.textContent = `
+        .tabulator-header-filter select option:checked {
+            background-color: #FF9933 !important;
+            color: black !important;
+            font-weight: bold !important;
+        }
+        
+        .tabulator-header-filter select option:hover {
+            background-color: #FFE0B2 !important;
+        }
+        
+        .tabulator-header-filter select {
+            padding: 4px !important;
+        }
+    `;
+    document.head.appendChild(style);
+
     table.addColumn(binColumns);
 
     let inventoryValueColumns = {
