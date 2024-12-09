@@ -257,16 +257,6 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
             sort: "asc",
             values: [
                 {
-                    label: "KARDEX",
-                    value: "KARDEX",
-                    className: "text-gray-900 bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent"
-                },
-                {
-                    label: "MAG",
-                    value: "MAG",
-                    className: "text-gray-900 bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent"
-                },
-                {
                     label: "PROD",
                     value: "PROD",
                     className: "text-gray-900 bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent"
