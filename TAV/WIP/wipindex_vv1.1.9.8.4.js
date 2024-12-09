@@ -267,12 +267,10 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
                     className: "text-gray-900 bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent"
                 }
             ],
-            placeholderEmpty: "Nessun risultato",
-            placeholderLoading: "Caricamento...",
-            maxWidth: true,
-            //itemFormatter: function (label, value, item) {
-            //return `<strong class="${item.className}">${value}</strong>`;
-            // },
+            maxWidth: false,
+            itemFormatter: function (label, value, item) {
+                return `<strong class="${item.className}">${value}</strong>`;
+            },
             filterFunc: function (term, label, value, rowData) {
                 if (Array.isArray(term)) {
                     return term.includes(label);
