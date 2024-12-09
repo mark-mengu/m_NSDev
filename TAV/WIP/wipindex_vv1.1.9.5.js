@@ -433,7 +433,7 @@ button.addEventListener('mousemove', (e) => {
 document.getElementById('print-csv').addEventListener('click', (event) => {
     const columnsToHide = ["to"];
     columnsToHide.forEach(column => table.hideColumn(column));
-    table.download("csv", "report_WIP.csv", { sheetName: "Report WIP", bom: true });
+    table.download("csv", "report_WIP.csv", { delimiter: ";", bom: true });
 
     columnsToHide.forEach(column => table.showColumn(column));
     event.preventDefault();
