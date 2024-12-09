@@ -259,10 +259,10 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
             placeholderEmpty: "Nessun risultato",
             placeholderLoading: "Caricamento...",
             maxWidth: true,
-            itemFormatter: function(label, value, item) {
+            itemFormatter: function (label, value, item) {
                 return `<strong class="text-gray-900 bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent">${value}</strong>`;
             },
-            filterFunc: function(term, label, value, rowData) {
+            filterFunc: function (term, label, value, rowData) {
                 if (Array.isArray(term)) {
                     return term.includes(label);
                 }
@@ -272,12 +272,13 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
             listOnEmpty: true,
             freetext: false,
             emptyValue: "EMPTY",
+            autocomplete: true
         },
-        headerFilterFunc: function(headerValue, rowValue, rowData, filterParams) {
+        headerFilterFunc: function (headerValue, rowValue, rowData, filterParams) {
             if (!headerValue || headerValue.length === 0) {
                 return true;
-            }            
-            const selectedValues = Array.isArray(headerValue) ? headerValue : [headerValue];            
+            }
+            const selectedValues = Array.isArray(headerValue) ? headerValue : [headerValue];
             return selectedValues.includes(rowValue);
         },
         formatter: "text",
