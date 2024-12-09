@@ -430,10 +430,10 @@ button.addEventListener('mousemove', (e) => {
     tooltip.style.top = (e.pageY - 3) + 'px';
 });
 
-document.getElementById('print-xls').addEventListener('click', (event) => {
+document.getElementById('print-csv').addEventListener('click', (event) => {
     const columnsToHide = ["to"];
     columnsToHide.forEach(column => table.hideColumn(column));
-    table.download("xlsx", "report_WIP.xlsx", { sheetName: "Report WIP", bom: true });
+    table.download("csv", "report_WIP.csv", { sheetName: "Report WIP", bom: true });
 
     columnsToHide.forEach(column => table.showColumn(column));
     event.preventDefault();
