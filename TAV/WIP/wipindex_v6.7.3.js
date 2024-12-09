@@ -245,17 +245,17 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
     };
     table.addColumn(locationColumns);
 
-    let binColumns = {
+    const binColumns = {
         title: "Bin",
         field: "bin",
         width: 100,
         minWidth: 80,
         maxWidth: 150,
-        headerFilterPlaceholder: "...",
-        headerFilter: "input",
+        headerFilterPlaceholder: "Select bins...",
+        headerFilter: multiSelectHeaderFilter,
         validator: '',
         formatter: stdFormatter,
-        tooltip: 'Bin',
+        tooltip: 'Bin'
     };
     table.addColumn(binColumns);
 
