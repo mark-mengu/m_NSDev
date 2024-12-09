@@ -251,9 +251,16 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         maxWidth: 150,
         headerFilter: "list",
         headerFilterParams: {
-            values: true,
+            multiselect: true,
+            valuesLookup: "active",
+            clearable: true,
             sort: "asc",
-            multiselect: true
+            placeholderEmpty: "Nessun risultato",
+            placeholderLoading: "Caricamento...",
+            maxWidth: true,
+            itemFormatter: function (label, value, item) {
+                return `<strong>${label}</strong>`;
+            }
         },
         formatter: "text",
         validator: '',
