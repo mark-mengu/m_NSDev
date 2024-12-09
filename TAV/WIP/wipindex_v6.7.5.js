@@ -1,7 +1,6 @@
-/**
- * @Description 
- * @author Marco Mengucci 
- */
+
+//@Description 
+//@author Marco Mengucci 
 
 var validate = (cell) => {
     console.log('cell.getData()', cell.getData());
