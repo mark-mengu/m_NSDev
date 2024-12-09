@@ -255,7 +255,32 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
             valuesLookup: "active",
             clearable: true,
             sort: "asc",
-            values: ["KARDEX", "MAG", "PROD", "SPED"],
+            values: [
+                {
+                    label: "KARDEX",
+                    value: "KARDEX",
+                    keywords: "red, green, blue, orange", 
+                    description: "Likes to drive a car", 
+                },
+                {
+                    label: "MAG",
+                    value: "MAG",
+                    keywords: "red, green, blue, orange", 
+                    description: "Likes to drive a car", 
+                },
+                {
+                    label: "PROD",
+                    value: "PROD",
+                    keywords: "red, green, blue, orange",
+                    description: "Likes to drive a car", 
+                },
+                {
+                    label: "SPED",
+                    value: "SPED",
+                    keywords: "red, green, blue, orange", 
+                    description: "Likes to drive a car",
+                },
+            ],
             placeholderEmpty: "Nessun risultato",
             placeholderLoading: "Caricamento...",
             maxWidth: true,
