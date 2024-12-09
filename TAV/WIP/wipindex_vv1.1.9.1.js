@@ -272,7 +272,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
             listOnEmpty: true,
             freetext: false,
             emptyValue: "EMPTY",
-            autocomplete: true
+            autocomplete: false
         },
         headerFilterFunc: function (headerValue, rowValue, rowData, filterParams) {
             if (!headerValue || headerValue.length === 0) {
@@ -281,7 +281,7 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
             const selectedValues = Array.isArray(headerValue) ? headerValue : [headerValue];
             return selectedValues.includes(rowValue);
         },
-        formatter: "text",
+        formatter: "",
         validator: '',
         tooltip: 'Bin'
     };
