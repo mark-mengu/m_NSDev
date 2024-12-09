@@ -250,9 +250,12 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         minWidth: 80,
         maxWidth: 150,
         headerFilter: "list",
-        editorParams: {
-            valuesLookup: "active",
+        headerFilterParams: {
+            values: true,
+            sort: "asc",
+            multiselect: true
         },
+        formatter: "text",
         validator: '',
         tooltip: 'Bin'
     };
