@@ -1,6 +1,7 @@
-
-//@Description 
-//@author Marco Mengucci 
+/**
+ *@Description utils
+ *@author Marco Mengucci
+ */
 
 var validate = (cell) => {
     console.log('cell.getData()', cell.getData());
@@ -166,8 +167,6 @@ var createLoadingIcon = () => {
 const table = new Tabulator("#report-wip", {
     movableRows: false,
     dataTree: true,
-    //dataTreeCollapseElement: `<i class='fas fa-minus-square' style='font-size: 30px; color: #ff0000;'></i>`,
-    //dataTreeExpandElement: `<i class="fa fa-plus-square" aria-hidden="true" style='font-size: 30px; color: #00ff00;'></i>`,
     groupBy: "account",
     groupStartOpen: false,
     groupToggleElement: "header",
@@ -250,8 +249,9 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         width: 100,
         minWidth: 80,
         maxWidth: 150,
-        headerFilterPlaceholder: "Select bins...",
-        headerFilter: multiSelectHeaderFilter,
+        headerFilter: "select",
+        headerFilterParams: { values: true, multiselect: true },
+        headerFilterFunc: "in",
         validator: '',
         formatter: stdFormatter,
         tooltip: 'Bin'
