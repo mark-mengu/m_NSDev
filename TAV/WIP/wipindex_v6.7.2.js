@@ -1,10 +1,13 @@
-//--------------------------------------------------------------RAWss FUNCTIONS-----------------------------------------
+/**
+ * @Description 
+ * @author Marco Mengucci 
+ */
+
 var validate = (cell) => {
     console.log('cell.getData()', cell.getData());
     return true;
 }
 
-//------------------------------------------------FORMAT DATES CALCULATED--------------------------------------------------------
 
 const formatDate = (date) => {
     let day = String(date.getDate()).padStart(2, '0');
@@ -12,7 +15,6 @@ const formatDate = (date) => {
     let year = date.getFullYear();
     return `${year}-${month}-${day}`;
 }
-//------------------------------------------------FORMAT NUMBERS CALCULATED--------------------------------------------------------
 
 const formatNumber = (num) => {
     const roundedNum = Math.round(num * 100) / 100;
@@ -22,7 +24,6 @@ const formatNumber = (num) => {
     return `${formattedInteger},${formattedDecimal}`;
 }
 
-//----------------------------------------------DEFAULT DATES------------------------------------------------
 const setDefaultDates = () => {
     let today = new Date();
     let startDateInput = document.getElementById('start-date');
@@ -32,41 +33,56 @@ const setDefaultDates = () => {
     if (!endDateInput.value) { endDateInput.value = formatDate(today); }
 }
 
-const binTypes = ['PROD', 'MAG', 'SPED', 'KARDEX'];
-var multiSelectHeaderFilter = (cell) => {
-    var values = binTypes;
-    const filterFunc = (rowData) => {
-        return values.includes(rowData['bin']);
-    }
-    const getSelectedValues = (multiSelect) => {
-        var result = [];
-        var options = multiSelect && multiSelect.options;
-        var opt;
-        for (var i = 0, iLen = options.length; i < iLen; i++) {
-            opt = options[i];
-            if (opt.selected) { result.push(opt.value || opt.text); }
+const getUniqueBins = (table) => {
+    const data = table.getData();
+    const uniqueBins = new Set();
+    data.forEach(row => {
+        if (row.bin) {
+            uniqueBins.add(row.bin);
         }
-        return result;
-    }
-    const onChange = () => {
-        var editor = document.getElementById('binSelector');
-        values = getSelectedValues(editor);
-        console.log("values: " + values);
-        cell.getColumn().getTable().removeFilter(filterFunc);
-        cell.getColumn().getTable().addFilter(filterFunc);
-    }
-    var select = document.createElement("select");
-    select.multiple = "multiple";
-    select.id = 'binSelector';
-    select.class = "chosen-select";
-    select.style = 'width: 100%';
-    binTypes.forEach(bins => {
-        select.innerHTML += "<option id='" + bins + "' value='" + bins + "' selected='selected'>" + bins + "</option>";
     });
-    cell.getColumn().getTable().addFilter(filterFunc);
+    return Array.from(uniqueBins).sort();
+};
+const multiSelectHeaderFilter = (cell) => {
+    let selectedValues = [];
+    const filterFunc = (rowData) => {
+        if (selectedValues.length === 0) return true;
+        return selectedValues.includes(rowData['bin']);
+    };
+    const getSelectedValues = (multiSelect) => {
+        return Array.from(multiSelect.selectedOptions).map(option => option.value);
+    };
+    const onChange = (event) => {
+        selectedValues = getSelectedValues(event.target);
+        cell.getColumn().getTable().removeFilter(filterFunc);
+        if (selectedValues.length > 0) {
+            cell.getColumn().getTable().addFilter(filterFunc);
+        }
+    };
+    const select = document.createElement("select");
+    select.multiple = true;
+    select.id = 'binSelector';
+    select.className = "cool-select";
+    select.style.cssText = `
+        width: 100%;
+        padding: 5px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        min-height: 100px;
+        background-color: white;
+    `;
+    const uniqueBins = getUniqueBins(cell.getColumn().getTable());
+    uniqueBins.forEach(bin => {
+        const option = document.createElement("option");
+        option.value = bin;
+        option.text = bin;
+        select.appendChild(option);
+    });
     select.addEventListener('change', onChange);
+
     return select;
-}
+};
 
 var editCheck = (cell) => {
     return !cell.getRow().getData().hold;
@@ -147,7 +163,7 @@ var createLoadingIcon = () => {
     document.head.appendChild(style);
     return loadingIcon;
 };
-//----------------------------------------------------------------TABULATOR-----------------------------------------------------
+
 const table = new Tabulator("#report-wip", {
     movableRows: false,
     dataTree: true,
@@ -237,11 +253,6 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         maxWidth: 150,
         headerFilterPlaceholder: "...",
         headerFilter: "input",
-        //headerFilterFunc: binFilter,
-        //headerFilter: multiSelectHeaderFilter,
-        // headerFilterParams: {
-        //     values: binTypes,
-        // },
         validator: '',
         formatter: stdFormatter,
         tooltip: 'Bin',
@@ -279,7 +290,6 @@ require(['N/https', 'N/url', 'N/search'], (https, url, search) => {
         });
 });
 
-//---------------------------------------------------APPLY FILTER EVENT DATA---------------------------------------------------
 document.getElementById('apply-filters-data').addEventListener('click', (event) => {
     event.preventDefault();
 
@@ -333,7 +343,6 @@ document.getElementById('apply-filters-data').addEventListener('click', (event) 
     });
 });
 
-//---------------------------------------------------EMPTY FILTER EVENT DATA---------------------------------------------------
 document.getElementById('apply-filters-data-empty').addEventListener('click', (event) => {
     event.preventDefault();
     document.getElementById('start-date').value = '';
@@ -374,13 +383,11 @@ document.getElementById('apply-filters-data-empty').addEventListener('click', (e
     });
 });
 
-//-----------------------------------------------------------------PRINT PDF-------------------------------------------------------------------------------
 
 document.getElementById('print-pdf').addEventListener('click', (event) => {
     table.download("pdf", "report_wip.pdf", { title: "Report WIP" });
     event.preventDefault();
 }, false);
-//---------------------------------------------------------MOUSE OVER---------------------------------------------------------------------------
 
 const button = document.getElementById('apply-filters-data-empty');
 const tooltip = document.getElementById('tooltip');
@@ -394,7 +401,6 @@ button.addEventListener('mousemove', (e) => {
     tooltip.style.left = e.pageX + 'px';
     tooltip.style.top = (e.pageY - 3) + 'px';
 });
-//-----------------------------------------------------------------PRINT XLS-------------------------------------------------------------------------------
 
 document.getElementById('print-xls').addEventListener('click', (event) => {
     const columnsToHide = ["to"];
@@ -405,7 +411,6 @@ document.getElementById('print-xls').addEventListener('click', (event) => {
     event.preventDefault();
 }, false);
 
-//-----------------------------------------------------------------EXPAND-------------------------------------------------------------------------------
 
 document.getElementById('expande-groups').addEventListener('click', (event) => {
     event.preventDefault();
@@ -414,7 +419,6 @@ document.getElementById('expande-groups').addEventListener('click', (event) => {
     table.restoreRedraw();
 
 }, false);
-//-----------------------------------------------------------------COLLAPSE-------------------------------------------------------------------------------
 
 document.getElementById('collapse-groups').addEventListener('click', (event) => {
     event.preventDefault();
@@ -423,4 +427,3 @@ document.getElementById('collapse-groups').addEventListener('click', (event) => 
     table.restoreRedraw();
 
 }, false);
-
